@@ -7,8 +7,8 @@
 <script>
 // Apply saved theme immediately to prevent flash
 (function(){
-  var t=localStorage.getItem('sm_theme');
-  if(t) document.documentElement.setAttribute('data-theme',t);
+  var t=localStorage.getItem('sm_theme')||'dark';
+  document.documentElement.setAttribute('data-theme',t);
   // Hide login screen immediately if valid token exists
   var tok=localStorage.getItem('gapi_token');
   if(tok){
@@ -47,10 +47,10 @@
   --input:#0d0d0d;--danger:#f87171;--tag:#1a1500;--tag-text:#c9a227;
 }
 :root[data-theme="light"]{
-  --bg:#f0ede6;--card:#faf9f6;--border:#e5e0d5;
-  --text:#1a1600;--text2:#6b6347;--muted:#a89c7e;
-  --accent:#c9a227;--hover:#f5f2ea;--shadow:0 2px 12px rgba(0,0,0,0.08);
-  --input:#ffffff;--danger:#dc2626;--tag:#fef3c7;--tag-text:#92400e;
+  --bg:#13110d;--card:#1a1710;--border:#2a2518;
+  --text:#f5f0e8;--text2:#9e9278;--muted:#6b6347;
+  --accent:#c9a227;--hover:#201d14;--shadow:0 4px 24px rgba(0,0,0,0.6);
+  --input:#111009;--danger:#f87171;--tag:#2a2000;--tag-text:#c9a227;
 }
 
 body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
@@ -3086,20 +3086,22 @@ function renderCards(){
 }
 
 function cardHTML(s){
-  const color=s.color||'#34a853';
+  const rawColor=s.color||'';
+  const isDefault=!rawColor||rawColor==='#34a853';
+  const barColor=isDefault?'#c9a227':rawColor;
   const folder=folders.find(f=>f.id===s.folderId);
   const tags=(s.tags||[]).slice(0,3);
   const opened=s.lastOpened?'Opened '+timeAgo(s.lastOpened):'Never opened';
-  const editBtn=`<button class="card-open-btn" onclick="event.stopPropagation();openSheetEditor('${s.id}')" style="background:#4285f4;">
+  const editBtn=`<button class="card-open-btn" onclick="event.stopPropagation();openSheetEditor('${s.id}')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="11" height="11"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
     Edit
   </button>`;
   return`<div class="sheet-card" onclick="openSheetEditor('${s.id}')">
-    <div class="card-color-bar" style="background:${color};"></div>
+    <div class="card-color-bar" style="background:${barColor};"></div>
     ${s.pinned?'<div class="pin-star">★</div>':''}
     <div class="card-body">
       <div class="card-icon">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="2" fill="#34a85330"/><line x1="2" y1="8" x2="22" y2="8" stroke="#34a853" stroke-width="1.5"/><line x1="2" y1="13" x2="22" y2="13" stroke="#34a853" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="21" stroke="#34a853" stroke-width="1.5"/><line x1="15" y1="3" x2="15" y2="21" stroke="#34a853" stroke-width="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="2" fill="#c9a22720"/><line x1="2" y1="8" x2="22" y2="8" stroke="#c9a227" stroke-width="1.5"/><line x1="2" y1="13" x2="22" y2="13" stroke="#c9a227" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="21" stroke="#c9a227" stroke-width="1.5"/><line x1="15" y1="3" x2="15" y2="21" stroke="#c9a227" stroke-width="1.5"/></svg>
       </div>
       <div class="card-name" title="${esc(s.name)}">${esc(s.name)}</div>
       <div class="card-note">${s.note?esc(s.note):folder?'📁 '+esc(folder.name):'&nbsp;'}</div>
