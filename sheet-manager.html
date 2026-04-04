@@ -725,6 +725,110 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
 /* Icon buttons */
 .icon-btn{border-radius:4px;}
+
+/* ── DATA CLEANER ── */
+#cleaner-panel{padding:24px;max-width:960px;margin:0 auto;}
+.cl-steps-wrap{margin-bottom:28px;}
+.cl-steps{display:flex;align-items:center;gap:0;}
+.cl-step{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;}
+.cl-step-line{flex:1;height:2px;background:var(--border);margin:0 8px;min-width:20px;margin-bottom:18px;}
+.cls-dot{width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--muted);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.cls-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;}
+.cl-step.active .cls-dot{background:var(--accent);color:#fff;}
+.cl-step.active .cls-label{color:var(--accent);}
+.cl-step.done .cls-dot{background:#22c55e;color:#fff;}
+.cl-step.done .cls-label{color:#22c55e;}
+.cl-step-content{animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.cl-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;}
+.cl-card+.cl-card{margin-top:16px;}
+.cl-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.cl-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.cl-drop-zone{border:2px dashed var(--border);border-radius:10px;padding:40px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--input);}
+.cl-drop-zone:hover,.cl-drop-zone.drag-over{border-color:var(--accent);background:#eef2ff;}
+.cl-drop-icon{font-size:40px;margin-bottom:10px;}
+.cl-drop-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.cl-drop-sub{font-size:13px;color:var(--muted);}
+.cl-drop-formats{font-size:11px;color:var(--text2);margin-top:8px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;}
+.cl-file-info{display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:13px;font-weight:600;color:#15803d;}
+.cl-badge{background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:4px;}
+.cl-btn-row{display:flex;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.cl-btn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;border:none;transition:all .18s;letter-spacing:.02em;}
+.cl-btn-primary{background:var(--accent);color:#fff;}
+.cl-btn-primary:hover{background:#4f46e5;}
+.cl-btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.cl-btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.cl-btn-ghost:hover{border-color:var(--text2);color:var(--text);}
+.cl-btn-export{background:#22c55e;color:#fff;padding:10px 24px;font-size:14px;}
+.cl-btn-export:hover{background:#16a34a;}
+.cl-btn-danger{background:#ef4444;color:#fff;}
+.cl-btn-danger:hover{background:#dc2626;}
+.cl-btn-warn{background:#f59e0b;color:#fff;}
+.cl-btn-warn:hover{background:#d97706;}
+.cl-insights-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px;}
+.cl-ins-card{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center;}
+.cl-ins-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:800;color:var(--text);}
+.cl-ins-lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+.cl-ins-card.warn .cl-ins-val{color:#f59e0b;}
+.cl-ins-card.danger .cl-ins-val{color:#ef4444;}
+.cl-ins-card.good .cl-ins-val{color:#22c55e;}
+.cl-warning{padding:12px 16px;border-radius:8px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:13px;font-weight:500;display:flex;align-items:flex-start;gap:8px;margin-bottom:16px;}
+.cl-warning-red{background:#fef2f2;border-color:#fecaca;color:#991b1b;}
+.cl-warning-blue{background:#eff6ff;border-color:#bfdbfe;color:#1e40af;}
+.cl-warning-final{background:#fef9c3;border-color:#fde68a;color:#78350f;font-size:13px;padding:14px 16px;line-height:1.7;}
+.cl-map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
+.cl-map-item label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px;}
+.cl-map-item select{width:100%;background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:13px;color:var(--text);outline:none;cursor:pointer;}
+.cl-map-item select:focus{border-color:var(--accent);}
+.cl-table-wrap{overflow:auto;max-height:280px;border:1px solid var(--border);border-radius:8px;margin-bottom:16px;}
+.cl-table{width:100%;border-collapse:collapse;font-size:12px;}
+.cl-table th{background:var(--input);padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;position:sticky;top:0;border-bottom:1px solid var(--border);white-space:nowrap;}
+.cl-table td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cl-table tr:last-child td{border-bottom:none;}
+.cl-table tr.cl-row-warn{background:#fffbeb;}
+.cl-table tr.cl-row-dup{background:#fef2f2;}
+.cl-clean-section{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;}
+.cl-clean-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--input);}
+.cl-clean-title{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
+.cl-clean-badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700;}
+.cl-badge-warn{background:#fde68a;color:#78350f;}
+.cl-badge-ok{background:#bbf7d0;color:#15803d;}
+.cl-clean-body{padding:14px 16px;}
+.cl-before-after{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;max-height:180px;overflow:auto;}
+.cl-ba-col{font-size:12px;}
+.cl-ba-col h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:6px;padding:4px 8px;background:var(--input);border-radius:4px;}
+.cl-ba-row{padding:3px 8px;border-radius:4px;font-size:12px;}
+.cl-ba-row.changed{background:#fef9c3;}
+.cl-filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px;}
+.cl-filter-col label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px;}
+.cl-filter-col{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:12px;}
+.cl-filter-opts{max-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+.cl-filter-opts label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);font-weight:400;text-transform:none;letter-spacing:0;cursor:pointer;}
+.cl-filter-opts input[type=checkbox]{accent-color:var(--accent);}
+.cl-filter-search{width:100%;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;color:var(--text);outline:none;margin-bottom:6px;}
+.cl-filter-search:focus{border-color:var(--accent);}
+.cl-filter-preview-txt{font-size:13px;color:var(--muted);margin-top:12px;font-weight:500;}
+.cl-format-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+.cl-format-card{border:2px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .18s;}
+.cl-format-card.active{border-color:var(--accent);background:#eef2ff;}
+.cl-format-card:hover{border-color:var(--accent);}
+.cl-format-title{font-size:14px;font-weight:800;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:6px;}
+.cl-format-fields{font-size:11px;color:var(--muted);font-family:monospace;}
+.cl-extra-field{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);}
+.cl-extra-field:last-child{border-bottom:none;}
+.cl-extra-field input[type=checkbox]{accent-color:var(--accent);}
+.cl-export-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px;}
+.cl-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;}
+.cl-modal-box{background:var(--card);border-radius:14px;padding:28px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.cl-modal-icon{font-size:36px;text-align:center;margin-bottom:12px;}
+.cl-modal-title{font-size:17px;font-weight:800;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;text-align:center;margin-bottom:8px;}
+.cl-modal-body{font-size:13px;color:var(--muted);text-align:center;margin-bottom:16px;line-height:1.6;}
+.cl-modal-preview{max-height:200px;overflow:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:16px;font-size:12px;}
+.cl-modal-preview table{width:100%;border-collapse:collapse;}
+.cl-modal-preview th{background:var(--input);padding:6px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);}
+.cl-modal-preview td{padding:5px 10px;border-top:1px solid var(--border);color:var(--text);}
+.cl-modal-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.cl-cc-select{background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;cursor:pointer;margin:8px auto;display:block;}
 </style>
 </head>
 <body>
@@ -902,6 +1006,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       2pm Schedule <span class="cnt" id="cnt-posts" style="font-size:9px;padding:1px 5px;">0/12</span>
     </div>
+    <div class="sb-item" id="sb-cleaner" onclick="setView('cleaner')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Data Cleaner
+    </div>
     <div class="sb-item" id="sb-team" onclick="setView('team')" style="display:none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
       User Logs
@@ -954,6 +1062,131 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
       <p id="empty-msg">Add your first Google Sheet to get started managing everything in one place.</p>
       <button class="btn-p" onclick="openAddModal()">+ Add Sheet</button>
     </div>
+
+    <!-- DATA CLEANER PANEL -->
+    <div id="cleaner-panel" style="display:none;">
+      <div class="cl-steps-wrap">
+        <div class="cl-steps">
+          <div class="cl-step active" id="cls-1"><div class="cls-dot">1</div><div class="cls-label">Upload</div></div>
+          <div class="cl-step-line"></div>
+          <div class="cl-step" id="cls-2"><div class="cls-dot">2</div><div class="cls-label">Preview</div></div>
+          <div class="cl-step-line"></div>
+          <div class="cl-step" id="cls-3"><div class="cls-dot">3</div><div class="cls-label">Clean</div></div>
+          <div class="cl-step-line"></div>
+          <div class="cl-step" id="cls-4"><div class="cls-dot">4</div><div class="cls-label">Filter</div></div>
+          <div class="cl-step-line"></div>
+          <div class="cl-step" id="cls-5"><div class="cls-dot">5</div><div class="cls-label">Export</div></div>
+        </div>
+      </div>
+
+      <!-- Step 1: Upload -->
+      <div id="cl-s1" class="cl-step-content">
+        <div class="cl-card">
+          <h3 class="cl-title">Upload Your File</h3>
+          <p class="cl-sub">Supports .csv and .xlsx — drag & drop or click to browse</p>
+          <div class="cl-drop-zone" id="cl-drop" onclick="document.getElementById('cl-file-inp').click()">
+            <div class="cl-drop-icon">📂</div>
+            <div class="cl-drop-title">Drag & drop your file here</div>
+            <div class="cl-drop-sub">or click to browse</div>
+            <div class="cl-drop-formats">.csv &nbsp;·&nbsp; .xlsx</div>
+          </div>
+          <input type="file" id="cl-file-inp" accept=".csv,.xlsx" style="display:none" onchange="clHandleFile(this.files[0])"/>
+          <div id="cl-file-info" style="display:none" class="cl-file-info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="cl-file-name"></span>
+            <span id="cl-file-rows" class="cl-badge"></span>
+          </div>
+          <div class="cl-btn-row" style="justify-content:flex-end;margin-top:20px;">
+            <button class="cl-btn cl-btn-primary" id="cl-next-1" onclick="clGoStep(2)" disabled>Next: Preview →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Preview & Column Mapping -->
+      <div id="cl-s2" class="cl-step-content" style="display:none">
+        <div class="cl-card">
+          <h3 class="cl-title">Data Insights</h3>
+          <div class="cl-insights-row" id="cl-insights"></div>
+          <h3 class="cl-title" style="margin-top:4px;">Column Mapping</h3>
+          <p class="cl-sub">Map your columns to required fields</p>
+          <div id="cl-map-warn" class="cl-warning" style="display:none">
+            <span>⚠️</span><span>Column mapping not clear. Please assign required fields below.</span>
+          </div>
+          <div class="cl-map-grid" id="cl-map-grid"></div>
+          <h3 class="cl-title" style="margin-top:4px;">Preview (first 10 rows)</h3>
+          <div class="cl-table-wrap" id="cl-table-wrap"></div>
+          <div class="cl-btn-row">
+            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(1)">← Back</button>
+            <button class="cl-btn cl-btn-primary" onclick="clGoStep(3)">Next: Clean Data →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Clean -->
+      <div id="cl-s3" class="cl-step-content" style="display:none">
+        <div class="cl-card">
+          <h3 class="cl-title">Data Cleaning</h3>
+          <p class="cl-sub">Review issues and apply fixes with full control</p>
+          <div id="cl-clean-sections"></div>
+          <div class="cl-btn-row">
+            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">← Back</button>
+            <button class="cl-btn cl-btn-primary" onclick="clGoStep(4)">Next: Filter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Filter -->
+      <div id="cl-s4" class="cl-step-content" style="display:none">
+        <div class="cl-card">
+          <h3 class="cl-title">Smart Filter</h3>
+          <p class="cl-sub">Select which values to include. Uncheck to exclude rows.</p>
+          <div id="cl-filter-grid" class="cl-filter-grid"></div>
+          <div id="cl-filter-preview" class="cl-filter-preview-txt"></div>
+          <div class="cl-btn-row">
+            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(3)">← Back</button>
+            <button class="cl-btn cl-btn-primary" onclick="clGoStep(5)">Next: Export →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: Export -->
+      <div id="cl-s5" class="cl-step-content" style="display:none">
+        <div class="cl-card">
+          <h3 class="cl-title">Select Export Format</h3>
+          <div class="cl-format-grid">
+            <div class="cl-format-card active" id="clf-admin" onclick="clSelectFormat('admin')">
+              <div class="cl-format-title">Admin Panel</div>
+              <div class="cl-format-fields">name · mobile_number · wati_server_id</div>
+            </div>
+            <div class="cl-format-card" id="clf-vscode" onclick="clSelectFormat('vscode')">
+              <div class="cl-format-title">VS Code</div>
+              <div class="cl-format-fields">name · phone · watiserverid</div>
+            </div>
+          </div>
+          <div id="cl-extra-fields-wrap"></div>
+          <h3 class="cl-title" style="margin-top:20px;">Final Review</h3>
+          <div class="cl-export-summary" id="cl-export-summary"></div>
+          <div class="cl-warning cl-warning-final" id="cl-final-review"></div>
+          <div class="cl-btn-row">
+            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(4)">← Back & Review</button>
+            <button class="cl-btn cl-btn-export" onclick="clExport()">✓ Confirm & Export CSV</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /DATA CLEANER PANEL -->
+
+  </div>
+</div>
+
+<!-- Cleaner Warning Modal -->
+<div id="cl-modal" class="cl-modal-overlay" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+  <div class="cl-modal-box">
+    <div id="cl-modal-icon" class="cl-modal-icon">⚠️</div>
+    <h3 id="cl-modal-title" class="cl-modal-title"></h3>
+    <p id="cl-modal-body" class="cl-modal-body"></p>
+    <div id="cl-modal-preview" class="cl-modal-preview" style="display:none"></div>
+    <div id="cl-modal-actions" class="cl-modal-actions"></div>
   </div>
 </div>
 
@@ -1474,6 +1707,7 @@ window.gisLoaded=function(){
 };
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://apis.google.com/js/api.js" onload="gapiLoaded()" onerror="googleApiError()" async defer></script>
 <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()" onerror="googleApiError()" async defer></script>
 
@@ -2977,12 +3211,13 @@ function setView(v,fid){
   if(v==='quiz')document.getElementById('sb-quiz').classList.add('active');
   if(v==='posts')document.getElementById('sb-posts').classList.add('active');
   if(v==='team')document.getElementById('sb-team').classList.add('active');
+  if(v==='cleaner')document.getElementById('sb-cleaner').classList.add('active');
   if(v==='folder'){
     document.querySelectorAll('.folder-row').forEach(el=>{
       if(el.dataset.fid===fid)el.classList.add('active');
     });
   }
-  const titles={all:'All Sheets',pinned:'Pinned',recent:'Recently Opened',links:'Links & Media',quiz:'Quiz Builder',posts:'2pm Schedule',team:'Team Activity',folder:folders.find(f=>f.id===fid)?.name||'Folder'};
+  const titles={all:'All Sheets',pinned:'Pinned',recent:'Recently Opened',links:'Links & Media',quiz:'Quiz Builder',posts:'2pm Schedule',team:'Team Activity',cleaner:'Data Cleaner',folder:folders.find(f=>f.id===fid)?.name||'Folder'};
   document.getElementById('view-title').textContent=titles[v]||'All Sheets';
   // Update add button label
   const lbl=document.getElementById('main-add-label');
@@ -2990,7 +3225,7 @@ function setView(v,fid){
   // Show/hide sort and view-toggle for non-sheet views
   const sortSel=document.getElementById('sort-sel');
   const viewToggle=document.querySelector('.view-toggle');
-  const hideControls=v==='team'||v==='quiz'||v==='posts';
+  const hideControls=v==='team'||v==='quiz'||v==='posts'||v==='cleaner';
   const hideSort=v==='links'||hideControls;
   if(sortSel)sortSel.style.display=hideSort?'none':'';
   if(viewToggle)viewToggle.style.display=hideControls?'none':'';
@@ -3005,7 +3240,19 @@ function setView(v,fid){
     const qb=document.getElementById('qbank-back-btn');if(qb)qb.remove();
     const qa=document.getElementById('qbank-add-btns');if(qa)qa.remove();
   }
-  if(v!=='links'&&v!=='quiz')document.getElementById('main-add-btn').style.display=v==='team'?'none':'';
+  if(v!=='links'&&v!=='quiz')document.getElementById('main-add-btn').style.display=(v==='team'||v==='cleaner')?'none':'';
+  // Show/hide cleaner panel vs cards
+  const cleanerPanel=document.getElementById('cleaner-panel');
+  const cardsEl=document.getElementById('cards');
+  const emptyEl=document.getElementById('empty');
+  if(v==='cleaner'){
+    if(cleanerPanel)cleanerPanel.style.display='';
+    if(cardsEl)cardsEl.style.display='none';
+    if(emptyEl)emptyEl.style.display='none';
+  } else {
+    if(cleanerPanel)cleanerPanel.style.display='none';
+    if(cardsEl)cardsEl.style.display='';
+  }
   if(v==='links'){currentLinkBoard=null;renderLinks();}
   else if(v==='quiz'){currentQuizBank=null;renderQuiz();}
   else if(v==='posts'){renderPosts();}
@@ -4302,6 +4549,413 @@ function toast(msg,type='s'){
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',run);}else{run();}
 })();
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+// ══════════════════════════════════════════════════════
+//  DATA CLEANER
+// ══════════════════════════════════════════════════════
+let clState={
+  raw:[],headers:[],
+  mapping:{name:null,phone:null,serverId:null},
+  cleaned:[],
+  filters:{},
+  removedDups:0,removedInvalid:0,
+  phoneChanges:[],autoCleanApplied:false,
+  exportFormat:'admin',extraFields:[]
+};
+let clStep=1;
+
+function renderCleaner(){
+  clGoStep(clStep);
+}
+
+// ── File upload ──
+(function(){
+  document.addEventListener('DOMContentLoaded',()=>{
+    const dz=document.getElementById('cl-drop');
+    if(!dz)return;
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
+    dz.addEventListener('drop',e=>{
+      e.preventDefault();dz.classList.remove('drag-over');
+      const f=e.dataTransfer.files[0];
+      if(f)clHandleFile(f);
+    });
+  });
+})();
+
+function clHandleFile(file){
+  if(!file)return;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!['csv','xlsx'].includes(ext)){toast('Only .csv and .xlsx files are supported','e');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      let data=[];
+      if(ext==='xlsx'){
+        const wb=XLSX.read(e.target.result,{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        data=XLSX.utils.sheet_to_json(ws,{defval:''});
+      } else {
+        // CSV: parse manually
+        const text=new TextDecoder().decode(new Uint8Array(e.target.result));
+        const lines=text.split(/\r?\n/).filter(l=>l.trim());
+        if(!lines.length)return;
+        const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+        data=lines.slice(1).map(line=>{
+          const vals=line.match(/(".*?"|[^,]+|(?<=,)(?=,)|(?<=,)$|^(?=,))/g)||[];
+          const row={};
+          headers.forEach((h,i)=>{row[h]=(vals[i]||'').trim().replace(/^"|"$/g,'');});
+          return row;
+        }).filter(r=>Object.values(r).some(v=>v));
+      }
+      clState.raw=data;
+      clState.headers=data.length?Object.keys(data[0]):[];
+      clState.cleaned=[...data.map(r=>({...r}))];
+      clState.removedDups=0;clState.removedInvalid=0;clState.phoneChanges=[];clState.autoCleanApplied=false;
+      clState.filters={};
+      document.getElementById('cl-file-name').textContent=file.name;
+      document.getElementById('cl-file-rows').textContent=data.length+' rows';
+      document.getElementById('cl-file-info').style.display='flex';
+      document.getElementById('cl-next-1').disabled=false;
+    }catch(err){toast('Failed to parse file: '+err.message,'e');}
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ── Step navigation ──
+function clGoStep(n){
+  if(n===2&&!clState.raw.length){toast('Please upload a file first','e');return;}
+  if(n===2){clBuildPreview();}
+  if(n===3){clBuildClean();}
+  if(n===4){clBuildFilter();}
+  if(n===5){clBuildExport();}
+  clStep=n;
+  for(let i=1;i<=5;i++){
+    const s=document.getElementById('cl-s'+i);
+    if(s)s.style.display=i===n?'':'none';
+    const dot=document.getElementById('cls-'+i);
+    if(dot){
+      dot.classList.remove('active','done');
+      if(i===n)dot.classList.add('active');
+      else if(i<n)dot.classList.add('done');
+    }
+  }
+}
+
+// ── Step 2: Preview & Mapping ──
+function clBuildPreview(){
+  const h=clState.headers;
+  // Auto-detect columns
+  const guess=(keywords)=>{
+    const k=keywords.map(x=>x.toLowerCase());
+    return h.find(col=>k.some(kw=>col.toLowerCase().includes(kw)))||null;
+  };
+  if(!clState.mapping.name)clState.mapping.name=guess(['name','user','contact','customer','first']);
+  if(!clState.mapping.phone)clState.mapping.phone=guess(['phone','mobile','number','whatsapp','cell','contact']);
+  if(!clState.mapping.serverId)clState.mapping.serverId=guess(['server','wati','id','serverid']);
+  const allMapped=clState.mapping.name&&clState.mapping.phone&&clState.mapping.serverId;
+  document.getElementById('cl-map-warn').style.display=allMapped?'none':'flex';
+  // Insights
+  const total=clState.raw.length;
+  const phoneCol=clState.mapping.phone;
+  const phones=phoneCol?clState.raw.map(r=>String(r[phoneCol]||'').trim()).filter(Boolean):[];
+  const dups=phones.length-new Set(phones).size;
+  const invalid=clState.raw.filter(r=>!clState.mapping.name||!String(r[clState.mapping.name]||'').trim()||!phoneCol||!String(r[phoneCol]||'').trim()).length;
+  document.getElementById('cl-insights').innerHTML=`
+    <div class="cl-ins-card"><div class="cl-ins-val">${total}</div><div class="cl-ins-lbl">Total Rows</div></div>
+    <div class="cl-ins-card ${dups>0?'warn':'good'}"><div class="cl-ins-val">${dups}</div><div class="cl-ins-lbl">Duplicates</div></div>
+    <div class="cl-ins-card ${invalid>0?'danger':'good'}"><div class="cl-ins-val">${invalid}</div><div class="cl-ins-lbl">Invalid Rows</div></div>
+    <div class="cl-ins-card good"><div class="cl-ins-val">${total-dups-invalid}</div><div class="cl-ins-lbl">Est. Valid</div></div>
+  `;
+  // Map grid
+  const opts=(selected)=>['(none)',...h].map(col=>`<option value="${esc(col)}" ${col===selected?'selected':''}>${esc(col)}</option>`).join('');
+  document.getElementById('cl-map-grid').innerHTML=`
+    <div class="cl-map-item"><label>Name Column *</label><select onchange="clState.mapping.name=this.value==='(none)'?null:this.value;clBuildPreview()">${opts(clState.mapping.name||'(none)')}</select></div>
+    <div class="cl-map-item"><label>Phone Number *</label><select onchange="clState.mapping.phone=this.value==='(none)'?null:this.value;clBuildPreview()">${opts(clState.mapping.phone||'(none)')}</select></div>
+    <div class="cl-map-item"><label>Wati Server ID *</label><select onchange="clState.mapping.serverId=this.value==='(none)'?null:this.value;clBuildPreview()">${opts(clState.mapping.serverId||'(none)')}</select></div>
+  `;
+  // Preview table
+  const preview=clState.raw.slice(0,10);
+  document.getElementById('cl-table-wrap').innerHTML=`<table class="cl-table"><thead><tr>${h.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${preview.map(r=>`<tr>${h.map(c=>`<td>${esc(String(r[c]||''))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+// ── Step 3: Clean ──
+function clBuildClean(){
+  clApplyAutoClean();
+  const sections=[];
+  const data=clState.cleaned;
+  const {name:nc,phone:pc,serverId:sc}=clState.mapping;
+
+  // 1. Duplicates
+  const phoneMap={};data.forEach((r,i)=>{const p=String(r[pc]||'').trim();if(p){if(phoneMap[p]===undefined)phoneMap[p]=i;else{if(!Array.isArray(phoneMap[p]))phoneMap[p]=[phoneMap[p]];phoneMap[p].push(i);}}});
+  const dupIdxs=new Set();Object.values(phoneMap).forEach(v=>{if(Array.isArray(v))v.slice(1).forEach(i=>dupIdxs.add(i));});
+  const dupCount=dupIdxs.size;
+
+  // 2. Invalid
+  const invalidIdxs=data.map((r,i)=>(!nc||!String(r[nc]||'').trim()||!pc||!String(r[pc]||'').trim())?i:-1).filter(i=>i>=0);
+
+  // 3. Phone issues
+  const phoneIssues=pc?data.map((r,i)=>{
+    const raw=String(r[pc]||'').trim();
+    if(!raw)return null;
+    const digits=raw.replace(/\D/g,'');
+    const hasCC=raw.startsWith('+');
+    const badLen=digits.length<10||digits.length>15;
+    if(!hasCC||badLen)return{i,raw,digits,hasCC,badLen};
+    return null;
+  }).filter(Boolean):[];
+
+  // Build sections HTML
+  sections.push(`<div class="cl-clean-section">
+    <div class="cl-clean-header">
+      <div class="cl-clean-title">🔁 Duplicate Phone Numbers <span class="cl-clean-badge ${dupCount?'cl-badge-warn':'cl-badge-ok'}">${dupCount} found</span></div>
+      ${dupCount?`<div style="display:flex;gap:8px;">
+        <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="clPreviewDups()">Review</button>
+        <button class="cl-btn cl-btn-danger" style="padding:6px 12px;font-size:12px;" onclick="clRemoveDups()">Remove Duplicates</button>
+        <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="toast('Duplicates kept','s')">Keep All</button>
+      </div>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ No duplicates</span>`}
+    </div>
+    ${dupCount?`<div class="cl-clean-body"><p style="font-size:13px;color:var(--muted);">${dupCount} rows have duplicate phone numbers. Removing keeps only the first occurrence.</p></div>`:''}
+  </div>`);
+
+  sections.push(`<div class="cl-clean-section">
+    <div class="cl-clean-header">
+      <div class="cl-clean-title">🧹 Missing Required Data <span class="cl-clean-badge ${invalidIdxs.length?'cl-badge-warn':'cl-badge-ok'}">${invalidIdxs.length} rows</span></div>
+      ${invalidIdxs.length?`<button class="cl-btn cl-btn-danger" style="padding:6px 12px;font-size:12px;" onclick="clRemoveInvalid()">Remove Invalid Rows</button>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ All rows have required data</span>`}
+    </div>
+    ${invalidIdxs.length?`<div class="cl-clean-body"><p style="font-size:13px;color:var(--muted);">These rows are missing name or phone number and cannot be exported.</p></div>`:''}
+  </div>`);
+
+  sections.push(`<div class="cl-clean-section">
+    <div class="cl-clean-header">
+      <div class="cl-clean-title">📱 Phone Number Issues <span class="cl-clean-badge ${phoneIssues.length?'cl-badge-warn':'cl-badge-ok'}">${phoneIssues.length} issues</span></div>
+      ${phoneIssues.length?`<button class="cl-btn cl-btn-warn" style="padding:6px 12px;font-size:12px;" onclick="clShowPhoneModal()">Review & Fix</button>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ All phones look valid</span>`}
+    </div>
+    ${phoneIssues.length?`<div class="cl-clean-body">
+      <div class="cl-warning cl-warning-red" style="margin-bottom:10px;"><span>⚠️</span><span>Incorrect formatting may send messages to wrong users. Do NOT apply without reviewing.</span></div>
+      <p style="font-size:13px;color:var(--muted);">${phoneIssues.length} numbers may be missing country code or have incorrect length.</p>
+    </div>`:''}
+  </div>`);
+
+  sections.push(`<div class="cl-clean-section">
+    <div class="cl-clean-header">
+      <div class="cl-clean-title">🧼 Auto Clean <span class="cl-clean-badge cl-badge-ok">${clState.autoCleanApplied?'Applied':'Ready'}</span></div>
+      <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="clApplyAutoClean(true)">${clState.autoCleanApplied?'Re-apply':'Apply'}</button>
+    </div>
+    <div class="cl-clean-body"><p style="font-size:13px;color:var(--muted);">Trims whitespace, removes hidden characters, and fixes text encoding. Safe to apply automatically.</p></div>
+  </div>`);
+
+  document.getElementById('cl-clean-sections').innerHTML=sections.join('');
+}
+
+function clApplyAutoClean(showToast){
+  clState.cleaned=clState.cleaned.map(r=>{
+    const nr={};
+    Object.keys(r).forEach(k=>{
+      nr[k]=String(r[k]||'').trim().replace(/[\u200B-\u200D\uFEFF]/g,'');
+    });
+    return nr;
+  });
+  clState.autoCleanApplied=true;
+  if(showToast)toast('Auto clean applied','s');
+}
+
+function clPreviewDups(){
+  const pc=clState.mapping.phone;
+  const seen={};const dups=[];
+  clState.cleaned.forEach(r=>{
+    const p=String(r[pc]||'').trim();
+    if(p){if(seen[p])dups.push(r);else seen[p]=true;}
+  });
+  const h=clState.headers.slice(0,4);
+  clShowModal('🔁','Duplicate Rows',`${dups.length} duplicate entries found (showing first 20):`,
+    `<table><thead><tr>${h.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${dups.slice(0,20).map(r=>`<tr>${h.map(c=>`<td>${esc(String(r[c]||''))}</td>`).join('')}</tr>`).join('')}</tbody></table>`,
+    [{label:'Remove Duplicates',cls:'cl-btn-danger',fn:'clRemoveDups'},{label:'Keep All',cls:'cl-btn-ghost',fn:'clClosModal'}]
+  );
+}
+
+function clRemoveDups(){
+  const pc=clState.mapping.phone;const seen=new Set();const before=clState.cleaned.length;
+  clState.cleaned=clState.cleaned.filter(r=>{const p=String(r[pc]||'').trim();if(!p||!seen.has(p)){seen.add(p);return true;}return false;});
+  clState.removedDups=before-clState.cleaned.length;
+  clClosModal();toast(`${clState.removedDups} duplicates removed`,'s');clBuildClean();
+}
+
+function clRemoveInvalid(){
+  const {name:nc,phone:pc}=clState.mapping;const before=clState.cleaned.length;
+  clState.cleaned=clState.cleaned.filter(r=>String(r[nc]||'').trim()&&String(r[pc]||'').trim());
+  clState.removedInvalid=before-clState.cleaned.length;
+  toast(`${clState.removedInvalid} invalid rows removed`,'s');clBuildClean();
+}
+
+function clShowPhoneModal(){
+  const pc=clState.mapping.phone;
+  const issues=clState.cleaned.map(r=>{
+    const raw=String(r[pc]||'').trim();
+    if(!raw)return null;
+    const digits=raw.replace(/\D/g,'');
+    const hasCC=raw.startsWith('+');
+    if(!hasCC||digits.length<10||digits.length>15)return{raw,digits};
+    return null;
+  }).filter(Boolean);
+  const ccOptions=['+91 (India)','+1 (USA/Canada)','+44 (UK)','+971 (UAE)','+65 (Singapore)','+61 (Australia)','+92 (Pakistan)','+880 (Bangladesh)'].map(c=>`<option value="${c.split(' ')[0]}">${c}</option>`).join('');
+  clShowModal('📱','Phone Number Issues',
+    `${issues.length} numbers may be missing country code or have incorrect length.\n\n⚠️ Incorrect formatting may send messages to wrong users.`,
+    `<table><thead><tr><th>Original</th><th>Digits Only</th></tr></thead><tbody>${issues.slice(0,15).map(x=>`<tr><td>${esc(x.raw)}</td><td>${esc(x.digits)}</td></tr>`).join('')}</tbody></table>
+    <select class="cl-cc-select" id="cl-cc-sel">${ccOptions}</select>`,
+    [
+      {label:'Apply Country Code',cls:'cl-btn-warn',fn:'clApplyCC'},
+      {label:'Skip',cls:'cl-btn-ghost',fn:'clClosModal'}
+    ]
+  );
+}
+
+function clApplyCC(){
+  const cc=document.getElementById('cl-cc-sel')?.value||'+91';
+  const pc=clState.mapping.phone;
+  const before=clState.cleaned.map(r=>String(r[pc]||''));
+  clState.cleaned=clState.cleaned.map(r=>{
+    const raw=String(r[pc]||'').trim();
+    if(!raw)return r;
+    if(raw.startsWith('+'))return r;
+    const digits=raw.replace(/\D/g,'');
+    const normalized=cc+digits;
+    clState.phoneChanges.push({before:raw,after:normalized});
+    return {...r,[pc]:normalized};
+  });
+  clClosModal();toast(`Phone numbers updated with ${cc}`,'s');clBuildClean();
+}
+
+// ── Step 4: Filter ──
+function clBuildFilter(){
+  const h=clState.headers;
+  const data=clState.cleaned;
+  // Init filters - only for columns with reasonable unique values
+  const filterCols=h.filter(col=>{
+    const vals=new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean));
+    return vals.size>0&&vals.size<=50;
+  });
+  if(!Object.keys(clState.filters).length){
+    filterCols.forEach(col=>{
+      const vals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))].sort();
+      clState.filters[col]=new Set(vals);
+    });
+  }
+  document.getElementById('cl-filter-grid').innerHTML=filterCols.map(col=>{
+    const allVals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))].sort();
+    return`<div class="cl-filter-col">
+      <label>${esc(col)}</label>
+      <input class="cl-filter-search" placeholder="Search..." oninput="clFilterSearch(this,'fc-${col.replace(/\W/g,'_')}')"/>
+      <div class="cl-filter-opts" id="fc-${col.replace(/\W/g,'_')}">
+        ${allVals.map(v=>`<label><input type="checkbox" ${clState.filters[col]?.has(v)?'checked':''} onchange="clToggleFilter('${esc(col)}','${esc(v)}',this.checked)"/> ${esc(v)}</label>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  clUpdateFilterPreview();
+}
+
+function clFilterSearch(inp,listId){
+  const q=inp.value.toLowerCase();
+  const el=document.getElementById(listId);
+  if(!el)return;
+  el.querySelectorAll('label').forEach(lbl=>{lbl.style.display=lbl.textContent.toLowerCase().includes(q)?'':'none';});
+}
+
+function clToggleFilter(col,val,checked){
+  if(!clState.filters[col])clState.filters[col]=new Set();
+  if(checked)clState.filters[col].add(val);
+  else clState.filters[col].delete(val);
+  clUpdateFilterPreview();
+}
+
+function clUpdateFilterPreview(){
+  const filtered=clGetFiltered();
+  document.getElementById('cl-filter-preview').textContent=`${filtered.length} of ${clState.cleaned.length} rows will be exported after filters.`;
+}
+
+function clGetFiltered(){
+  return clState.cleaned.filter(r=>
+    Object.entries(clState.filters).every(([col,vals])=>{
+      if(!vals||vals.size===0)return true;
+      return vals.has(String(r[col]||'').trim());
+    })
+  );
+}
+
+// ── Step 5: Export ──
+function clSelectFormat(fmt){
+  clState.exportFormat=fmt;
+  document.getElementById('clf-admin').classList.toggle('active',fmt==='admin');
+  document.getElementById('clf-vscode').classList.toggle('active',fmt==='vscode');
+}
+
+function clBuildExport(){
+  const filtered=clGetFiltered();
+  const {name:nc,phone:pc,serverId:sc}=clState.mapping;
+  // Extra fields
+  const coreFields=[nc,pc,sc].filter(Boolean);
+  const extras=clState.headers.filter(h=>!coreFields.includes(h));
+  clState.extraFields=clState.extraFields.length?clState.extraFields:extras.map(f=>({field:f,include:false}));
+
+  document.getElementById('cl-export-summary').innerHTML=`
+    <div class="cl-ins-card good"><div class="cl-ins-val">${filtered.length}</div><div class="cl-ins-lbl">Total Users</div></div>
+    <div class="cl-ins-card ${clState.removedDups?'warn':'good'}"><div class="cl-ins-val">${clState.removedDups}</div><div class="cl-ins-lbl">Duplicates Removed</div></div>
+    <div class="cl-ins-card ${clState.removedInvalid?'warn':'good'}"><div class="cl-ins-val">${clState.removedInvalid}</div><div class="cl-ins-lbl">Invalid Removed</div></div>
+    <div class="cl-ins-card ${clState.phoneChanges.length?'warn':'good'}"><div class="cl-ins-val">${clState.phoneChanges.length}</div><div class="cl-ins-lbl">Phones Fixed</div></div>
+  `;
+  document.getElementById('cl-extra-fields-wrap').innerHTML=extras.length?`
+    <h3 class="cl-title" style="margin-bottom:8px;">Optional Fields</h3>
+    <p class="cl-sub">Choose extra columns to include in export</p>
+    <div style="border:1px solid var(--border);border-radius:8px;padding:8px 14px;">
+      ${clState.extraFields.map((f,i)=>`<div class="cl-extra-field"><input type="checkbox" id="ef-${i}" ${f.include?'checked':''} onchange="clState.extraFields[${i}].include=this.checked"/> <label for="ef-${i}">${esc(f.field)}</label></div>`).join('')}
+    </div>`:'';
+
+  document.getElementById('cl-final-review').innerHTML=`
+    ⚠️ <strong>Final Review before export</strong><br>
+    Total Users: <strong>${filtered.length}</strong> &nbsp;·&nbsp;
+    Duplicates Removed: <strong>${clState.removedDups}</strong> &nbsp;·&nbsp;
+    Invalid Removed: <strong>${clState.removedInvalid}</strong><br>
+    Format: <strong>${clState.exportFormat==='admin'?'Admin Panel (name, mobile_number, wati_server_id)':'VS Code (name, phone, watiserverid)'}</strong>
+  `;
+}
+
+function clExport(){
+  const filtered=clGetFiltered();
+  const {name:nc,phone:pc,serverId:sc}=clState.mapping;
+  const fmt=clState.exportFormat;
+  const extras=clState.extraFields.filter(f=>f.include).map(f=>f.field);
+  const rows=filtered.map(r=>{
+    const base=fmt==='admin'
+      ?{name:r[nc]||'',mobile_number:r[pc]||'',wati_server_id:r[sc]||''}
+      :{name:r[nc]||'',phone:r[pc]||'',watiserverid:r[sc]||''};
+    extras.forEach(f=>{base[f]=r[f]||'';});
+    return base;
+  });
+  if(!rows.length){toast('No data to export','e');return;}
+  const headers=Object.keys(rows[0]);
+  const csv=[headers.join(','),...rows.map(r=>headers.map(h=>{
+    const v=String(r[h]||'');
+    return v.includes(',')||v.includes('"')?`"${v.replace(/"/g,'""')}"`  :v;
+  }).join(','))].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`cleaned_data_${fmt}_${Date.now()}.csv`;a.click();
+  URL.revokeObjectURL(url);
+  toast(`Exported ${rows.length} rows as CSV ✓`,'s');
+}
+
+// ── Modal helpers ──
+function clShowModal(icon,title,body,previewHTML,actions){
+  document.getElementById('cl-modal-icon').textContent=icon;
+  document.getElementById('cl-modal-title').textContent=title;
+  document.getElementById('cl-modal-body').innerHTML=body.replace(/\n/g,'<br>');
+  const prev=document.getElementById('cl-modal-preview');
+  if(previewHTML){prev.innerHTML=previewHTML;prev.style.display='';}else{prev.style.display='none';}
+  document.getElementById('cl-modal-actions').innerHTML=actions.map(a=>`<button class="cl-btn ${a.cls}" onclick="${a.fn}()">${a.label}</button>`).join('');
+  document.getElementById('cl-modal').style.display='flex';
+}
+function clClosModal(){document.getElementById('cl-modal').style.display='none';}
+
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function timeAgo(iso){
   const s=Math.floor((Date.now()-new Date(iso))/1000);
