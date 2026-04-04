@@ -4711,13 +4711,11 @@ function clBuildClean(){
     const raw=String(r[pc]||'').trim();
     if(!raw)return null;
     const digits=raw.replace(/\D/g,'');
-    // Already has country code if: starts with + OR digits are 11-15 (country code included)
-    const likelyHasCC=raw.startsWith('+')||digits.length>=11;
-    const tooShort=digits.length<10;
+    const hasInvalidChars=/[a-zA-Z]/.test(raw);
+    const tooShort=digits.length<8;
     const tooLong=digits.length>15;
-    // Only flag if: too short (missing CC), too long, or exactly 10 digits (bare local number)
-    const isIssue=tooShort||tooLong||digits.length===10;
-    if(isIssue)return{i,raw,digits,likelyHasCC,tooShort,tooLong};
+    // Only flag truly invalid: too short, too long, or contains letters
+    if(tooShort||tooLong||hasInvalidChars)return{i,raw,digits,tooShort,tooLong,hasInvalidChars};
     return null;
   }).filter(Boolean):[];
 
@@ -4810,7 +4808,8 @@ function clShowPhoneModal(){
     const raw=String(r[pc]||'').trim();
     if(!raw)return null;
     const digits=raw.replace(/\D/g,'');
-    const isIssue=digits.length<10||digits.length>15||digits.length===10;
+    const hasInvalidChars=/[a-zA-Z]/.test(raw);
+    const isIssue=digits.length<8||digits.length>15||hasInvalidChars;
     if(isIssue)return{raw,digits};
     return null;
   }).filter(Boolean);
