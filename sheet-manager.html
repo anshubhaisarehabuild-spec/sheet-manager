@@ -4559,7 +4559,7 @@ let clState={
   filters:{},
   removedDups:0,removedInvalid:0,
   phoneChanges:[],autoCleanApplied:false,
-  exportFormat:'admin',extraFields:[]
+  exportFormat:'admin',extraFields:[],defaultWatiId:''
 };
 let clStep=1;
 
@@ -5034,10 +5034,14 @@ function clSelectFormat(fmt){
 function clBuildExport(){
   const filtered=clGetFiltered();
   const {name:nc,phone:pc,serverId:sc}=clState.mapping;
-  // Extra fields
+  // Extra fields (exclude empty-label cols)
   const coreFields=[nc,pc,sc].filter(Boolean);
-  const extras=clState.headers.filter(h=>!coreFields.includes(h));
+  const extras=clState.headers.filter(h=>h&&!coreFields.includes(h));
   clState.extraFields=clState.extraFields.length?clState.extraFields:extras.map(f=>({field:f,include:false}));
+
+  // Check if WATI Server ID column exists and has actual values
+  const watiMissing=!sc;
+  const watiHasValues=sc&&clState.cleaned.some(r=>String(r[sc]||'').trim());
 
   document.getElementById('cl-export-summary').innerHTML=`
     <div class="cl-ins-card good"><div class="cl-ins-val">${filtered.length}</div><div class="cl-ins-lbl">Total Users</div></div>
@@ -5045,18 +5049,49 @@ function clBuildExport(){
     <div class="cl-ins-card ${clState.removedInvalid?'warn':'good'}"><div class="cl-ins-val">${clState.removedInvalid}</div><div class="cl-ins-lbl">Invalid Removed</div></div>
     <div class="cl-ins-card ${clState.phoneChanges.length?'warn':'good'}"><div class="cl-ins-val">${clState.phoneChanges.length}</div><div class="cl-ins-lbl">Phones Fixed</div></div>
   `;
-  document.getElementById('cl-extra-fields-wrap').innerHTML=extras.length?`
+
+  // WATI Server ID warning + input
+  const watiSection=watiMissing||!watiHasValues?`
+    <div class="cl-warning cl-warning-red" style="margin-bottom:16px;flex-direction:column;align-items:flex-start;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;font-weight:700;">
+        ⚠️ WATI Server ID is not mentioned in the sheet
+      </div>
+      <div style="font-size:12px;">Enter a WATI Server ID number to apply to all ${filtered.length} rows:</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+        <input type="number" id="cl-wati-default" placeholder="e.g. 28" min="1"
+          style="width:120px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:14px;font-weight:700;color:var(--text);outline:none;"
+          oninput="clUpdateFinalReview()"
+          value="${clState.defaultWatiId||''}"/>
+        <span style="font-size:12px;color:var(--muted);">This value will be used for all rows</span>
+      </div>
+    </div>`
+  :`<div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:13px;font-weight:600;color:#15803d;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>
+      WATI Server ID column found — existing values will be used as is
+    </div>`;
+
+  document.getElementById('cl-extra-fields-wrap').innerHTML=watiSection+(extras.length?`
     <h3 class="cl-title" style="margin-bottom:8px;">Optional Fields</h3>
     <p class="cl-sub">Choose extra columns to include in export</p>
     <div style="border:1px solid var(--border);border-radius:8px;padding:8px 14px;">
-      ${clState.extraFields.map((f,i)=>`<div class="cl-extra-field"><input type="checkbox" id="ef-${i}" ${f.include?'checked':''} onchange="clState.extraFields[${i}].include=this.checked"/> <label for="ef-${i}">${esc(f.field)}</label></div>`).join('')}
-    </div>`:'';
+      ${clState.extraFields.map((f,i)=>f.field?`<div class="cl-extra-field"><input type="checkbox" id="ef-${i}" ${f.include?'checked':''} onchange="clState.extraFields[${i}].include=this.checked"/> <label for="ef-${i}">${esc(f.field)}</label></div>`:'').join('')}
+    </div>`:'');
 
+  clUpdateFinalReview();
+}
+
+function clUpdateFinalReview(){
+  const filtered=clGetFiltered();
+  const {serverId:sc}=clState.mapping;
+  const watiMissing=!sc||!clState.cleaned.some(r=>String(r[sc]||'').trim());
+  const defaultWati=document.getElementById('cl-wati-default')?.value||'';
+  if(watiMissing)clState.defaultWatiId=defaultWati;
   document.getElementById('cl-final-review').innerHTML=`
     ⚠️ <strong>Final Review before export</strong><br>
     Total Users: <strong>${filtered.length}</strong> &nbsp;·&nbsp;
     Duplicates Removed: <strong>${clState.removedDups}</strong> &nbsp;·&nbsp;
     Invalid Removed: <strong>${clState.removedInvalid}</strong><br>
+    WATI Server ID: <strong>${watiMissing?(defaultWati||'⚠️ not entered yet'):'from sheet column'}</strong><br>
     Format: <strong>${clState.exportFormat==='admin'?'Admin Panel (name, mobile_number, wati_server_id)':'VS Code (name, phone, watiserverid)'}</strong>
   `;
 }
@@ -5065,11 +5100,15 @@ function clExport(){
   const filtered=clGetFiltered();
   const {name:nc,phone:pc,serverId:sc}=clState.mapping;
   const fmt=clState.exportFormat;
-  const extras=clState.extraFields.filter(f=>f.include).map(f=>f.field);
+  const watiMissing=!sc||!clState.cleaned.some(r=>String(r[sc]||'').trim());
+  const defaultWati=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
+  if(watiMissing&&!defaultWati){toast('Please enter a WATI Server ID before exporting','e');return;}
+  const extras=clState.extraFields.filter(f=>f.include&&f.field).map(f=>f.field);
   const rows=filtered.map(r=>{
+    const watiVal=watiMissing?defaultWati:(sc?String(r[sc]||''):'');
     const base=fmt==='admin'
-      ?{name:r[nc]||'',mobile_number:r[pc]||'',wati_server_id:r[sc]||''}
-      :{name:r[nc]||'',phone:r[pc]||'',watiserverid:r[sc]||''};
+      ?{name:r[nc]||'',mobile_number:r[pc]||'',wati_server_id:watiVal}
+      :{name:r[nc]||'',phone:r[pc]||'',watiserverid:watiVal};
     extras.forEach(f=>{base[f]=r[f]||'';});
     return base;
   });
