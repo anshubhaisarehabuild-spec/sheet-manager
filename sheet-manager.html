@@ -738,6 +738,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .cl-step.active .cls-label{color:var(--accent);}
 .cl-step.done .cls-dot{background:#22c55e;color:#fff;}
 .cl-step.done .cls-label{color:#22c55e;}
+.cl-step.done:hover .cls-dot,.cl-step.active:hover .cls-dot{opacity:.8;transform:scale(1.1);transition:all .15s;}
 .cl-step-content{animation:fadeIn .2s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .cl-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;}
@@ -1067,15 +1068,15 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <div id="cleaner-panel" style="display:none;">
       <div class="cl-steps-wrap">
         <div class="cl-steps">
-          <div class="cl-step active" id="cls-1"><div class="cls-dot">1</div><div class="cls-label">Upload</div></div>
+          <div class="cl-step active" id="cls-1" onclick="clStepClick(1)" style="cursor:pointer;"><div class="cls-dot">1</div><div class="cls-label">Upload</div></div>
           <div class="cl-step-line"></div>
-          <div class="cl-step" id="cls-2"><div class="cls-dot">2</div><div class="cls-label">Preview</div></div>
+          <div class="cl-step" id="cls-2" onclick="clStepClick(2)" style="cursor:pointer;"><div class="cls-dot">2</div><div class="cls-label">Preview</div></div>
           <div class="cl-step-line"></div>
-          <div class="cl-step" id="cls-3"><div class="cls-dot">3</div><div class="cls-label">Clean</div></div>
+          <div class="cl-step" id="cls-3" onclick="clStepClick(3)" style="cursor:pointer;"><div class="cls-dot">3</div><div class="cls-label">Clean</div></div>
           <div class="cl-step-line"></div>
-          <div class="cl-step" id="cls-4"><div class="cls-dot">4</div><div class="cls-label">Filter</div></div>
+          <div class="cl-step" id="cls-4" onclick="clStepClick(4)" style="cursor:pointer;"><div class="cls-dot">4</div><div class="cls-label">Filter</div></div>
           <div class="cl-step-line"></div>
-          <div class="cl-step" id="cls-5"><div class="cls-dot">5</div><div class="cls-label">Export</div></div>
+          <div class="cl-step" id="cls-5" onclick="clStepClick(5)" style="cursor:pointer;"><div class="cls-dot">5</div><div class="cls-label">Export</div></div>
         </div>
       </div>
 
@@ -5226,6 +5227,14 @@ function clExport(){
   a.href=url;a.download=filename;a.click();
   URL.revokeObjectURL(url);
   toast(`Exported ${rows.length} rows as "${filename}" ✓`,'s');
+}
+
+// ── Step click navigation ──
+function clStepClick(n){
+  if(n===1){clGoStep(1);return;}
+  if(!clState.raw.length){toast('Please upload a file first','e');return;}
+  if(n>=3&&!clState.mapping.name&&!clState.mapping.phone){toast('Please map columns first (Step 2)','e');return;}
+  clGoStep(n);
 }
 
 // ── Reset / New File ──
