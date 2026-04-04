@@ -4670,8 +4670,9 @@ function clBuildPreview(){
     clState.mapping.name=guessByName(['name','user','contact','customer','first'])||guessByData(isName);
   if(!clState.mapping.phone)
     clState.mapping.phone=guessByName(['phone','mobile','number','whatsapp','cell'])||guessByData(isPhone);
+  // WATI Server ID: only map if column name clearly says "wati" or "server" — never guess by data pattern
   if(!clState.mapping.serverId)
-    clState.mapping.serverId=guessByName(['server','wati','id','serverid'])||guessByData(isId);
+    clState.mapping.serverId=guessByName(['wati','wati_server','serverid','wati_id'])||null;
   const allMapped=clState.mapping.name&&clState.mapping.phone&&clState.mapping.serverId;
   document.getElementById('cl-map-warn').style.display=allMapped?'none':'flex';
   // Insights
@@ -5044,7 +5045,7 @@ function clBuildExport(){
   // Extra fields (exclude empty-label cols)
   const coreFields=[nc,pc,sc].filter(Boolean);
   const extras=clState.headers.filter(h=>h&&!coreFields.includes(h));
-  clState.extraFields=clState.extraFields.length?clState.extraFields:extras.map(f=>({field:f,include:false}));
+  clState.extraFields=clState.extraFields.length?clState.extraFields:extras.map(f=>({field:f,include:false,exportName:''}));
 
   // Check if WATI Server ID column exists and has actual values
   const watiMissing=!sc;
@@ -5078,10 +5079,24 @@ function clBuildExport(){
     </div>`;
 
   document.getElementById('cl-extra-fields-wrap').innerHTML=watiSection+(extras.length?`
-    <h3 class="cl-title" style="margin-bottom:8px;">Optional Fields</h3>
-    <p class="cl-sub">Choose extra columns to include in export</p>
-    <div style="border:1px solid var(--border);border-radius:8px;padding:8px 14px;">
-      ${clState.extraFields.map((f,i)=>f.field?`<div class="cl-extra-field"><input type="checkbox" id="ef-${i}" ${f.include?'checked':''} onchange="clState.extraFields[${i}].include=this.checked"/> <label for="ef-${i}">${esc(f.field)}</label></div>`:'').join('')}
+    <h3 class="cl-title" style="margin-bottom:8px;">Other Columns in Your Sheet</h3>
+    <p class="cl-sub">Choose which columns to include and set the name they should have in the exported file</p>
+    <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:32px 1fr 1fr;gap:0;background:var(--input);padding:8px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--border);">
+        <span></span><span>Original Column</span><span>Export As (rename)</span>
+      </div>
+      ${clState.extraFields.map((f,i)=>f.field?`
+      <div style="display:grid;grid-template-columns:32px 1fr 1fr;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);background:${f.include?'#eef2ff':'var(--card)'};">
+        <input type="checkbox" id="ef-${i}" ${f.include?'checked':''} style="accent-color:var(--accent);width:15px;height:15px;"
+          onchange="clState.extraFields[${i}].include=this.checked;this.closest('div').style.background=this.checked?'#eef2ff':'var(--card)';const ni=document.getElementById('ef-name-${i}');if(ni)ni.disabled=!this.checked;"/>
+        <label for="ef-${i}" style="font-size:13px;color:var(--text);cursor:pointer;font-weight:500;">${esc(f.field)}</label>
+        <input type="text" placeholder="same as original" value="${esc(f.exportName||'')}"
+          style="background:var(--input);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text);outline:none;width:100%;"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"
+          onchange="clState.extraFields[${i}].exportName=this.value.trim()"
+          ${f.include?'':'disabled'}
+          id="ef-name-${i}"/>
+      </div>`:'').join('')}
     </div>`:'');
 
   clUpdateFinalReview();
@@ -5110,7 +5125,7 @@ function clExport(){
   const watiMissing=!sc||!clState.cleaned.some(r=>String(r[sc]||'').trim());
   const defaultWati=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
   if(watiMissing&&!defaultWati){toast('Please enter a WATI Server ID before exporting','e');return;}
-  const extras=clState.extraFields.filter(f=>f.include&&f.field).map(f=>f.field);
+  const extras=clState.extraFields.filter(f=>f.include&&f.field).map(f=>({original:f.field,exportAs:f.exportName||f.field}));
 
   // Header-like values that should never appear as data
   const headerWords=new Set(['name','phone','mobile','number','phone_number','mobile_number','wati_server_id','watiserverid','member_id','id','contact','user','server','wati']);
@@ -5126,7 +5141,7 @@ function clExport(){
       const base=fmt==='admin'
         ?{name:r[nc]||'',mobile_number:r[pc]||'',wati_server_id:watiVal}
         :{name:r[nc]||'',phone:r[pc]||'',watiserverid:watiVal};
-      extras.forEach(f=>{base[f]=r[f]||'';});
+      extras.forEach(f=>{base[f.exportAs]=r[f.original]||'';});
       return base;
     });
 
