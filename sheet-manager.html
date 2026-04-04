@@ -4711,9 +4711,13 @@ function clBuildClean(){
     const raw=String(r[pc]||'').trim();
     if(!raw)return null;
     const digits=raw.replace(/\D/g,'');
-    const hasCC=raw.startsWith('+');
-    const badLen=digits.length<10||digits.length>15;
-    if(!hasCC||badLen)return{i,raw,digits,hasCC,badLen};
+    // Already has country code if: starts with + OR digits are 11-15 (country code included)
+    const likelyHasCC=raw.startsWith('+')||digits.length>=11;
+    const tooShort=digits.length<10;
+    const tooLong=digits.length>15;
+    // Only flag if: too short (missing CC), too long, or exactly 10 digits (bare local number)
+    const isIssue=tooShort||tooLong||digits.length===10;
+    if(isIssue)return{i,raw,digits,likelyHasCC,tooShort,tooLong};
     return null;
   }).filter(Boolean):[];
 
@@ -4806,8 +4810,8 @@ function clShowPhoneModal(){
     const raw=String(r[pc]||'').trim();
     if(!raw)return null;
     const digits=raw.replace(/\D/g,'');
-    const hasCC=raw.startsWith('+');
-    if(!hasCC||digits.length<10||digits.length>15)return{raw,digits};
+    const isIssue=digits.length<10||digits.length>15||digits.length===10;
+    if(isIssue)return{raw,digits};
     return null;
   }).filter(Boolean);
   const ccOptions=['+91 (India)','+1 (USA/Canada)','+44 (UK)','+971 (UAE)','+65 (Singapore)','+61 (Australia)','+92 (Pakistan)','+880 (Bangladesh)'].map(c=>`<option value="${c.split(' ')[0]}">${c}</option>`).join('');
