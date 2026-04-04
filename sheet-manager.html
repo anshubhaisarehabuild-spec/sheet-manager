@@ -380,6 +380,12 @@ h1,h2,h3,.logo span,.sb-section,.card-name,.bc-name,.qb-name{font-family:'Plus J
 #cards.list-view .card-note{display:none;}
 #cards.list-view .card-tags{margin-bottom:0;}
 #cards.list-view .card-footer{border-top:none;background:transparent;padding:10px 14px 10px 0;flex-shrink:0;}
+#cards.list-view .board-card{flex-direction:row;align-items:center;border-radius:8px;}
+#cards.list-view .board-card .bc-color-bar{width:5px;height:100%;min-height:56px;flex-shrink:0;border-radius:8px 0 0 8px;}
+#cards.list-view .board-card .bc-top{flex:1;padding:10px 14px;align-items:center;}
+#cards.list-view .board-card .bc-emoji{font-size:20px;}
+#cards.list-view .board-card .bc-count{border-top:none;background:transparent;padding:10px 14px;flex-shrink:0;}
+#cards.list-view .board-card .card-actions{position:static;opacity:1;background:transparent;border:none;padding:0 10px 0 0;}
 
 /* EMPTY STATE */
 #empty{display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:16px;text-align:center;}
@@ -1518,6 +1524,31 @@ function saveLinks(){
 // ══════════════════════════════════
 let gapiReady=false, gisReady=false, tokenClient=null, isLoggedIn=false, forcePromptOnNextLogin=false;
 
+// Auto-refresh token before it expires
+setInterval(()=>{
+  if(!isLoggedIn||!tokenClient)return;
+  const tok=localStorage.getItem('gapi_token');
+  if(!tok)return;
+  try{
+    const t=JSON.parse(tok);
+    // Refresh if token expires within 10 minutes
+    if(t.expires_at && (t.expires_at - Date.now()) < 10*60*1000){
+      tokenClient.callback=async(resp)=>{
+        if(resp.error)return;
+        const nt=gapi.client.getToken();
+        nt.expires_at=Date.now()+(nt.expires_in||3600)*1000-300000;
+        localStorage.setItem('gapi_token',JSON.stringify(nt));
+        // Update saved account token
+        const accs=loadAccounts();
+        const email=activeEmail();
+        const idx=accs.findIndex(a=>a.email===email);
+        if(idx>=0){accs[idx].token=nt;accs[idx].expires_at=nt.expires_at;saveAccounts(accs);}
+      };
+      tokenClient.requestAccessToken({prompt:''});
+    }
+  }catch(e){}
+},5*60*1000); // check every 5 minutes
+
 function checkBothReady(){
   if(gapiReady&&gisReady){
     const btn=document.getElementById('login-btn');
@@ -1563,7 +1594,8 @@ function checkBothReady(){
             localStorage.setItem('gapi_token',JSON.stringify(t));
             isLoggedIn=true;
             updateAuthUI();
-            fetchUserProfile();
+            await fetchUserProfile();
+            load(); renderAll();
           };
           tokenClient.requestAccessToken({prompt:''});
         }
@@ -1621,6 +1653,7 @@ function handleLogin(){
       lsBtn.textContent='Access Denied - Contact Admin';
       return;
     }
+    load(); renderAll();
     logLoginToSheet();
     if(prof.email==='anshubhaisare.habuild@gmail.com'){
       document.getElementById('sb-team').style.display='';
@@ -2957,8 +2990,9 @@ function setView(v,fid){
   // Show/hide sort and view-toggle for non-sheet views
   const sortSel=document.getElementById('sort-sel');
   const viewToggle=document.querySelector('.view-toggle');
-  const hideControls=v==='links'||v==='team'||v==='quiz'||v==='posts';
-  if(sortSel)sortSel.style.display=hideControls?'none':'';
+  const hideControls=v==='team'||v==='quiz'||v==='posts';
+  const hideSort=v==='links'||hideControls;
+  if(sortSel)sortSel.style.display=hideSort?'none':'';
   if(viewToggle)viewToggle.style.display=hideControls?'none':'';
   // Clean up board/quiz view if switching away
   if(v!=='links'){
@@ -3087,11 +3121,11 @@ function cardHTML(s){
   const folder=folders.find(f=>f.id===s.folderId);
   const tags=(s.tags||[]).slice(0,3);
   const opened=s.lastOpened?'Opened '+timeAgo(s.lastOpened):'Never opened';
-  const editBtn=`<button class="card-open-btn" onclick="event.stopPropagation();openSheetEditor('${s.id}')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="11" height="11"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-    Edit
+  const editBtn=`<button class="card-open-btn hbtn secondary" onclick="event.stopPropagation();openSheetEditor('${s.id}')" title="Open sheet editor" style="gap:5px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><line x1="2" y1="13" x2="22" y2="13" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="21" stroke="currentColor" stroke-width="1.5"/><line x1="15" y1="3" x2="15" y2="21" stroke="currentColor" stroke-width="1.5"/></svg>
+    View
   </button>`;
-  return`<div class="sheet-card" onclick="openSheetEditor('${s.id}')">
+  return`<div class="sheet-card" onclick="openSheet('${s.id}')">
     <div class="card-color-bar" style="background:${barColor};"></div>
     ${s.pinned?'<div class="pin-star">★</div>':''}
     <div class="card-body">
@@ -3464,6 +3498,7 @@ function renderLinks(){
     return;
   }
   empty.style.display='none';
+  container.className=viewMode==='list'?'list-view':'';
   container.innerHTML=linkBoards.map(b=>boardCardHTML(b)).join('');
 }
 
