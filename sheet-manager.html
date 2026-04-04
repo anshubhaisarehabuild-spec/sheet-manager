@@ -4996,30 +4996,69 @@ function clApplyCC(){
 
 // ── Step 4: Filter ──
 function clBuildFilter(){
-  const h=clState.headers;
+  const {name:nc,phone:pc,serverId:sc}=clState.mapping;
+  const coreFields=new Set([nc,pc,sc].filter(Boolean));
   const data=clState.cleaned;
-  // Init filters - only for columns with reasonable unique values
-  const filterCols=h.filter(col=>{
-    const vals=new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean));
-    return vals.size>0&&vals.size<=50;
+
+  // Only show columns that are genuinely useful for filtering:
+  // - Not phone or WATI (core fields)
+  // - Not all-unique values (like individual IDs/phones)
+  // - Between 2 and 30 unique values
+  // - Values are not purely numeric long strings (phone-like)
+  const filterCols=clState.headers.filter(col=>{
+    if(coreFields.has(col))return false;
+    const vals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))];
+    if(vals.size===0||vals.length<2||vals.length>30)return false;
+    // Skip if values look like phone numbers or long IDs
+    const looksNumeric=vals.every(v=>/^\+?\d[\d\s]{6,}$/.test(v));
+    return !looksNumeric;
   });
-  if(!Object.keys(clState.filters).length){
-    filterCols.forEach(col=>{
+
+  if(!filterCols.length){
+    document.getElementById('cl-filter-grid').innerHTML=`
+      <div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">
+        No filterable columns found. All your data will be exported.
+      </div>`;
+    clUpdateFilterPreview();
+    return;
+  }
+
+  // Init filter state
+  filterCols.forEach(col=>{
+    if(!clState.filters[col]){
       const vals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))].sort();
       clState.filters[col]=new Set(vals);
-    });
-  }
+    }
+  });
+
   document.getElementById('cl-filter-grid').innerHTML=filterCols.map(col=>{
     const allVals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))].sort();
+    const colId='fc-'+col.replace(/\W/g,'_');
     return`<div class="cl-filter-col">
-      <label>${esc(col)}</label>
-      <input class="cl-filter-search" placeholder="Search..." oninput="clFilterSearch(this,'fc-${col.replace(/\W/g,'_')}')"/>
-      <div class="cl-filter-opts" id="fc-${col.replace(/\W/g,'_')}">
+      <label style="display:flex;justify-content:space-between;align-items:center;">
+        <span>${esc(col)}</span>
+        <span style="font-size:10px;font-weight:500;color:var(--text2);">${clState.filters[col]?.size||0}/${allVals.length} selected</span>
+      </label>
+      <input class="cl-filter-search" placeholder="Search..." oninput="clFilterSearch(this,'${colId}')"/>
+      <div style="display:flex;gap:6px;margin-bottom:5px;">
+        <button onclick="clSelectAllFilter('${esc(col)}',[${allVals.map(v=>`'${esc(v)}'`).join(',')}])" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--input);cursor:pointer;color:var(--muted);">All</button>
+        <button onclick="clClearFilter('${esc(col)}')" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--input);cursor:pointer;color:var(--muted);">None</button>
+      </div>
+      <div class="cl-filter-opts" id="${colId}">
         ${allVals.map(v=>`<label><input type="checkbox" ${clState.filters[col]?.has(v)?'checked':''} onchange="clToggleFilter('${esc(col)}','${esc(v)}',this.checked)"/> ${esc(v)}</label>`).join('')}
       </div>
     </div>`;
   }).join('');
   clUpdateFilterPreview();
+}
+
+function clSelectAllFilter(col,vals){
+  clState.filters[col]=new Set(vals);
+  clBuildFilter();
+}
+function clClearFilter(col){
+  clState.filters[col]=new Set();
+  clBuildFilter();
 }
 
 function clFilterSearch(inp,listId){
