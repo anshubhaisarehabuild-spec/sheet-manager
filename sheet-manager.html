@@ -1167,6 +1167,13 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <h3 class="cl-title" style="margin-top:20px;">Final Review</h3>
           <div class="cl-export-summary" id="cl-export-summary"></div>
           <div class="cl-warning cl-warning-final" id="cl-final-review"></div>
+          <div style="margin-top:16px;">
+            <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);display:block;margin-bottom:6px;">File Name</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="text" id="cl-filename" placeholder="e.g. cleaned_users_april" style="flex:1;background:var(--input);border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:'Inter',sans-serif;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+              <span style="font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap;">.csv</span>
+            </div>
+          </div>
           <div class="cl-btn-row">
             <button class="cl-btn cl-btn-ghost" onclick="clGoStep(4)">← Back & Review</button>
             <button class="cl-btn cl-btn-export" onclick="clExport()">✓ Confirm & Export CSV</button>
@@ -5104,15 +5111,31 @@ function clExport(){
   const defaultWati=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
   if(watiMissing&&!defaultWati){toast('Please enter a WATI Server ID before exporting','e');return;}
   const extras=clState.extraFields.filter(f=>f.include&&f.field).map(f=>f.field);
-  const rows=filtered.map(r=>{
-    const watiVal=watiMissing?defaultWati:(sc?String(r[sc]||''):'');
-    const base=fmt==='admin'
-      ?{name:r[nc]||'',mobile_number:r[pc]||'',wati_server_id:watiVal}
-      :{name:r[nc]||'',phone:r[pc]||'',watiserverid:watiVal};
-    extras.forEach(f=>{base[f]=r[f]||'';});
-    return base;
-  });
+
+  // Header-like values that should never appear as data
+  const headerWords=new Set(['name','phone','mobile','number','phone_number','mobile_number','wati_server_id','watiserverid','member_id','id','contact','user','server','wati']);
+
+  const rows=filtered
+    .filter(r=>{
+      // Skip rows where the phone column looks like a header word, not a real number
+      const phoneVal=String(r[pc]||'').trim().toLowerCase();
+      return phoneVal&&!headerWords.has(phoneVal)&&/\d/.test(phoneVal);
+    })
+    .map(r=>{
+      const watiVal=watiMissing?defaultWati:(sc?String(r[sc]||''):'');
+      const base=fmt==='admin'
+        ?{name:r[nc]||'',mobile_number:r[pc]||'',wati_server_id:watiVal}
+        :{name:r[nc]||'',phone:r[pc]||'',watiserverid:watiVal};
+      extras.forEach(f=>{base[f]=r[f]||'';});
+      return base;
+    });
+
   if(!rows.length){toast('No data to export','e');return;}
+
+  // Use custom filename or fallback
+  const rawName=(document.getElementById('cl-filename')?.value||'').trim();
+  const filename=(rawName||`cleaned_data_${fmt}_${Date.now()}`).replace(/[^a-zA-Z0-9_\-]/g,'_')+'.csv';
+
   const headers=Object.keys(rows[0]);
   const csv=[headers.join(','),...rows.map(r=>headers.map(h=>{
     const v=String(r[h]||'');
@@ -5121,9 +5144,9 @@ function clExport(){
   const blob=new Blob([csv],{type:'text/csv'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=url;a.download=`cleaned_data_${fmt}_${Date.now()}.csv`;a.click();
+  a.href=url;a.download=filename;a.click();
   URL.revokeObjectURL(url);
-  toast(`Exported ${rows.length} rows as CSV ✓`,'s');
+  toast(`Exported ${rows.length} rows as "${filename}" ✓`,'s');
 }
 
 // ── Modal helpers ──
