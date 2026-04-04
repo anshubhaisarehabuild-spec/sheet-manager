@@ -1177,6 +1177,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <div class="cl-btn-row">
             <button class="cl-btn cl-btn-ghost" onclick="clGoStep(4)">← Back & Review</button>
             <button class="cl-btn cl-btn-export" onclick="clExport()">✓ Confirm & Export CSV</button>
+            <button class="cl-btn" onclick="clReset()" style="background:#f1f5f9;color:var(--muted);border:1px solid var(--border);margin-left:auto;">🔄 Clean New File</button>
           </div>
         </div>
       </div>
@@ -4714,7 +4715,15 @@ function clBuildPreview(){
   `;
   // Preview table
   const preview=clState.raw.slice(0,10);
-  document.getElementById('cl-table-wrap').innerHTML=`<table class="cl-table"><thead><tr>${h.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${preview.map(r=>`<tr>${h.map(c=>`<td>${esc(String(r[c]||''))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  const pc=clState.mapping.phone;
+  document.getElementById('cl-table-wrap').innerHTML=`<table class="cl-table"><thead><tr>${h.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${preview.map(r=>`<tr>${h.map(c=>{
+    const v=String(r[c]||'');
+    if(c===pc&&v){
+      const digits=v.replace(/\D/g,'');
+      return`<td><a href="https://wa.me/${digits}" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;" title="Open in WhatsApp">📱 ${esc(v)}</a></td>`;
+    }
+    return`<td>${esc(v)}</td>`;
+  }).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
 // ── Step 3: Clean ──
@@ -5225,6 +5234,24 @@ function clExport(){
   a.href=url;a.download=filename;a.click();
   URL.revokeObjectURL(url);
   toast(`Exported ${rows.length} rows as "${filename}" ✓`,'s');
+}
+
+// ── Reset / New File ──
+function clReset(){
+  clState={
+    raw:[],headers:[],
+    mapping:{name:null,phone:null,serverId:null},
+    cleaned:[],filters:{},
+    removedDups:0,removedInvalid:0,
+    phoneChanges:[],autoCleanApplied:false,
+    exportFormat:'admin',extraFields:[],defaultWatiId:''
+  };
+  // Reset file input so same file can be re-uploaded
+  const fi=document.getElementById('cl-file-inp');
+  if(fi)fi.value='';
+  document.getElementById('cl-file-info').style.display='none';
+  document.getElementById('cl-next-1').disabled=true;
+  clGoStep(1);
 }
 
 // ── Modal helpers ──
