@@ -4644,14 +4644,27 @@ function clGoStep(n){
 // ── Step 2: Preview & Mapping ──
 function clBuildPreview(){
   const h=clState.headers;
-  // Auto-detect columns
-  const guess=(keywords)=>{
+  // Auto-detect columns — by header name first, then by data pattern
+  const sample=clState.raw.slice(0,20);
+  const guessByName=(keywords)=>{
     const k=keywords.map(x=>x.toLowerCase());
     return h.find(col=>k.some(kw=>col.toLowerCase().includes(kw)))||null;
   };
-  if(!clState.mapping.name)clState.mapping.name=guess(['name','user','contact','customer','first']);
-  if(!clState.mapping.phone)clState.mapping.phone=guess(['phone','mobile','number','whatsapp','cell','contact']);
-  if(!clState.mapping.serverId)clState.mapping.serverId=guess(['server','wati','id','serverid']);
+  const guessByData=(testFn)=>{
+    return h.find(col=>{
+      const vals=sample.map(r=>String(r[col]||'').trim()).filter(Boolean);
+      return vals.length>0 && vals.filter(testFn).length/vals.length>0.6;
+    })||null;
+  };
+  const isPhone=v=>/^\+?\d[\d\s\-()]{7,16}$/.test(v.replace(/\s/g,''));
+  const isName=v=>/^[A-Za-z\s.'-]{2,50}$/.test(v)&&isNaN(Number(v));
+  const isId=v=>/^\d{5,10}$/.test(v.trim());
+  if(!clState.mapping.name)
+    clState.mapping.name=guessByName(['name','user','contact','customer','first'])||guessByData(isName);
+  if(!clState.mapping.phone)
+    clState.mapping.phone=guessByName(['phone','mobile','number','whatsapp','cell'])||guessByData(isPhone);
+  if(!clState.mapping.serverId)
+    clState.mapping.serverId=guessByName(['server','wati','id','serverid'])||guessByData(isId);
   const allMapped=clState.mapping.name&&clState.mapping.phone&&clState.mapping.serverId;
   document.getElementById('cl-map-warn').style.display=allMapped?'none':'flex';
   // Insights
