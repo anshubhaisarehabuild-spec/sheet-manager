@@ -1074,6 +1074,18 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <!-- DATA CLEANER PANEL -->
     <div id="cleaner-panel" style="display:none;">
 
+      <!-- Safety Banner -->
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;margin-bottom:20px;">
+        <span style="font-size:20px;flex-shrink:0;">🔒</span>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:2px;">Your data is 100% private & local</div>
+          <div style="font-size:12px;color:#166534;line-height:1.6;">
+            All processing happens inside your browser only. No data is sent to any server, cloud, or third party.
+            Phone numbers and names never leave your device. Data is cleared automatically when you close this tab.
+          </div>
+        </div>
+      </div>
+
       <!-- Export History -->
       <div id="cl-history-wrap" style="display:none;margin-bottom:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -3276,6 +3288,10 @@ function setView(v,fid){
     if(cardsEl)cardsEl.style.display='none';
     if(emptyEl)emptyEl.style.display='none';
   } else {
+    // Clear sensitive data from memory when leaving cleaner
+    if(cleanerPanel&&cleanerPanel.style.display!=='none'){
+      clClearMemory();
+    }
     if(cleanerPanel)cleanerPanel.style.display='none';
     if(cardsEl)cardsEl.style.display='';
   }
@@ -5208,6 +5224,19 @@ function clExport(){
   const watiMissing=!sc||!clState.cleaned.some(r=>String(r[sc]||'').trim());
   const defaultWati=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
   if(watiMissing&&!defaultWati){toast('Please enter a WATI Server ID before exporting','e');return;}
+
+  // Safety check: detect any obviously wrong phone numbers before export
+  const badPhones=clGetFiltered().filter(r=>{
+    const p=String(r[pc]||'').trim();
+    if(!p)return true; // empty phone
+    const digits=p.replace(/\D/g,'');
+    return digits.length<8||digits.length>15||/[a-zA-Z]/.test(p);
+  });
+  if(badPhones.length>0){
+    const proceed=confirm(`⚠️ Safety Warning\n\n${badPhones.length} rows have invalid phone numbers (too short, too long, or contain letters).\n\nExporting these may send messages to wrong numbers.\n\nDo you want to:\n• Cancel → go back and fix them\n• OK → export anyway (invalid rows will be skipped)`);
+    if(!proceed)return;
+  }
+
   const extras=clState.extraFields.filter(f=>f.include&&f.field).map(f=>({original:f.field,exportAs:f.exportName||f.field}));
 
   // Header-like values that should never appear as data
@@ -5215,9 +5244,13 @@ function clExport(){
 
   const rows=filtered
     .filter(r=>{
-      // Skip rows where the phone column looks like a header word, not a real number
       const phoneVal=String(r[pc]||'').trim().toLowerCase();
-      return phoneVal&&!headerWords.has(phoneVal)&&/\d/.test(phoneVal);
+      // Skip header-like rows and rows with no digits
+      if(!phoneVal||headerWords.has(phoneVal)||!/\d/.test(phoneVal))return false;
+      // Skip rows with clearly invalid phone (letters, too short)
+      const digits=phoneVal.replace(/\D/g,'');
+      if(digits.length<8||/[a-zA-Z]/.test(phoneVal))return false;
+      return true;
     })
     .map(r=>{
       const watiVal=watiMissing?defaultWati:(sc?String(r[sc]||''):'');
@@ -5293,6 +5326,26 @@ function clDeleteHistory(i){
 function clClearHistory(){
   localStorage.removeItem('cl_export_history');
   clRenderHistory();
+}
+
+// ── Safety: warn if leaving page with unsaved data ──
+window.addEventListener('beforeunload',e=>{
+  if(clState.raw.length>0&&clStep<5){
+    e.preventDefault();
+    e.returnValue='You have unsaved data in Data Cleaner. Are you sure you want to leave?';
+  }
+});
+
+// ── Safety: clear sensitive data from memory when leaving cleaner view ──
+function clClearMemory(){
+  clState.raw=[];
+  clState.cleaned=[];
+  clState.headers=[];
+  clState.mapping={name:null,phone:null,serverId:null};
+  clState.filters={};
+  clState.extraFields=[];
+  clState.phoneChanges=[];
+  clStep=1;
 }
 
 // ── Step click navigation ──
