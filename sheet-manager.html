@@ -4802,43 +4802,170 @@ function clRemoveInvalid(){
   toast(`${clState.removedInvalid} invalid rows removed`,'s');clBuildClean();
 }
 
+// Comprehensive country code list
+const CL_COUNTRIES=[
+  {cc:'+91',flag:'🇮🇳',name:'India'},
+  {cc:'+1',flag:'🇺🇸',name:'USA / Canada'},
+  {cc:'+44',flag:'🇬🇧',name:'United Kingdom'},
+  {cc:'+971',flag:'🇦🇪',name:'UAE'},
+  {cc:'+65',flag:'🇸🇬',name:'Singapore'},
+  {cc:'+61',flag:'🇦🇺',name:'Australia'},
+  {cc:'+92',flag:'🇵🇰',name:'Pakistan'},
+  {cc:'+880',flag:'🇧🇩',name:'Bangladesh'},
+  {cc:'+60',flag:'🇲🇾',name:'Malaysia'},
+  {cc:'+66',flag:'🇹🇭',name:'Thailand'},
+  {cc:'+62',flag:'🇮🇩',name:'Indonesia'},
+  {cc:'+63',flag:'🇵🇭',name:'Philippines'},
+  {cc:'+84',flag:'🇻🇳',name:'Vietnam'},
+  {cc:'+82',flag:'🇰🇷',name:'South Korea'},
+  {cc:'+81',flag:'🇯🇵',name:'Japan'},
+  {cc:'+86',flag:'🇨🇳',name:'China'},
+  {cc:'+94',flag:'🇱🇰',name:'Sri Lanka'},
+  {cc:'+977',flag:'🇳🇵',name:'Nepal'},
+  {cc:'+95',flag:'🇲🇲',name:'Myanmar'},
+  {cc:'+855',flag:'🇰🇭',name:'Cambodia'},
+  {cc:'+966',flag:'🇸🇦',name:'Saudi Arabia'},
+  {cc:'+974',flag:'🇶🇦',name:'Qatar'},
+  {cc:'+973',flag:'🇧🇭',name:'Bahrain'},
+  {cc:'+968',flag:'🇴🇲',name:'Oman'},
+  {cc:'+965',flag:'🇰🇼',name:'Kuwait'},
+  {cc:'+962',flag:'🇯🇴',name:'Jordan'},
+  {cc:'+961',flag:'🇱🇧',name:'Lebanon'},
+  {cc:'+20',flag:'🇪🇬',name:'Egypt'},
+  {cc:'+27',flag:'🇿🇦',name:'South Africa'},
+  {cc:'+234',flag:'🇳🇬',name:'Nigeria'},
+  {cc:'+254',flag:'🇰🇪',name:'Kenya'},
+  {cc:'+255',flag:'🇹🇿',name:'Tanzania'},
+  {cc:'+256',flag:'🇺🇬',name:'Uganda'},
+  {cc:'+233',flag:'🇬🇭',name:'Ghana'},
+  {cc:'+49',flag:'🇩🇪',name:'Germany'},
+  {cc:'+33',flag:'🇫🇷',name:'France'},
+  {cc:'+34',flag:'🇪🇸',name:'Spain'},
+  {cc:'+39',flag:'🇮🇹',name:'Italy'},
+  {cc:'+31',flag:'🇳🇱',name:'Netherlands'},
+  {cc:'+46',flag:'🇸🇪',name:'Sweden'},
+  {cc:'+47',flag:'🇳🇴',name:'Norway'},
+  {cc:'+45',flag:'🇩🇰',name:'Denmark'},
+  {cc:'+41',flag:'🇨🇭',name:'Switzerland'},
+  {cc:'+43',flag:'🇦🇹',name:'Austria'},
+  {cc:'+48',flag:'🇵🇱',name:'Poland'},
+  {cc:'+7',flag:'🇷🇺',name:'Russia'},
+  {cc:'+55',flag:'🇧🇷',name:'Brazil'},
+  {cc:'+52',flag:'🇲🇽',name:'Mexico'},
+  {cc:'+54',flag:'🇦🇷',name:'Argentina'},
+  {cc:'+57',flag:'🇨🇴',name:'Colombia'},
+  {cc:'+56',flag:'🇨🇱',name:'Chile'},
+  {cc:'+64',flag:'🇳🇿',name:'New Zealand'},
+];
+
+// Detect country from digits
+function clDetectCountry(digits){
+  // Sort by CC length descending so longer codes match first
+  const sorted=[...CL_COUNTRIES].sort((a,b)=>b.cc.length-a.cc.length);
+  for(const c of sorted){
+    const cc=c.cc.replace('+','');
+    if(digits.startsWith(cc))return c;
+  }
+  return null;
+}
+
 function clShowPhoneModal(){
   const pc=clState.mapping.phone;
-  const issues=clState.cleaned.map(r=>{
+  const data=clState.cleaned;
+
+  // Analyse all numbers
+  const analysis=data.map(r=>{
     const raw=String(r[pc]||'').trim();
     if(!raw)return null;
     const digits=raw.replace(/\D/g,'');
     const hasInvalidChars=/[a-zA-Z]/.test(raw);
-    const isIssue=digits.length<8||digits.length>15||hasInvalidChars;
-    if(isIssue)return{raw,digits};
-    return null;
+    const tooShort=digits.length<8;
+    const tooLong=digits.length>15;
+    const country=clDetectCountry(digits);
+    const hasPlus=raw.startsWith('+');
+    const missingPlus=!hasPlus&&digits.length>=10;
+    return{raw,digits,country,hasPlus,missingPlus,hasInvalidChars,tooShort,tooLong};
   }).filter(Boolean);
-  const ccOptions=['+91 (India)','+1 (USA/Canada)','+44 (UK)','+971 (UAE)','+65 (Singapore)','+61 (Australia)','+92 (Pakistan)','+880 (Bangladesh)'].map(c=>`<option value="${c.split(' ')[0]}">${c}</option>`).join('');
-  clShowModal('📱','Phone Number Issues',
-    `${issues.length} numbers may be missing country code or have incorrect length.\n\n⚠️ Incorrect formatting may send messages to wrong users.`,
-    `<table><thead><tr><th>Original</th><th>Digits Only</th></tr></thead><tbody>${issues.slice(0,15).map(x=>`<tr><td>${esc(x.raw)}</td><td>${esc(x.digits)}</td></tr>`).join('')}</tbody></table>
-    <select class="cl-cc-select" id="cl-cc-sel">${ccOptions}</select>`,
+
+  // Country breakdown
+  const countryCount={};
+  analysis.forEach(a=>{
+    const key=a.country?`${a.country.flag} ${a.country.name} (${a.country.cc})`:'❓ Unknown';
+    countryCount[key]=(countryCount[key]||0)+1;
+  });
+  const breakdown=Object.entries(countryCount).sort((a,b)=>b[1]-a[1]);
+
+  // Numbers with real issues
+  const realIssues=analysis.filter(a=>a.tooShort||a.tooLong||a.hasInvalidChars);
+  // Numbers missing + prefix but otherwise valid
+  const missingPlus=analysis.filter(a=>a.missingPlus&&!a.hasPlus&&!a.tooShort&&!a.tooLong&&!a.hasInvalidChars);
+
+  const breakdownHTML=`<div style="margin-bottom:12px;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:6px;">Country Breakdown</div>
+    <div style="display:flex;flex-direction:column;gap:4px;max-height:130px;overflow:auto;">
+      ${breakdown.map(([k,v])=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 8px;background:var(--input);border-radius:4px;"><span>${k}</span><strong>${v}</strong></div>`).join('')}
+    </div>
+  </div>
+  ${realIssues.length?`<div style="font-size:12px;color:#991b1b;margin-bottom:8px;padding:8px 10px;background:#fef2f2;border-radius:6px;">⚠️ ${realIssues.length} numbers have actual issues (too short/long or invalid chars)</div>`:''}
+  ${missingPlus.length?`<div style="font-size:12px;color:#78350f;margin-bottom:8px;padding:8px 10px;background:#fffbeb;border-radius:6px;">ℹ️ ${missingPlus.length} numbers are missing the + prefix but appear to have country code</div>`:''}
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:8px 0 5px;">Add + prefix to numbers missing it</div>
+  <select class="cl-cc-select" id="cl-cc-action" onchange="clToggleCCInput()" style="margin:4px 0 0;">
+    <option value="add_plus">Add + prefix to numbers without it</option>
+    <option value="add_cc">Add specific country code to 10-digit numbers only</option>
+    <option value="none">No change</option>
+  </select>
+  <div id="cl-cc-country-wrap" style="display:none;margin-top:8px;">
+    <select class="cl-cc-select" id="cl-cc-sel" style="margin:0;">
+      ${CL_COUNTRIES.map(c=>`<option value="${c.cc}">${c.flag} ${c.name} ${c.cc}</option>`).join('')}
+    </select>
+  </div>`;
+
+  clShowModal('📱','Phone Number Analysis',
+    `Your data contains numbers from ${breakdown.length} different ${breakdown.length===1?'country':'countries'}.`,
+    breakdownHTML,
     [
-      {label:'Apply Country Code',cls:'cl-btn-warn',fn:'clApplyCC'},
+      {label:'Apply',cls:'cl-btn-warn',fn:'clApplyCC'},
       {label:'Skip',cls:'cl-btn-ghost',fn:'clClosModal'}
     ]
   );
 }
 
+function clToggleCCInput(){
+  const action=document.getElementById('cl-cc-action')?.value;
+  const wrap=document.getElementById('cl-cc-country-wrap');
+  if(wrap)wrap.style.display=action==='add_cc'?'':'none';
+}
+
 function clApplyCC(){
+  const action=document.getElementById('cl-cc-action')?.value||'add_plus';
   const cc=document.getElementById('cl-cc-sel')?.value||'+91';
   const pc=clState.mapping.phone;
-  const before=clState.cleaned.map(r=>String(r[pc]||''));
+  if(action==='none'){clClosModal();return;}
   clState.cleaned=clState.cleaned.map(r=>{
     const raw=String(r[pc]||'').trim();
     if(!raw)return r;
-    if(raw.startsWith('+'))return r;
     const digits=raw.replace(/\D/g,'');
-    const normalized=cc+digits;
-    clState.phoneChanges.push({before:raw,after:normalized});
-    return {...r,[pc]:normalized};
+    if(action==='add_plus'){
+      // Add + to any number that doesn't have it but has 10+ digits
+      if(!raw.startsWith('+')&&digits.length>=10){
+        const updated='+'+digits;
+        clState.phoneChanges.push({before:raw,after:updated});
+        return{...r,[pc]:updated};
+      }
+    } else if(action==='add_cc'){
+      // Only add country code to bare 10-digit numbers (no CC detected)
+      if(!raw.startsWith('+')&&digits.length===10){
+        const updated=cc+digits;
+        clState.phoneChanges.push({before:raw,after:updated});
+        return{...r,[pc]:updated};
+      }
+    }
+    return r;
   });
-  clClosModal();toast(`Phone numbers updated with ${cc}`,'s');clBuildClean();
+  const changed=clState.phoneChanges.length;
+  clClosModal();
+  toast(`Updated ${changed} phone number${changed!==1?'s':''}${action==='add_plus'?' (added + prefix)':' (added country code)'}`, 's');
+  clBuildClean();
 }
 
 // ── Step 4: Filter ──
