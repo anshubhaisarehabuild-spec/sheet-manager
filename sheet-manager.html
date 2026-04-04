@@ -4618,7 +4618,8 @@ function clHandleFile(file){
       clState.headers=data.length?Object.keys(data[0]):[];
       clState.cleaned=[...data.map(r=>({...r}))];
       clState.removedDups=0;clState.removedInvalid=0;clState.phoneChanges=[];clState.autoCleanApplied=false;
-      clState.filters={};
+      clState.filters={};clState.extraFields=[];clState.defaultWatiId='';
+      clState.mapping={name:null,phone:null,serverId:null};
       document.getElementById('cl-file-name').textContent=file.name;
       document.getElementById('cl-file-rows').textContent=data.length+' rows';
       document.getElementById('cl-file-info').style.display='flex';
@@ -5042,10 +5043,13 @@ function clSelectFormat(fmt){
 function clBuildExport(){
   const filtered=clGetFiltered();
   const {name:nc,phone:pc,serverId:sc}=clState.mapping;
-  // Extra fields (exclude empty-label cols)
+  // Always recalculate extra fields fresh from current headers & mapping
   const coreFields=[nc,pc,sc].filter(Boolean);
-  const extras=clState.headers.filter(h=>h&&!coreFields.includes(h));
-  clState.extraFields=clState.extraFields.length?clState.extraFields:extras.map(f=>({field:f,include:false,exportName:''}));
+  const extras=clState.headers.filter(h=>h&&h.trim()&&!coreFields.includes(h));
+  // Merge: keep existing include/exportName choices if field already existed
+  const prevMap={};
+  (clState.extraFields||[]).forEach(f=>{if(f.field)prevMap[f.field]=f;});
+  clState.extraFields=extras.map(f=>prevMap[f]?{...prevMap[f],field:f}:{field:f,include:false,exportName:''});
 
   // Check if WATI Server ID column exists and has actual values
   const watiMissing=!sc;
