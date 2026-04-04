@@ -1196,6 +1196,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <div id="cl-extra-fields-wrap"></div>
           <h3 class="cl-title" style="margin-top:20px;">Final Review</h3>
           <div class="cl-export-summary" id="cl-export-summary"></div>
+          <div id="cl-problem-section" style="margin-top:14px;"></div>
           <div class="cl-warning cl-warning-final" id="cl-final-review"></div>
           <div style="margin-top:16px;">
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);display:block;margin-bottom:6px;">File Name</label>
@@ -4601,7 +4602,7 @@ let clState={
   filters:{},
   removedDups:0,removedInvalid:0,
   phoneChanges:[],autoCleanApplied:false,
-  exportFormat:'admin',extraFields:[],defaultWatiId:''
+  exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip'
 };
 let clStep=1;
 
@@ -5147,12 +5148,60 @@ function clBuildExport(){
   const watiMissing=!sc;
   const watiHasValues=sc&&clState.cleaned.some(r=>String(r[sc]||'').trim());
 
+  // Detect problematic rows so user can decide
+  const {name:ncCheck,phone:pcCheck}=clState.mapping;
+  const headerWordsCheck=new Set(['name','phone','mobile','number','phone_number','mobile_number','wati_server_id','watiserverid','member_id','id','contact','user','server','wati']);
+  const problemRows=filtered.map((r,i)=>{
+    const phoneVal=String(r[pcCheck]||'').trim();
+    const digits=phoneVal.replace(/\D/g,'');
+    const reasons=[];
+    if(!phoneVal||headerWordsCheck.has(phoneVal.toLowerCase()))reasons.push('Empty phone');
+    else if(/[a-zA-Z]/.test(phoneVal))reasons.push('Phone has letters: '+phoneVal);
+    else if(digits.length<8)reasons.push('Phone too short: '+phoneVal);
+    return reasons.length?{name:String(r[ncCheck]||'Row '+(i+1)),phone:phoneVal,reason:reasons[0]}:null;
+  }).filter(Boolean);
+  clState._problemRows=problemRows;
+
   document.getElementById('cl-export-summary').innerHTML=`
-    <div class="cl-ins-card good"><div class="cl-ins-val">${filtered.length}</div><div class="cl-ins-lbl">Total Users</div></div>
-    <div class="cl-ins-card ${clState.removedDups?'warn':'good'}"><div class="cl-ins-val">${clState.removedDups}</div><div class="cl-ins-lbl">Duplicates Removed</div></div>
-    <div class="cl-ins-card ${clState.removedInvalid?'warn':'good'}"><div class="cl-ins-val">${clState.removedInvalid}</div><div class="cl-ins-lbl">Invalid Removed</div></div>
-    <div class="cl-ins-card ${clState.phoneChanges.length?'warn':'good'}"><div class="cl-ins-val">${clState.phoneChanges.length}</div><div class="cl-ins-lbl">Phones Fixed</div></div>
+    <div class="cl-ins-card good"><div class="cl-ins-val">${filtered.length}</div><div class="cl-ins-lbl">Total Rows</div></div>
+    <div class="cl-ins-card good"><div class="cl-ins-val">${filtered.length-problemRows.length}</div><div class="cl-ins-lbl">Valid & Ready</div></div>
+    <div class="cl-ins-card ${problemRows.length?'danger':'good'}"><div class="cl-ins-val">${problemRows.length}</div><div class="cl-ins-lbl">Problem Rows</div></div>
+    <div class="cl-ins-card ${clState.removedDups?'warn':'good'}"><div class="cl-ins-val">${clState.removedDups}</div><div class="cl-ins-lbl">Dups Removed</div></div>
   `;
+
+  // Show problem rows breakdown if any
+  const problemSection=problemRows.length?`
+    <div class="cl-warning cl-warning-red" style="flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:16px;">
+      <div style="font-weight:700;font-size:13px;">⚠️ ${problemRows.length} rows have invalid phone numbers</div>
+      <div style="width:100%;max-height:160px;overflow:auto;border:1px solid #fecaca;border-radius:6px;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead><tr style="background:#fef2f2;">
+            <th style="padding:6px 10px;text-align:left;color:#991b1b;font-weight:700;">Name</th>
+            <th style="padding:6px 10px;text-align:left;color:#991b1b;font-weight:700;">Phone</th>
+            <th style="padding:6px 10px;text-align:left;color:#991b1b;font-weight:700;">Issue</th>
+          </tr></thead>
+          <tbody>${problemRows.slice(0,20).map(r=>`<tr style="border-top:1px solid #fecaca;">
+            <td style="padding:5px 10px;color:var(--text);">${esc(r.name)}</td>
+            <td style="padding:5px 10px;color:var(--text);">${esc(r.phone)||'—'}</td>
+            <td style="padding:5px 10px;color:#dc2626;">${esc(r.reason)}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;cursor:pointer;">
+          <input type="radio" name="cl-problem-action" value="skip" checked onchange="clState._problemAction=this.value" style="accent-color:#ef4444;"/>
+          Skip these rows (export only valid numbers)
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;cursor:pointer;">
+          <input type="radio" name="cl-problem-action" value="include" onchange="clState._problemAction=this.value" style="accent-color:#ef4444;"/>
+          Include anyway (export all rows)
+        </label>
+      </div>
+      ${problemRows.length>20?`<div style="font-size:11px;color:#991b1b;">Showing first 20 of ${problemRows.length} problem rows</div>`:''}
+    </div>`:'';
+
+  clState._problemAction='skip';
+  document.getElementById('cl-problem-section').innerHTML=problemSection;
 
   // WATI Server ID warning + input
   const watiSection=watiMissing||!watiHasValues?`
@@ -5225,17 +5274,8 @@ function clExport(){
   const defaultWati=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
   if(watiMissing&&!defaultWati){toast('Please enter a WATI Server ID before exporting','e');return;}
 
-  // Safety check: detect any obviously wrong phone numbers before export
-  const badPhones=clGetFiltered().filter(r=>{
-    const p=String(r[pc]||'').trim();
-    if(!p)return true; // empty phone
-    const digits=p.replace(/\D/g,'');
-    return digits.length<8||digits.length>15||/[a-zA-Z]/.test(p);
-  });
-  if(badPhones.length>0){
-    const proceed=confirm(`⚠️ Safety Warning\n\n${badPhones.length} rows have invalid phone numbers (too short, too long, or contain letters).\n\nExporting these may send messages to wrong numbers.\n\nDo you want to:\n• Cancel → go back and fix them\n• OK → export anyway (invalid rows will be skipped)`);
-    if(!proceed)return;
-  }
+  // Use user's choice from Final Review section
+  const skipProblems=(clState._problemAction||'skip')==='skip';
 
   const extras=clState.extraFields.filter(f=>f.include&&f.field).map(f=>({original:f.field,exportAs:f.exportName||f.field}));
 
@@ -5245,11 +5285,13 @@ function clExport(){
   const rows=filtered
     .filter(r=>{
       const phoneVal=String(r[pc]||'').trim().toLowerCase();
-      // Skip header-like rows and rows with no digits
+      // Always skip header-like rows
       if(!phoneVal||headerWords.has(phoneVal)||!/\d/.test(phoneVal))return false;
-      // Skip rows with clearly invalid phone (letters, too short)
-      const digits=phoneVal.replace(/\D/g,'');
-      if(digits.length<8||/[a-zA-Z]/.test(phoneVal))return false;
+      // If user chose skip → remove invalid phones
+      if(skipProblems){
+        const digits=phoneVal.replace(/\D/g,'');
+        if(digits.length<8||/[a-zA-Z]/.test(phoneVal))return false;
+      }
       return true;
     })
     .map(r=>{
@@ -5364,7 +5406,7 @@ function clReset(){
     cleaned:[],filters:{},
     removedDups:0,removedInvalid:0,
     phoneChanges:[],autoCleanApplied:false,
-    exportFormat:'admin',extraFields:[],defaultWatiId:''
+    exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip'
   };
   // Reset file input so same file can be re-uploaded
   const fi=document.getElementById('cl-file-inp');
