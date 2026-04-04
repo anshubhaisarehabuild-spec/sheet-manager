@@ -4596,26 +4596,43 @@ function clHandleFile(file){
   const reader=new FileReader();
   reader.onload=e=>{
     try{
-      let data=[];
+      let data=[], allHeaders=[];
       if(ext==='xlsx'){
         const wb=XLSX.read(e.target.result,{type:'array'});
         const ws=wb.Sheets[wb.SheetNames[0]];
-        data=XLSX.utils.sheet_to_json(ws,{defval:''});
+        // Use header:1 to get raw rows, then manually assign clean header names
+        const rawRows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        if(!rawRows.length)return;
+        // Find the first non-empty row as header row
+        const hdrRowIdx=rawRows.findIndex(r=>r.some(c=>String(c||'').trim()));
+        if(hdrRowIdx<0)return;
+        const hdrRow=rawRows[hdrRowIdx];
+        // Build clean headers — replace blank with Col_1, Col_2...
+        allHeaders=hdrRow.map((h,i)=>{
+          const s=String(h||'').trim();
+          return s||`Column_${i+1}`;
+        });
+        data=rawRows.slice(hdrRowIdx+1).map(row=>{
+          const r={};
+          allHeaders.forEach((h,i)=>{r[h]=String(row[i]===undefined?'':row[i]).trim();});
+          return r;
+        }).filter(r=>Object.values(r).some(v=>v));
       } else {
-        // CSV: parse manually
+        // CSV
         const text=new TextDecoder().decode(new Uint8Array(e.target.result));
         const lines=text.split(/\r?\n/).filter(l=>l.trim());
         if(!lines.length)return;
-        const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+        const rawHdrs=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+        allHeaders=rawHdrs.map((h,i)=>h||`Column_${i+1}`);
         data=lines.slice(1).map(line=>{
           const vals=line.match(/(".*?"|[^,]+|(?<=,)(?=,)|(?<=,)$|^(?=,))/g)||[];
           const row={};
-          headers.forEach((h,i)=>{row[h]=(vals[i]||'').trim().replace(/^"|"$/g,'');});
+          allHeaders.forEach((h,i)=>{row[h]=(vals[i]||'').trim().replace(/^"|"$/g,'');});
           return row;
         }).filter(r=>Object.values(r).some(v=>v));
       }
       clState.raw=data;
-      clState.headers=data.length?Object.keys(data[0]):[];
+      clState.headers=allHeaders;
       clState.cleaned=[...data.map(r=>({...r}))];
       clState.removedDups=0;clState.removedInvalid=0;clState.phoneChanges=[];clState.autoCleanApplied=false;
       clState.filters={};clState.extraFields=[];clState.defaultWatiId='';
@@ -5084,23 +5101,26 @@ function clBuildExport(){
 
   document.getElementById('cl-extra-fields-wrap').innerHTML=watiSection+(extras.length?`
     <h3 class="cl-title" style="margin-bottom:8px;">Other Columns in Your Sheet</h3>
-    <p class="cl-sub">Choose which columns to include and set the name they should have in the exported file</p>
+    <p class="cl-sub">Check columns to include in export. Type a new name in "Export As" to rename it.</p>
     <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
-      <div style="display:grid;grid-template-columns:32px 1fr 1fr;gap:0;background:var(--input);padding:8px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--border);">
-        <span></span><span>Original Column</span><span>Export As (rename)</span>
+      <div style="display:grid;grid-template-columns:32px 1fr 1fr 1fr;gap:0;background:var(--input);padding:8px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-bottom:1px solid var(--border);">
+        <span></span><span>Original Column</span><span>Sample Data</span><span>Export As (rename)</span>
       </div>
-      ${clState.extraFields.map((f,i)=>f.field?`
-      <div style="display:grid;grid-template-columns:32px 1fr 1fr;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);background:${f.include?'#eef2ff':'var(--card)'};">
-        <input type="checkbox" id="ef-${i}" ${f.include?'checked':''} style="accent-color:var(--accent);width:15px;height:15px;"
-          onchange="clState.extraFields[${i}].include=this.checked;this.closest('div').style.background=this.checked?'#eef2ff':'var(--card)';const ni=document.getElementById('ef-name-${i}');if(ni)ni.disabled=!this.checked;"/>
-        <label for="ef-${i}" style="font-size:13px;color:var(--text);cursor:pointer;font-weight:500;">${esc(f.field)}</label>
-        <input type="text" placeholder="same as original" value="${esc(f.exportName||'')}"
-          style="background:var(--input);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text);outline:none;width:100%;"
-          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"
-          onchange="clState.extraFields[${i}].exportName=this.value.trim()"
-          ${f.include?'':'disabled'}
-          id="ef-name-${i}"/>
-      </div>`:'').join('')}
+      ${clState.extraFields.map((f,i)=>{
+        if(!f.field)return'';
+        const sample=clState.cleaned.map(r=>String(r[f.field]||'').trim()).find(v=>v)||'—';
+        return`<div style="display:grid;grid-template-columns:32px 1fr 1fr 1fr;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);background:${f.include?'#eef2ff':'var(--card)'};" id="ef-row-${i}">
+          <input type="checkbox" id="ef-${i}" ${f.include?'checked':''} style="accent-color:var(--accent);width:15px;height:15px;"
+            onchange="clState.extraFields[${i}].include=this.checked;document.getElementById('ef-row-${i}').style.background=this.checked?'#eef2ff':'var(--card)';const ni=document.getElementById('ef-name-${i}');if(ni)ni.disabled=!this.checked;"/>
+          <label for="ef-${i}" style="font-size:13px;color:var(--text);cursor:pointer;font-weight:600;">${esc(f.field)}</label>
+          <span style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(sample)}">${esc(sample.length>25?sample.slice(0,25)+'…':sample)}</span>
+          <input type="text" placeholder="same as original" value="${esc(f.exportName||'')}"
+            style="background:var(--input);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text);outline:none;width:100%;"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"
+            onchange="clState.extraFields[${i}].exportName=this.value.trim()"
+            ${f.include?'':'disabled'} id="ef-name-${i}"/>
+        </div>`;
+      }).join('')}
     </div>`:'');
 
   clUpdateFinalReview();
