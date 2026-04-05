@@ -5154,11 +5154,13 @@ function clBuildExport(){
   const problemRows=filtered.map((r,i)=>{
     const phoneVal=String(r[pcCheck]||'').trim();
     const digits=phoneVal.replace(/\D/g,'');
+    const cleaned=clCleanPhone(phoneVal);
     const reasons=[];
     if(!phoneVal||headerWordsCheck.has(phoneVal.toLowerCase()))reasons.push('Empty phone');
     else if(/[a-zA-Z]/.test(phoneVal))reasons.push('Phone has letters: '+phoneVal);
-    else if(digits.length<8)reasons.push('Phone too short: '+phoneVal);
-    return reasons.length?{name:String(r[ncCheck]||'Row '+(i+1)),phone:phoneVal,reason:reasons[0]}:null;
+    else if(digits.length<8)reasons.push('Phone too short ('+digits.length+' digits): '+phoneVal);
+    // Spaces/dashes are NOT an error — clCleanPhone handles them at export
+    return reasons.length?{name:String(r[ncCheck]||'Row '+(i+1)),phone:phoneVal,cleaned,reason:reasons[0]}:null;
   }).filter(Boolean);
   clState._problemRows=problemRows;
 
@@ -5297,8 +5299,8 @@ function clExport(){
     .map(r=>{
       const watiVal=watiMissing?defaultWati:(sc?String(r[sc]||''):'');
       const base=fmt==='admin'
-        ?{name:r[nc]||'',mobile_number:r[pc]||'',wati_server_id:watiVal}
-        :{name:r[nc]||'',phone:r[pc]||'',watiserverid:watiVal};
+        ?{name:r[nc]||'',mobile_number:clCleanPhone(r[pc]),wati_server_id:watiVal}
+        :{name:r[nc]||'',phone:clCleanPhone(r[pc]),watiserverid:watiVal};
       extras.forEach(f=>{base[f.exportAs]=r[f.original]||'';});
       return base;
     });
@@ -5368,6 +5370,16 @@ function clDeleteHistory(i){
 function clClearHistory(){
   localStorage.removeItem('cl_export_history');
   clRenderHistory();
+}
+
+// ── Phone cleaner ──
+function clCleanPhone(raw){
+  if(!raw)return'';
+  const s=String(raw).trim();
+  // Keep + if present, strip everything else except digits
+  const hasPlus=s.startsWith('+');
+  const digits=s.replace(/\D/g,'');
+  return hasPlus?'+'+digits:digits;
 }
 
 // ── Safety: warn if leaving page with unsaved data ──
