@@ -5037,18 +5037,16 @@ function clBuildFilter(){
   const coreFields=new Set([nc,pc,sc].filter(Boolean));
   const data=clState.cleaned;
 
-  // Only show columns that are genuinely useful for filtering:
-  // - Not phone or WATI (core fields)
-  // - Not all-unique values (like individual IDs/phones)
-  // - Between 2 and 30 unique values
-  // - Values are not purely numeric long strings (phone-like)
   const filterCols=clState.headers.filter(col=>{
     if(coreFields.has(col))return false;
     const vals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))];
-    if(vals.size===0||vals.length<2||vals.length>30)return false;
-    // Skip if values look like phone numbers or long IDs
-    const looksNumeric=vals.every(v=>/^\+?\d[\d\s]{6,}$/.test(v));
-    return !looksNumeric;
+    // Must have at least 2 unique values and not be all-unique (like IDs/phones)
+    if(vals.length<2)return false;
+    if(vals.length>50)return false; // too many unique = not useful for filtering
+    // Skip if every value is a long numeric string (phone number-like)
+    const allLongNumbers=vals.every(v=>/^\d{8,}$/.test(v.replace(/[\s\-+()]/g,'')));
+    if(allLongNumbers)return false;
+    return true;
   });
 
   if(!filterCols.length){
