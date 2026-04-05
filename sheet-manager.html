@@ -837,6 +837,19 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .cl-modal-preview td{padding:5px 10px;border-top:1px solid var(--border);color:var(--text);}
 .cl-modal-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
 .cl-cc-select{background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;cursor:pointer;margin:8px auto;display:block;}
+.cl-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;}
+.cl-sheet-modal{background:var(--card);border-radius:14px;width:100%;max-width:960px;box-shadow:0 24px 64px rgba(0,0,0,.35);display:flex;flex-direction:column;}
+.cl-sheet-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.cl-sheet-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%;}
+.cl-sheet-close{background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;}
+.cl-sheet-close:hover{background:var(--input);color:var(--text);}
+.cl-sheet-table-wrap{overflow:auto;max-height:70vh;border-radius:0 0 14px 14px;}
+.cl-sheet-table{width:100%;border-collapse:collapse;font-size:13px;}
+.cl-sheet-table thead th{position:sticky;top:0;background:#eef2ff;color:var(--accent);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:9px 14px;border-bottom:2px solid var(--border);text-align:left;white-space:nowrap;}
+.cl-sheet-table tbody tr:nth-child(even){background:var(--input);}
+.cl-sheet-table tbody tr:hover{background:#f0f4ff;}
+.cl-sheet-table tbody td{padding:7px 14px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap;}
+.cl-sheet-footer{padding:10px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);text-align:right;}
 </style>
 </head>
 <body>
@@ -5323,13 +5336,19 @@ function clExport(){
   const history=JSON.parse(localStorage.getItem('cl_export_history')||'[]');
   history.unshift({
     filename,
-    rows:rows.length,
+    rowCount:rows.length,
+    data:rows,
     format:fmt==='admin'?'Admin Panel':'VS Code',
     dups:clState.removedDups,
     invalid:clState.removedInvalid,
     date:new Date().toISOString()
   });
-  localStorage.setItem('cl_export_history',JSON.stringify(history.slice(0,20)));
+  try{localStorage.setItem('cl_export_history',JSON.stringify(history.slice(0,20)));}
+  catch(e){
+    // Storage full — drop row data from older entries and retry
+    const slim=history.slice(0,20).map((h,i)=>i===0?h:{...h,data:undefined});
+    try{localStorage.setItem('cl_export_history',JSON.stringify(slim));}catch(e2){}
+  }
   clRenderHistory();
   toast(`Exported ${rows.length} rows as "${filename}" ✓`,'s');
 }
@@ -5341,21 +5360,50 @@ function clRenderHistory(){
   if(!wrap||!list)return;
   if(!history.length){wrap.style.display='none';return;}
   wrap.style.display='';
-  list.innerHTML=history.map((h,i)=>`
-    <div class="cl-history-item">
-      <div class="cl-history-icon">📄</div>
-      <div class="cl-history-info">
-        <div class="cl-history-name">${esc(h.filename)}</div>
-        <div class="cl-history-meta">
-          ${new Date(h.date).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
-          &nbsp;·&nbsp; ${h.rows} rows
-          ${h.dups?`&nbsp;·&nbsp; ${h.dups} dups removed`:''}
-          ${h.invalid?`&nbsp;·&nbsp; ${h.invalid} invalid removed`:''}
-        </div>
-      </div>
-      <span class="cl-history-badge">${esc(h.format)}</span>
-      <button onclick="clDeleteHistory(${i})" style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:16px;padding:4px;" title="Remove">×</button>
-    </div>`).join('');
+  list.innerHTML='';
+  history.forEach(function(h,i){
+    var item=document.createElement('div');
+    item.className='cl-history-item';
+
+    var icon=document.createElement('div');
+    icon.className='cl-history-icon';
+    icon.textContent='📄';
+
+    var info=document.createElement('div');
+    info.className='cl-history-info';
+    var name=document.createElement('div');
+    name.className='cl-history-name';
+    name.textContent=h.filename||'';
+    var meta=document.createElement('div');
+    meta.className='cl-history-meta';
+    var dateStr=new Date(h.date).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    var rowCount=h.rowCount||h.rows||0;
+    meta.textContent=dateStr+' · '+rowCount+' rows';
+    info.appendChild(name);
+    info.appendChild(meta);
+
+    var badge=document.createElement('span');
+    badge.className='cl-history-badge';
+    badge.textContent=h.format||'';
+
+    var openBtn=document.createElement('button');
+    openBtn.textContent='Open';
+    openBtn.style.cssText='padding:5px 14px;font-size:12px;font-weight:700;background:#6366f1;color:#ffffff;border:none;border-radius:6px;cursor:pointer;flex-shrink:0;';
+    openBtn.onclick=function(e){e.stopPropagation();clViewHistory(i);};
+
+    var delBtn=document.createElement('button');
+    delBtn.textContent='×';
+    delBtn.title='Remove';
+    delBtn.style.cssText='background:none;border:none;cursor:pointer;color:#888;font-size:18px;padding:4px;line-height:1;flex-shrink:0;';
+    delBtn.onclick=function(e){e.stopPropagation();clDeleteHistory(i);};
+
+    item.appendChild(icon);
+    item.appendChild(info);
+    item.appendChild(badge);
+    item.appendChild(openBtn);
+    item.appendChild(delBtn);
+    list.appendChild(item);
+  });
 }
 
 function clDeleteHistory(i){
@@ -5368,6 +5416,57 @@ function clDeleteHistory(i){
 function clClearHistory(){
   localStorage.removeItem('cl_export_history');
   clRenderHistory();
+}
+
+function clViewHistory(i){
+  const history=JSON.parse(localStorage.getItem('cl_export_history')||'[]');
+  const h=history[i];
+  if(!h){return;}
+  if(!h.data||!h.data.length){
+    // Show a proper modal instead of just a toast
+    const overlay=document.createElement('div');
+    overlay.className='cl-sheet-overlay';
+    overlay.innerHTML=`
+      <div class="cl-sheet-modal" style="max-width:400px;">
+        <div class="cl-sheet-header">
+          <div class="cl-sheet-title">📄 ${esc(h.filename)}</div>
+          <button class="cl-sheet-close" onclick="this.closest('.cl-sheet-overlay').remove()">×</button>
+        </div>
+        <div style="padding:32px 24px;text-align:center;">
+          <div style="font-size:40px;margin-bottom:16px;">⚠️</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;">Preview Available Nahi Hai</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7;">
+            Yeh export purana hai — isme data save nahi hua tha.<br>
+            <strong>Ek baar phir export karein</strong>, uske baad history item click karne par sheet preview khulegi.
+          </div>
+          <button onclick="this.closest('.cl-sheet-overlay').remove()" style="margin-top:20px;padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Theek Hai</button>
+        </div>
+      </div>`;
+    overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+    document.body.appendChild(overlay);
+    return;
+  }
+  const cols=Object.keys(h.data[0]);
+  const rowsHtml=h.data.map(r=>`<tr>${cols.map(c=>`<td>${esc(String(r[c]||''))}</td>`).join('')}</tr>`).join('');
+  const headersHtml=cols.map(c=>`<th>${esc(c)}</th>`).join('');
+  const overlay=document.createElement('div');
+  overlay.className='cl-sheet-overlay';
+  overlay.innerHTML=`
+    <div class="cl-sheet-modal">
+      <div class="cl-sheet-header">
+        <div class="cl-sheet-title">📄 ${esc(h.filename)}</div>
+        <button class="cl-sheet-close" onclick="this.closest('.cl-sheet-overlay').remove()">×</button>
+      </div>
+      <div class="cl-sheet-table-wrap">
+        <table class="cl-sheet-table">
+          <thead><tr>${headersHtml}</tr></thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>
+      <div class="cl-sheet-footer">${h.rowCount||h.data.length} rows &nbsp;·&nbsp; ${cols.length} columns &nbsp;·&nbsp; ${esc(h.format)}</div>
+    </div>`;
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+  document.body.appendChild(overlay);
 }
 
 // ── Phone cleaner — digits only, no + no spaces no dashes ──
@@ -5443,6 +5542,8 @@ function timeAgo(iso){
   if(s<604800)return Math.floor(s/86400)+'d ago';
   return new Date(iso).toLocaleDateString();
 }
+// Render history on load so Open buttons are always present
+document.addEventListener('DOMContentLoaded',function(){clRenderHistory();});
 </script>
 </body>
 </html>
