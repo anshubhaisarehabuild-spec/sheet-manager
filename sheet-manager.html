@@ -5372,14 +5372,10 @@ function clClearHistory(){
   clRenderHistory();
 }
 
-// ── Phone cleaner ──
+// ── Phone cleaner — digits only, no + no spaces no dashes ──
 function clCleanPhone(raw){
   if(!raw)return'';
-  const s=String(raw).trim();
-  // Keep + if present, strip everything else except digits
-  const hasPlus=s.startsWith('+');
-  const digits=s.replace(/\D/g,'');
-  return hasPlus?'+'+digits:digits;
+  return String(raw).replace(/\D/g,'');
 }
 
 // ── Safety: warn if leaving page with unsaved data ──
