@@ -5434,12 +5434,12 @@ function clViewHistory(i){
         </div>
         <div style="padding:32px 24px;text-align:center;">
           <div style="font-size:40px;margin-bottom:16px;">⚠️</div>
-          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;">Preview Available Nahi Hai</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;">Preview Not Available</div>
           <div style="font-size:13px;color:var(--muted);line-height:1.7;">
-            Yeh export purana hai — isme data save nahi hua tha.<br>
-            <strong>Ek baar phir export karein</strong>, uske baad history item click karne par sheet preview khulegi.
+            This is an older export — data was not saved at that time.<br>
+            <strong>Export once more</strong> to enable sheet preview for future exports.
           </div>
-          <button onclick="this.closest('.cl-sheet-overlay').remove()" style="margin-top:20px;padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Theek Hai</button>
+          <button onclick="this.closest('.cl-sheet-overlay').remove()" style="margin-top:20px;padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Got It</button>
         </div>
       </div>`;
     overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
