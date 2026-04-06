@@ -5522,10 +5522,12 @@ function clExport(){
   URL.revokeObjectURL(url);
   // Save to history
   const history=JSON.parse(localStorage.getItem('cl_export_history')||'[]');
+  // Only save row data for small exports (≤5000 rows) to avoid localStorage overflow
+  const saveData=rows.length<=5000?rows:undefined;
   history.unshift({
     filename,
     rowCount:rows.length,
-    data:rows,
+    data:saveData,
     format:fmt==='admin'?'Admin Panel':'VS Code',
     dups:clState.removedDups,
     invalid:clState.removedInvalid,
