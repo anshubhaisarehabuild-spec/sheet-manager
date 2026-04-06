@@ -5154,6 +5154,7 @@ function clSelectFormat(fmt){
   clState.exportFormat=fmt;
   document.getElementById('clf-admin').classList.toggle('active',fmt==='admin');
   document.getElementById('clf-vscode').classList.toggle('active',fmt==='vscode');
+  clUpdateFinalReview();
 }
 
 function clBuildExport(){
