@@ -1090,7 +1090,19 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     </div>
 
     <!-- DATA CLEANER PANEL -->
-    <div id="cleaner-panel" style="display:none;">
+    <div id="cleaner-panel" style="display:none;position:relative;">
+
+    <!-- Parse / Processing Loader -->
+    <div id="cl-loader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9998;align-items:center;justify-content:center;">
+      <div style="background:var(--card);border-radius:16px;padding:32px 36px;text-align:center;min-width:300px;box-shadow:0 24px 64px rgba(0,0,0,0.4);">
+        <div style="font-size:36px;margin-bottom:12px;" id="cl-loader-icon">⚙️</div>
+        <div id="cl-loader-text" style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px;">Processing...</div>
+        <div id="cl-loader-sub" style="font-size:12px;color:var(--muted);margin-bottom:16px;"></div>
+        <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+          <div id="cl-loader-bar" style="height:100%;background:#6366f1;border-radius:4px;transition:width 0.2s;width:5%;"></div>
+        </div>
+      </div>
+    </div>
 
       <!-- Safety Banner -->
       <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;margin-bottom:20px;">
@@ -4662,61 +4674,154 @@ function renderCleaner(){
   });
 })();
 
+// ── Loader helpers ──
+function clShowLoader(text,sub,icon){
+  const el=document.getElementById('cl-loader');
+  if(el){el.style.display='flex';}
+  const t=document.getElementById('cl-loader-text');if(t)t.textContent=text||'Processing...';
+  const s=document.getElementById('cl-loader-sub');if(s)s.textContent=sub||'';
+  const ic=document.getElementById('cl-loader-icon');if(ic)ic.textContent=icon||'⚙️';
+  const bar=document.getElementById('cl-loader-bar');if(bar)bar.style.width='5%';
+}
+function clHideLoader(){
+  const el=document.getElementById('cl-loader');if(el)el.style.display='none';
+}
+function clLoaderProgress(pct,sub){
+  const bar=document.getElementById('cl-loader-bar');if(bar)bar.style.width=Math.min(100,pct)+'%';
+  const s=document.getElementById('cl-loader-sub');if(s&&sub)s.textContent=sub;
+}
+
+// ── Apply parsed data to state ──
+function clFinishLoad(file,data,headers){
+  clState.raw=data;
+  clState.headers=headers;
+  clState.cleaned=data.map(r=>({...r}));
+  clState.removedDups=0;clState.removedInvalid=0;clState.phoneChanges=[];
+  clState.autoCleanApplied=false;clState.filters={};clState.extraFields=[];
+  clState.defaultWatiId='';clState.mapping={name:null,phone:null,serverId:null};
+  clState._undoStack=[];
+  document.getElementById('cl-file-name').textContent=file.name;
+  document.getElementById('cl-file-rows').textContent=data.length.toLocaleString()+' rows';
+  document.getElementById('cl-file-info').style.display='flex';
+  document.getElementById('cl-next-1').disabled=false;
+  clHideLoader();
+  if(data.length>100000)toast(`Loaded ${data.length.toLocaleString()} rows — large file, processing may be slower`,'s');
+}
+
 function clHandleFile(file){
   if(!file)return;
   const ext=file.name.split('.').pop().toLowerCase();
   if(!['csv','xlsx'].includes(ext)){toast('Only .csv and .xlsx files are supported','e');return;}
+  clShowLoader('Reading file…','Hang on, loading your data','📂');
   const reader=new FileReader();
   reader.onload=e=>{
+    const buffer=e.target.result;
+    clLoaderProgress(20,'Parsing rows…');
+    // Try Web Worker (keeps UI responsive for large files)
+    const xlsxSrc=document.querySelector('script[src*="xlsx"]')?.src;
+    if(xlsxSrc&&typeof Worker!=='undefined'){
+      const wCode=`importScripts('${xlsxSrc}');
+self.onmessage=function(msg){
+  var buf=msg.data.buffer,ext=msg.data.ext;
+  try{
+    var data=[],headers=[];
+    if(ext==='xlsx'){
+      var wb=XLSX.read(buf,{type:'array',cellText:false,cellDates:false});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      if(!raw.length){self.postMessage({error:'Empty file'});return;}
+      var hi=raw.findIndex(function(r){return r.some(function(c){return String(c||'').trim();});});
+      if(hi<0){self.postMessage({error:'No header row found'});return;}
+      headers=raw[hi].map(function(h,i){var s=String(h||'').trim();return s||'Column_'+(i+1);});
+      data=raw.slice(hi+1).map(function(row){
+        var r={};headers.forEach(function(h,i){r[h]=String(row[i]===undefined?'':row[i]).trim();});return r;
+      }).filter(function(r){return Object.values(r).some(function(v){return v;});});
+    }else{
+      var text=new TextDecoder().decode(new Uint8Array(buf));
+      var lines=text.split(/\\r?\\n/).filter(function(l){return l.trim();});
+      if(!lines.length){self.postMessage({error:'Empty file'});return;}
+      var rh=lines[0].split(',').map(function(h){return h.trim().replace(/^"|"$/g,'');});
+      headers=rh.map(function(h,i){return h||'Column_'+(i+1);});
+      var CHUNK=20000;
+      for(var i=1;i<lines.length;i++){
+        var parts=[];var cur='';var inQ=false;
+        for(var c=0;c<lines[i].length;c++){
+          var ch=lines[i][c];
+          if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){parts.push(cur.trim().replace(/^"|"$/g,''));cur='';}else{cur+=ch;}
+        }
+        parts.push(cur.trim().replace(/^"|"$/g,''));
+        var row={};headers.forEach(function(h,j){row[h]=parts[j]||'';});
+        if(Object.values(row).some(function(v){return v;}))data.push(row);
+        if(i%CHUNK===0)self.postMessage({progress:Math.round(i/lines.length*90)+5});
+      }
+    }
+    self.postMessage({data:data,headers:headers});
+  }catch(err){self.postMessage({error:err.message});}
+};`;
+      let workerUrl;
+      try{
+        const blob=new Blob([wCode],{type:'application/javascript'});
+        workerUrl=URL.createObjectURL(blob);
+        const worker=new Worker(workerUrl);
+        worker.onmessage=function(m){
+          if(m.data.progress!==undefined){clLoaderProgress(m.data.progress,'Parsing rows…');return;}
+          worker.terminate();URL.revokeObjectURL(workerUrl);
+          if(m.data.error){clHideLoader();toast('Parse error: '+m.data.error,'e');return;}
+          clLoaderProgress(100,'Done!');
+          setTimeout(()=>clFinishLoad(file,m.data.data,m.data.headers),100);
+        };
+        worker.onerror=function(){
+          worker.terminate();URL.revokeObjectURL(workerUrl);
+          clParseFallback(buffer,ext,file);
+        };
+        worker.postMessage({buffer,ext});
+      }catch(e){clParseFallback(buffer,ext,file);}
+    }else{
+      clParseFallback(buffer,ext,file);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function clParseFallback(buffer,ext,file){
+  // Main-thread parse (fallback)
+  clLoaderProgress(30,'Parsing on main thread…');
+  setTimeout(()=>{
     try{
-      let data=[], allHeaders=[];
+      let data=[],allHeaders=[];
       if(ext==='xlsx'){
-        const wb=XLSX.read(e.target.result,{type:'array'});
+        const wb=XLSX.read(buffer,{type:'array'});
         const ws=wb.Sheets[wb.SheetNames[0]];
-        // Use header:1 to get raw rows, then manually assign clean header names
         const rawRows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-        if(!rawRows.length)return;
-        // Find the first non-empty row as header row
+        if(!rawRows.length){clHideLoader();return;}
         const hdrRowIdx=rawRows.findIndex(r=>r.some(c=>String(c||'').trim()));
-        if(hdrRowIdx<0)return;
+        if(hdrRowIdx<0){clHideLoader();return;}
         const hdrRow=rawRows[hdrRowIdx];
-        // Build clean headers — replace blank with Col_1, Col_2...
-        allHeaders=hdrRow.map((h,i)=>{
-          const s=String(h||'').trim();
-          return s||`Column_${i+1}`;
-        });
+        allHeaders=hdrRow.map((h,i)=>{const s=String(h||'').trim();return s||`Column_${i+1}`;});
         data=rawRows.slice(hdrRowIdx+1).map(row=>{
-          const r={};
-          allHeaders.forEach((h,i)=>{r[h]=String(row[i]===undefined?'':row[i]).trim();});
-          return r;
+          const r={};allHeaders.forEach((h,i)=>{r[h]=String(row[i]===undefined?'':row[i]).trim();});return r;
         }).filter(r=>Object.values(r).some(v=>v));
-      } else {
-        // CSV
-        const text=new TextDecoder().decode(new Uint8Array(e.target.result));
+      }else{
+        const text=new TextDecoder().decode(new Uint8Array(buffer));
         const lines=text.split(/\r?\n/).filter(l=>l.trim());
-        if(!lines.length)return;
+        if(!lines.length){clHideLoader();return;}
         const rawHdrs=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
         allHeaders=rawHdrs.map((h,i)=>h||`Column_${i+1}`);
         data=lines.slice(1).map(line=>{
-          const vals=line.match(/(".*?"|[^,]+|(?<=,)(?=,)|(?<=,)$|^(?=,))/g)||[];
-          const row={};
-          allHeaders.forEach((h,i)=>{row[h]=(vals[i]||'').trim().replace(/^"|"$/g,'');});
+          const parts=[];let cur='';let inQ=false;
+          for(let c=0;c<line.length;c++){
+            const ch=line[c];
+            if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){parts.push(cur.trim().replace(/^"|"$/g,''));cur='';}else{cur+=ch;}
+          }
+          parts.push(cur.trim().replace(/^"|"$/g,''));
+          const row={};allHeaders.forEach((h,i)=>{row[h]=parts[i]||'';});
           return row;
         }).filter(r=>Object.values(r).some(v=>v));
       }
-      clState.raw=data;
-      clState.headers=allHeaders;
-      clState.cleaned=[...data.map(r=>({...r}))];
-      clState.removedDups=0;clState.removedInvalid=0;clState.phoneChanges=[];clState.autoCleanApplied=false;
-      clState.filters={};clState.extraFields=[];clState.defaultWatiId='';
-      clState.mapping={name:null,phone:null,serverId:null};
-      document.getElementById('cl-file-name').textContent=file.name;
-      document.getElementById('cl-file-rows').textContent=data.length+' rows';
-      document.getElementById('cl-file-info').style.display='flex';
-      document.getElementById('cl-next-1').disabled=false;
-    }catch(err){toast('Failed to parse file: '+err.message,'e');}
-  };
-  reader.readAsArrayBuffer(file);
+      clLoaderProgress(100,'Done!');
+      setTimeout(()=>clFinishLoad(file,data,allHeaders),100);
+    }catch(err){clHideLoader();toast('Failed to parse file: '+err.message,'e');}
+  },20);
 }
 
 // ── Step navigation ──
@@ -4933,19 +5038,33 @@ function clUndo(){
 }
 
 function clRemoveDups(){
-  const pc=clState.mapping.phone;const seen=new Set();const before=clState.cleaned.length;
   clPushUndo('Remove Duplicates');
-  clState.cleaned=clState.cleaned.filter(r=>{const p=String(r[pc]||'').trim();if(!p||!seen.has(p)){seen.add(p);return true;}return false;});
-  clState.removedDups=before-clState.cleaned.length;
-  clClosModal();toast(`${clState.removedDups} duplicates removed`,'s');clBuildClean();
+  clShowLoader('Removing duplicates…','','🔁');
+  const pc=clState.mapping.phone;const seen=new Set();const before=clState.cleaned.length;
+  const CHUNK=20000;let i=0;const result=[];
+  function step(){
+    const end=Math.min(i+CHUNK,clState.cleaned.length);
+    for(;i<end;i++){const p=String(clState.cleaned[i][pc]||'').trim();if(!p||!seen.has(p)){seen.add(p);result.push(clState.cleaned[i]);}}
+    clLoaderProgress(Math.round(i/clState.cleaned.length*100));
+    if(i<clState.cleaned.length){setTimeout(step,0);}
+    else{clState.cleaned=result;clState.removedDups=before-result.length;clHideLoader();clClosModal();toast(`${clState.removedDups} duplicates removed`,'s');clBuildClean();}
+  }
+  setTimeout(step,50);
 }
 
 function clRemoveInvalid(){
-  const {name:nc,phone:pc}=clState.mapping;const before=clState.cleaned.length;
   clPushUndo('Remove Invalid');
-  clState.cleaned=clState.cleaned.filter(r=>String(r[nc]||'').trim()&&String(r[pc]||'').trim());
-  clState.removedInvalid=before-clState.cleaned.length;
-  toast(`${clState.removedInvalid} invalid rows removed`,'s');clBuildClean();
+  clShowLoader('Removing invalid rows…','','🧹');
+  const {name:nc,phone:pc}=clState.mapping;const before=clState.cleaned.length;
+  const CHUNK=20000;let i=0;const result=[];
+  function step(){
+    const end=Math.min(i+CHUNK,clState.cleaned.length);
+    for(;i<end;i++){const r=clState.cleaned[i];if(String(r[nc]||'').trim()&&String(r[pc]||'').trim())result.push(r);}
+    clLoaderProgress(Math.round(i/clState.cleaned.length*100));
+    if(i<clState.cleaned.length){setTimeout(step,0);}
+    else{clState.cleaned=result;clState.removedInvalid=before-result.length;clHideLoader();toast(`${clState.removedInvalid} invalid rows removed`,'s');clBuildClean();}
+  }
+  setTimeout(step,50);
 }
 
 // Comprehensive country code list
