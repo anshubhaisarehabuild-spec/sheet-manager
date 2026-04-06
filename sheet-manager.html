@@ -850,6 +850,11 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .cl-sheet-table tbody tr:hover{background:#f0f4ff;}
 .cl-sheet-table tbody td{padding:7px 14px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap;}
 .cl-sheet-footer{padding:10px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);text-align:right;}
+.cl-summary-modal{background:var(--card);border-radius:14px;width:100%;max-width:440px;box-shadow:0 24px 64px rgba(0,0,0,.35);padding:28px 24px;}
+.cl-summary-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.cl-summary-row:last-of-type{border-bottom:none;}
+.cl-summary-label{color:var(--muted);font-weight:600;}
+.cl-summary-val{color:var(--text);font-weight:700;text-align:right;}
 </style>
 </head>
 <body>
@@ -1156,8 +1161,12 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
             <span>⚠️</span><span>Column mapping not clear. Please assign required fields below.</span>
           </div>
           <div class="cl-map-grid" id="cl-map-grid"></div>
-          <h3 class="cl-title" style="margin-top:4px;">Preview (first 10 rows)</h3>
-          <div class="cl-table-wrap" id="cl-table-wrap"></div>
+          <h3 class="cl-title" style="margin-top:4px;">Data Preview</h3>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <input type="text" id="cl-preview-search" placeholder="🔍  Search name, phone, or any value..." style="flex:1;background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;" oninput="clSearchPreview(this.value)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+            <span id="cl-preview-count" style="font-size:12px;color:var(--muted);white-space:nowrap;"></span>
+          </div>
+          <div class="cl-table-wrap" id="cl-table-wrap" style="max-height:340px;overflow:auto;"></div>
           <div class="cl-btn-row">
             <button class="cl-btn cl-btn-ghost" onclick="clGoStep(1)">← Back</button>
             <button class="cl-btn cl-btn-primary" onclick="clGoStep(3)">Next: Clean Data →</button>
@@ -1173,6 +1182,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <div id="cl-clean-sections"></div>
           <div class="cl-btn-row">
             <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">← Back</button>
+            <button class="cl-btn cl-btn-ghost" id="cl-undo-btn" onclick="clUndo()" style="display:none;border-color:#f59e0b;color:#f59e0b;">↩ Undo Last Action</button>
             <button class="cl-btn cl-btn-primary" onclick="clGoStep(4)">Next: Filter →</button>
           </div>
         </div>
@@ -4627,7 +4637,8 @@ let clState={
   filters:{},
   removedDups:0,removedInvalid:0,
   phoneChanges:[],autoCleanApplied:false,
-  exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip'
+  exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip',
+  _undoStack:[]
 };
 let clStep=1;
 
@@ -4774,9 +4785,32 @@ function clBuildPreview(){
     <div class="cl-map-item"><label>Phone Number *</label><select onchange="clState.mapping.phone=this.value==='(none)'?null:this.value;clBuildPreview()">${opts(clState.mapping.phone||'(none)')}</select></div>
     <div class="cl-map-item"><label>Wati Server ID *</label><select onchange="clState.mapping.serverId=this.value==='(none)'?null:this.value;clBuildPreview()">${opts(clState.mapping.serverId||'(none)')}</select></div>
   `;
-  // Preview table
-  const preview=clState.raw.slice(0,10);
-  document.getElementById('cl-table-wrap').innerHTML=`<table class="cl-table"><thead><tr>${h.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${preview.map(r=>`<tr>${h.map(c=>`<td>${esc(String(r[c]||''))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  // Preview table — reset search and render
+  const searchEl=document.getElementById('cl-preview-search');
+  if(searchEl)searchEl.value='';
+  clRenderPreviewTable(clState.raw.slice(0,50));
+  const countEl=document.getElementById('cl-preview-count');
+  if(countEl)countEl.textContent=`Showing 50 of ${clState.raw.length} rows`;
+}
+
+function clRenderPreviewTable(rows){
+  const h=clState.headers;
+  const wrap=document.getElementById('cl-table-wrap');
+  if(!wrap)return;
+  wrap.innerHTML=`<table class="cl-table"><thead><tr>${h.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${h.map(c=>`<td>${esc(String(r[c]||''))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+function clSearchPreview(q){
+  const countEl=document.getElementById('cl-preview-count');
+  if(!q.trim()){
+    clRenderPreviewTable(clState.raw.slice(0,50));
+    if(countEl)countEl.textContent=`Showing 50 of ${clState.raw.length} rows`;
+    return;
+  }
+  const ql=q.toLowerCase();
+  const matched=clState.raw.filter(r=>Object.values(r).some(v=>String(v||'').toLowerCase().includes(ql)));
+  clRenderPreviewTable(matched.slice(0,100));
+  if(countEl)countEl.textContent=matched.length?`${matched.length} match${matched.length>1?'es':''} found`:'No matches found';
 }
 
 // ── Step 3: Clean ──
@@ -4876,8 +4910,29 @@ function clPreviewDups(){
   );
 }
 
+function clPushUndo(label){
+  clState._undoStack.push({label,cleaned:[...clState.cleaned],removedDups:clState.removedDups,removedInvalid:clState.removedInvalid});
+  if(clState._undoStack.length>10)clState._undoStack.shift();
+  const btn=document.getElementById('cl-undo-btn');
+  if(btn){btn.style.display='';btn.textContent='↩ Undo: '+label;}
+}
+function clUndo(){
+  if(!clState._undoStack.length){toast('Nothing to undo','e');return;}
+  const snap=clState._undoStack.pop();
+  clState.cleaned=snap.cleaned;
+  clState.removedDups=snap.removedDups;
+  clState.removedInvalid=snap.removedInvalid;
+  const btn=document.getElementById('cl-undo-btn');
+  if(btn){
+    if(clState._undoStack.length){const prev=clState._undoStack[clState._undoStack.length-1];btn.textContent='↩ Undo: '+prev.label;}
+    else{btn.style.display='none';}
+  }
+  toast('Undone: '+snap.label,'s');clBuildClean();
+}
+
 function clRemoveDups(){
   const pc=clState.mapping.phone;const seen=new Set();const before=clState.cleaned.length;
+  clPushUndo('Remove Duplicates');
   clState.cleaned=clState.cleaned.filter(r=>{const p=String(r[pc]||'').trim();if(!p||!seen.has(p)){seen.add(p);return true;}return false;});
   clState.removedDups=before-clState.cleaned.length;
   clClosModal();toast(`${clState.removedDups} duplicates removed`,'s');clBuildClean();
@@ -4885,6 +4940,7 @@ function clRemoveDups(){
 
 function clRemoveInvalid(){
   const {name:nc,phone:pc}=clState.mapping;const before=clState.cleaned.length;
+  clPushUndo('Remove Invalid');
   clState.cleaned=clState.cleaned.filter(r=>String(r[nc]||'').trim()&&String(r[pc]||'').trim());
   clState.removedInvalid=before-clState.cleaned.length;
   toast(`${clState.removedInvalid} invalid rows removed`,'s');clBuildClean();
@@ -5298,8 +5354,7 @@ function clGetSelfExtras(){
   return (clState.extraFields||[]).filter(f=>f.include&&f.field);
 }
 function clNeedsSelfWati(){
-  const sc=clState.mapping.serverId;
-  return !sc||!clState.cleaned.some(r=>String(r[sc]||'').trim());
+  return true; // Always ask for WATI in self-contact rows
 }
 function clToggleSelfContacts(on){
   const wrap=document.getElementById('cl-self-fields');
@@ -5431,7 +5486,34 @@ function clExport(){
     try{localStorage.setItem('cl_export_history',JSON.stringify(slim));}catch(e2){}
   }
   clRenderHistory();
-  toast(`Exported ${rows.length} rows as "${filename}" ✓`,'s');
+  clShowExportSummary({filename,rowCount:rows.length,format:fmt==='admin'?'Admin Panel':'VS Code',wati:watiMissing?(defaultWati||'—'):'From sheet column',dups:clState.removedDups,invalid:clState.removedInvalid,date:new Date()});
+}
+
+function clShowExportSummary(info){
+  const fmt=s=>s.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const summaryText=`Export Summary\n--------------\nFile: ${info.filename}\nRows Exported: ${info.rowCount}\nFormat: ${info.format}\nWATI Server ID: ${info.wati}\nDuplicates Removed: ${info.dups}\nInvalid Removed: ${info.invalid}\nExported At: ${fmt(info.date)}`;
+  const overlay=document.createElement('div');
+  overlay.className='cl-sheet-overlay';
+  overlay.innerHTML=`
+    <div class="cl-summary-modal">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;color:var(--text);">✅ Export Successful</div>
+        <button onclick="this.closest('.cl-sheet-overlay').remove()" style="background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;">×</button>
+      </div>
+      <div class="cl-summary-row"><span class="cl-summary-label">File Name</span><span class="cl-summary-val" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(info.filename)}">${esc(info.filename)}</span></div>
+      <div class="cl-summary-row"><span class="cl-summary-label">Rows Exported</span><span class="cl-summary-val" style="color:#22c55e;">${info.rowCount.toLocaleString()}</span></div>
+      <div class="cl-summary-row"><span class="cl-summary-label">Format</span><span class="cl-summary-val">${esc(info.format)}</span></div>
+      <div class="cl-summary-row"><span class="cl-summary-label">WATI Server ID</span><span class="cl-summary-val">${esc(info.wati)}</span></div>
+      <div class="cl-summary-row"><span class="cl-summary-label">Duplicates Removed</span><span class="cl-summary-val">${info.dups}</span></div>
+      <div class="cl-summary-row"><span class="cl-summary-label">Invalid Removed</span><span class="cl-summary-val">${info.invalid}</span></div>
+      <div class="cl-summary-row"><span class="cl-summary-label">Exported At</span><span class="cl-summary-val">${fmt(info.date)}</span></div>
+      <div style="display:flex;gap:8px;margin-top:20px;">
+        <button onclick="navigator.clipboard.writeText(${JSON.stringify(summaryText).replace(/</g,'\\u003c')}).then(()=>{this.textContent='✓ Copied!';setTimeout(()=>this.textContent='📋 Copy Summary',1500)})" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;">📋 Copy Summary</button>
+        <button onclick="this.closest('.cl-sheet-overlay').remove()" style="padding:10px 20px;font-size:13px;font-weight:700;background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">Close</button>
+      </div>
+    </div>`;
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+  document.body.appendChild(overlay);
 }
 
 function clRenderHistory(){
