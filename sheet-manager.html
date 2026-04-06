@@ -5372,8 +5372,8 @@ function clAddSelfRow(){
   const row=document.createElement('div');
   row.style.cssText='display:grid;gap:8px;margin-bottom:10px;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;align-items:end;';
   // Build columns: name, phone, [wati], [...extras], [remove]
-  const cols=[{key:'name',label:'Name',ph:'e.g. Rahul Sharma'},{key:'phone',label:'Phone Number',ph:'e.g. 919876543210'}];
-  if(needWati)cols.push({key:'wati',label:'WATI Server ID',ph:'e.g. 29'});
+  const cols=[{key:'name',label:'Name',ph:''},{key:'phone',label:'Phone Number',ph:''}];
+  if(needWati)cols.push({key:'wati',label:'WATI Server ID',ph:''});
   extras.forEach(f=>cols.push({key:'extra_'+f.field,label:f.exportName||f.field,ph:''}));
   const totalCols=cols.length+1; // +1 for remove btn
   row.style.gridTemplateColumns=cols.map(()=>'1fr').join(' ')+' 32px';
