@@ -4705,6 +4705,24 @@ function clFinishLoad(file,data,headers){
   document.getElementById('cl-file-info').style.display='flex';
   document.getElementById('cl-next-1').disabled=false;
   clHideLoader();
+  if(data.length>150000){
+    clHideLoader();
+    const overlay=document.createElement('div');
+    overlay.className='cl-sheet-overlay';
+    overlay.innerHTML=`<div class="cl-summary-modal" style="max-width:420px;">
+      <div style="font-size:36px;text-align:center;margin-bottom:12px;">⚠️</div>
+      <div style="font-size:15px;font-weight:800;color:var(--text);text-align:center;margin-bottom:8px;">File Too Large</div>
+      <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.7;margin-bottom:20px;">
+        Your file has <strong style="color:#dc2626;">${data.length.toLocaleString()} rows</strong>.<br>
+        This tool supports up to <strong>1,50,000 rows</strong>.<br><br>
+        Please reduce your data and try again, or split it into smaller files.
+      </div>
+      <button onclick="this.closest('.cl-sheet-overlay').remove()" style="width:100%;padding:11px;font-size:13px;font-weight:700;background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;">OK, I'll reduce the data</button>
+    </div>`;
+    overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+    document.body.appendChild(overlay);
+    return;
+  }
   if(data.length>100000)toast(`Loaded ${data.length.toLocaleString()} rows — large file, processing may be slower`,'s');
 }
 
