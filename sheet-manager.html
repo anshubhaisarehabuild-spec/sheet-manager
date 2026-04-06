@@ -4722,6 +4722,8 @@ function clHandleFile(file){
 // ── Step navigation ──
 function clGoStep(n){
   if(n===2&&!clState.raw.length){toast('Please upload a file first','e');return;}
+  if(n>=3&&!clState.raw.length){toast('Please upload a file first','e');return;}
+  if(n>=3&&(!clState.mapping.name||!clState.mapping.phone)){toast('Please map Name and Phone columns in Step 2 first','e');clGoStep(2);return;}
   if(n===2){clBuildPreview();}
   if(n===3){clBuildClean();}
   if(n===4){clBuildFilter();}
@@ -5407,6 +5409,12 @@ function clExport(){
 
   const extras=clState.extraFields.filter(f=>f.include&&f.field).map(f=>({original:f.field,exportAs:f.exportName||f.field}));
 
+  // Check for duplicate export column names
+  const coreNames=fmt==='admin'?['name','mobile_number','wati_server_id']:['name','phone','watiserverid'];
+  const allExportNames=[...coreNames,...extras.map(f=>f.exportAs)];
+  const dupNames=allExportNames.filter((n,i)=>allExportNames.indexOf(n)!==i);
+  if(dupNames.length){toast(`Column name conflict: "${dupNames[0]}" is already used. Rename it in "Export As".`,'e');return;}
+
   // Header-like values that should never appear as data
   const headerWords=new Set(['name','phone','mobile','number','phone_number','mobile_number','wati_server_id','watiserverid','member_id','id','contact','user','server','wati']);
 
@@ -5446,6 +5454,7 @@ function clExport(){
       const selfPhone=clCleanPhone(vals['phone']||'');
       if(!selfName&&!selfPhone)return;
       const selfWati=vals['wati']||defaultWatiForSelf;
+      if(!selfWati){toast('Please enter WATI Server ID for your own contact row','e');return;}
       const selfRow=fmt==='admin'
         ?{name:selfName,mobile_number:selfPhone,wati_server_id:selfWati}
         :{name:selfName,phone:selfPhone,watiserverid:selfWati};
@@ -5508,7 +5517,7 @@ function clShowExportSummary(info){
       <div class="cl-summary-row"><span class="cl-summary-label">Invalid Removed</span><span class="cl-summary-val">${info.invalid}</span></div>
       <div class="cl-summary-row"><span class="cl-summary-label">Exported At</span><span class="cl-summary-val">${fmt(info.date)}</span></div>
       <div style="display:flex;gap:8px;margin-top:20px;">
-        <button onclick="navigator.clipboard.writeText(${JSON.stringify(summaryText).replace(/</g,'\\u003c')}).then(()=>{this.textContent='✓ Copied!';setTimeout(()=>this.textContent='📋 Copy Summary',1500)})" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;">📋 Copy Summary</button>
+        <button onclick="copyText(${JSON.stringify(summaryText).replace(/</g,'\\u003c')},'Summary copied!');this.textContent='✓ Copied!';setTimeout(()=>this.textContent='📋 Copy Summary',1500)" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;">📋 Copy Summary</button>
         <button onclick="this.closest('.cl-sheet-overlay').remove()" style="padding:10px 20px;font-size:13px;font-weight:700;background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">Close</button>
       </div>
     </div>`;
