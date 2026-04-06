@@ -5393,7 +5393,7 @@ function clExport(){
       const selfRow=fmt==='admin'
         ?{name:selfName,mobile_number:selfPhone,wati_server_id:selfWati}
         :{name:selfName,phone:selfPhone,watiserverid:selfWati};
-      extras.forEach(function(f){selfRow[f.exportAs]=vals['extra_'+f.field]||'';});
+      extras.forEach(function(f){selfRow[f.exportAs]=vals['extra_'+f.original]||'';});
       rows.push(selfRow);
     });
   }
