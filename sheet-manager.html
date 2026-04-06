@@ -1211,21 +1211,15 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <div class="cl-export-summary" id="cl-export-summary"></div>
           <div id="cl-problem-section" style="margin-top:14px;"></div>
           <div class="cl-warning cl-warning-final" id="cl-final-review"></div>
-          <!-- Add own contact row -->
+          <!-- Add own contact rows -->
           <div style="margin-top:16px;padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:var(--input);">
             <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text);">
-              <input type="checkbox" id="cl-self-include" style="accent-color:var(--accent);width:15px;height:15px;" onchange="document.getElementById('cl-self-fields').style.display=this.checked?'grid':'none'"/>
-              Add my own Name &amp; Phone Number to the sheet
+              <input type="checkbox" id="cl-self-include" style="accent-color:var(--accent);width:15px;height:15px;" onchange="clToggleSelfContacts(this.checked)"/>
+              Add my own contacts to the sheet (optional)
             </label>
-            <div id="cl-self-fields" style="display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
-              <div>
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);display:block;margin-bottom:5px;">Your Name</label>
-                <input type="text" id="cl-self-name" placeholder="e.g. Rahul Sharma" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
-              </div>
-              <div>
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);display:block;margin-bottom:5px;">Your Phone Number</label>
-                <input type="text" id="cl-self-phone" placeholder="e.g. 919876543210" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
-              </div>
+            <div id="cl-self-fields" style="display:none;margin-top:14px;">
+              <div id="cl-self-rows"></div>
+              <button onclick="clAddSelfRow()" id="cl-self-add-btn" style="margin-top:8px;padding:6px 14px;font-size:12px;font-weight:700;background:none;border:1px dashed var(--accent);color:var(--accent);border-radius:7px;cursor:pointer;">+ Add More</button>
             </div>
           </div>
 
@@ -5297,6 +5291,53 @@ function clUpdateFinalReview(){
   `;
 }
 
+// ── Self-contact rows ──
+function clGetSelfExtras(){
+  // Returns selected extra columns
+  return (clState.extraFields||[]).filter(f=>f.include&&f.field);
+}
+function clNeedsSelfWati(){
+  const sc=clState.mapping.serverId;
+  return !sc||!clState.cleaned.some(r=>String(r[sc]||'').trim());
+}
+function clToggleSelfContacts(on){
+  const wrap=document.getElementById('cl-self-fields');
+  if(!wrap)return;
+  wrap.style.display=on?'':'none';
+  if(on&&!document.getElementById('cl-self-rows').children.length)clAddSelfRow();
+}
+function clAddSelfRow(){
+  const container=document.getElementById('cl-self-rows');
+  if(!container)return;
+  if(container.children.length>=15){toast('Maximum 15 contacts allowed','e');return;}
+  const extras=clGetSelfExtras();
+  const needWati=clNeedsSelfWati();
+  const idx=container.children.length;
+  const row=document.createElement('div');
+  row.style.cssText='display:grid;gap:8px;margin-bottom:10px;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;align-items:end;';
+  // Build columns: name, phone, [wati], [...extras], [remove]
+  const cols=[{key:'name',label:'Name',ph:'e.g. Rahul Sharma'},{key:'phone',label:'Phone Number',ph:'e.g. 919876543210'}];
+  if(needWati)cols.push({key:'wati',label:'WATI Server ID',ph:'e.g. 29'});
+  extras.forEach(f=>cols.push({key:'extra_'+f.field,label:f.exportName||f.field,ph:''}));
+  const totalCols=cols.length+1; // +1 for remove btn
+  row.style.gridTemplateColumns=cols.map(()=>'1fr').join(' ')+' 32px';
+  cols.forEach(col=>{
+    const cell=document.createElement('div');
+    cell.innerHTML='<label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);display:block;margin-bottom:4px;">'+col.label+'</label>'
+      +'<input data-key="'+col.key+'" placeholder="'+col.ph+'" style="width:100%;background:var(--input);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;color:var(--text);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor=\'var(--accent)\'" onblur="this.style.borderColor=\'var(--border)\'"/>';
+    row.appendChild(cell);
+  });
+  const removeCell=document.createElement('div');
+  removeCell.style.cssText='display:flex;align-items:flex-end;padding-bottom:2px;';
+  const removeBtn=document.createElement('button');
+  removeBtn.textContent='×';
+  removeBtn.style.cssText='background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:16px;width:30px;height:32px;cursor:pointer;line-height:1;';
+  removeBtn.onclick=function(){row.remove();};
+  removeCell.appendChild(removeBtn);
+  row.appendChild(removeCell);
+  container.appendChild(row);
+}
+
 function clExport(){
   const filtered=clGetFiltered();
   const {name:nc,phone:pc,serverId:sc}=clState.mapping;
@@ -5336,19 +5377,25 @@ function clExport(){
 
   if(!rows.length){toast('No data to export','e');return;}
 
-  // Add user's own contact row if checkbox is checked
+  // Add user's own contact rows if checkbox is checked
   const selfInclude=document.getElementById('cl-self-include')?.checked;
   if(selfInclude){
-    const selfName=(document.getElementById('cl-self-name')?.value||'').trim();
-    const selfPhone=clCleanPhone((document.getElementById('cl-self-phone')?.value||'').trim());
-    if(selfName||selfPhone){
-      const defaultWatiForSelf=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
+    const selfRowEls=document.querySelectorAll('#cl-self-rows > div');
+    const defaultWatiForSelf=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
+    selfRowEls.forEach(function(rowEl){
+      const inputs=rowEl.querySelectorAll('input[data-key]');
+      const vals={};
+      inputs.forEach(function(inp){vals[inp.dataset.key]=inp.value.trim();});
+      const selfName=vals['name']||'';
+      const selfPhone=clCleanPhone(vals['phone']||'');
+      if(!selfName&&!selfPhone)return;
+      const selfWati=vals['wati']||defaultWatiForSelf;
       const selfRow=fmt==='admin'
-        ?{name:selfName,mobile_number:selfPhone,wati_server_id:defaultWatiForSelf}
-        :{name:selfName,phone:selfPhone,watiserverid:defaultWatiForSelf};
-      extras.forEach(f=>{selfRow[f.exportAs]='';});
+        ?{name:selfName,mobile_number:selfPhone,wati_server_id:selfWati}
+        :{name:selfName,phone:selfPhone,watiserverid:selfWati};
+      extras.forEach(function(f){selfRow[f.exportAs]=vals['extra_'+f.field]||'';});
       rows.push(selfRow);
-    }
+    });
   }
 
   // Use custom filename or fallback
