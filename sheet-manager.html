@@ -5336,17 +5336,25 @@ function clBuildExport(){
 
 function clUpdateFinalReview(){
   const filtered=clGetFiltered();
-  const {serverId:sc}=clState.mapping;
+  const {name:nc,phone:pc,serverId:sc}=clState.mapping;
   const watiMissing=!sc||!clState.cleaned.some(r=>String(r[sc]||'').trim());
   const defaultWati=document.getElementById('cl-wati-default')?.value||'';
   if(watiMissing)clState.defaultWatiId=defaultWati;
+  const fmt=clState.exportFormat==='admin';
+  const watiSrc=watiMissing?(defaultWati?`Fixed value: <strong style="color:#d97706;">"${esc(defaultWati)}"</strong> (same for all rows)`:'<strong style="color:#dc2626;">⚠️ Not entered yet</strong>'):`Sheet column: <strong style="color:#15803d;">"${esc(sc)}"</strong> (per row)`;
   document.getElementById('cl-final-review').innerHTML=`
-    ⚠️ <strong>Final Review before export</strong><br>
-    Total Users: <strong>${filtered.length}</strong> &nbsp;·&nbsp;
-    Duplicates Removed: <strong>${clState.removedDups}</strong> &nbsp;·&nbsp;
-    Invalid Removed: <strong>${clState.removedInvalid}</strong><br>
-    WATI Server ID: <strong>${watiMissing?(defaultWati||'⚠️ not entered yet'):'from sheet column'}</strong><br>
-    Format: <strong>${clState.exportFormat==='admin'?'Admin Panel (name, mobile_number, wati_server_id)':'VS Code (name, phone, watiserverid)'}</strong>
+    <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">📋 Final Review — Verify before export</div>
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:13px;margin-bottom:12px;">
+      <span style="color:var(--muted);font-weight:600;">${fmt?'name':'name'}</span>
+      <span>← Sheet column: <strong style="color:#6366f1;">"${esc(nc||'not mapped')}"</strong></span>
+      <span style="color:var(--muted);font-weight:600;">${fmt?'mobile_number':'phone'}</span>
+      <span>← Sheet column: <strong style="color:#6366f1;">"${esc(pc||'not mapped')}"</strong> <span style="font-size:11px;color:var(--muted);">(non-digits stripped)</span></span>
+      <span style="color:var(--muted);font-weight:600;">${fmt?'wati_server_id':'watiserverid'}</span>
+      <span>← ${watiSrc}</span>
+    </div>
+    <div style="font-size:12px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;">
+      ${filtered.length} rows · ${clState.removedDups} dups removed · ${clState.removedInvalid} invalid removed · ${fmt?'Admin Panel':'VS Code'} format
+    </div>
   `;
 }
 
@@ -5403,6 +5411,41 @@ function clExport(){
   const watiMissing=!sc||!clState.cleaned.some(r=>String(r[sc]||'').trim());
   const defaultWati=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
   if(watiMissing&&!defaultWati){toast('Please enter a WATI Server ID before exporting','e');return;}
+
+  // ── Pre-export confirmation modal ──
+  if(!clState._exportConfirmed){
+    const watiLabel=watiMissing?`Fixed: "${esc(defaultWati)}"`:`From column: "${esc(sc)}"`;
+    const overlay=document.createElement('div');
+    overlay.className='cl-sheet-overlay';
+    overlay.innerHTML=`
+      <div class="cl-summary-modal" style="max-width:420px;">
+        <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px;">⚠️ Confirm Before Export</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Messages will be sent using these exact values. Please verify:</div>
+        <div style="background:#fef9ee;border:1px solid #fcd34d;border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+          <div style="display:grid;grid-template-columns:130px 1fr;gap:8px;font-size:13px;">
+            <span style="color:var(--muted);font-weight:700;">Name from</span>
+            <span style="font-weight:800;color:#6366f1;">"${esc(nc)}"</span>
+            <span style="color:var(--muted);font-weight:700;">Phone from</span>
+            <span style="font-weight:800;color:#6366f1;">"${esc(pc)}"</span>
+            <span style="color:var(--muted);font-weight:700;">WATI Server ID</span>
+            <span style="font-weight:800;color:${watiMissing?'#d97706':'#15803d'};">${watiLabel}</span>
+            <span style="color:var(--muted);font-weight:700;">Total Rows</span>
+            <span style="font-weight:800;">${filtered.length.toLocaleString()}</span>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#dc2626;font-weight:600;margin-bottom:16px;">
+          ⚠️ Wrong column = messages to wrong people. Verify above carefully.
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="this.closest('.cl-sheet-overlay').remove()" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">← Go Back & Check</button>
+          <button onclick="this.closest('.cl-sheet-overlay').remove();clState._exportConfirmed=true;clExport();" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;">✓ Yes, Export Now</button>
+        </div>
+      </div>`;
+    overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+    document.body.appendChild(overlay);
+    return;
+  }
+  clState._exportConfirmed=false; // reset for next export
 
   // Use user's choice from Final Review section
   const skipProblems=(clState._problemAction||'skip')==='skip';
