@@ -5644,15 +5644,25 @@ function clExport(){
 
   if(!rows.length){toast('No data to export','e');return;}
 
-  // Add user's own contact rows if checkbox is checked
-  const selfInclude=document.getElementById('cl-self-include')?.checked;
-  if(selfInclude){
-    const selfRowEls=document.querySelectorAll('#cl-self-rows > div');
+  // Use custom filename or fallback
+  const rawName=(document.getElementById('cl-filename')?.value||'').trim();
+  const filename=(rawName||`cleaned_data_${fmt}_${Date.now()}`).replace(/[^a-zA-Z0-9_\-]/g,'_')+'.csv';
+
+  // ── Batch export — check BEFORE adding self-contact (batch adds them per-batch) ──
+  const batchEnabled=document.getElementById('cl-batch-enable')?.checked;
+  const batchSize=parseInt(document.getElementById('cl-batch-size')?.value||'50000',10);
+  if(batchEnabled&&batchSize>0&&rows.length>batchSize){
+    clDoBatchExport(rows,batchSize,filename,fmt,watiMissing,defaultWati);
+    return;
+  }
+
+  // ── Single file: add self-contact rows here ──
+  const selfIncludeSingle=document.getElementById('cl-self-include')?.checked;
+  if(selfIncludeSingle){
     const defaultWatiForSelf=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
-    selfRowEls.forEach(function(rowEl){
-      const inputs=rowEl.querySelectorAll('input[data-key]');
+    document.querySelectorAll('#cl-self-rows > div').forEach(function(rowEl){
       const vals={};
-      inputs.forEach(function(inp){vals[inp.dataset.key]=inp.value.trim();});
+      rowEl.querySelectorAll('input[data-key]').forEach(function(inp){vals[inp.dataset.key]=inp.value.trim();});
       const selfName=vals['name']||'';
       const selfPhone=clCleanPhone(vals['phone']||'');
       if(!selfName&&!selfPhone)return;
@@ -5664,18 +5674,6 @@ function clExport(){
       extras.forEach(function(f){selfRow[f.exportAs]=vals['extra_'+f.original]||'';});
       rows.push(selfRow);
     });
-  }
-
-  // Use custom filename or fallback
-  const rawName=(document.getElementById('cl-filename')?.value||'').trim();
-  const filename=(rawName||`cleaned_data_${fmt}_${Date.now()}`).replace(/[^a-zA-Z0-9_\-]/g,'_')+'.csv';
-
-  // ── Batch export — check BEFORE downloading ──
-  const batchEnabled=document.getElementById('cl-batch-enable')?.checked;
-  const batchSize=parseInt(document.getElementById('cl-batch-size')?.value||'50000',10);
-  if(batchEnabled&&batchSize>0&&rows.length>batchSize){
-    clDoBatchExport(rows,batchSize,filename,fmt,watiMissing,defaultWati);
-    return;
   }
 
   // ── Single file download ──
