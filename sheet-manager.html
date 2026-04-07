@@ -5728,36 +5728,84 @@ function clMakeCSV(rows){
 }
 
 function clDoBatchExport(rows,batchSize,baseName,fmt,watiMissing,defaultWati){
-  const batches=Math.ceil(rows.length/batchSize);
+  const totalBatches=Math.ceil(rows.length/batchSize);
   const base=baseName.replace(/\.csv$/i,'');
+
+  // Show naming modal first
+  const overlay=document.createElement('div');
+  overlay.className='cl-sheet-overlay';
+  overlay.style.alignItems='flex-start';
+  overlay.style.paddingTop='40px';
+
+  let namesHtml='';
+  for(let i=0;i<totalBatches;i++){
+    const start=(i*batchSize+1).toLocaleString();
+    const end=Math.min((i+1)*batchSize,rows.length).toLocaleString();
+    namesHtml+=`<div style="display:grid;grid-template-columns:90px 1fr;align-items:center;gap:8px;margin-bottom:8px;">
+      <span style="font-size:12px;color:var(--muted);font-weight:600;">Batch ${i+1}<br><span style="font-weight:400;">(rows ${start}–${end})</span></span>
+      <input data-batch="${i}" value="${esc(base)}_batch${i+1}" placeholder="File name"
+        style="background:var(--input);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--text);outline:none;width:100%;box-sizing:border-box;"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+    </div>`;
+  }
+
+  overlay.innerHTML=`
+    <div class="cl-summary-modal" style="max-width:480px;max-height:80vh;overflow-y:auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:sticky;top:0;background:var(--card);padding-bottom:10px;border-bottom:1px solid var(--border);">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:800;color:var(--text);">📦 Name Your Batches</div>
+        <button onclick="this.closest('.cl-sheet-overlay').remove()" style="background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;">×</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">${totalBatches} files · ${rows.length.toLocaleString()} total rows · ${batchSize.toLocaleString()} rows each</div>
+      <div id="cl-batch-names">${namesHtml}</div>
+      <div style="display:flex;gap:8px;margin-top:16px;position:sticky;bottom:0;background:var(--card);padding-top:12px;border-top:1px solid var(--border);">
+        <button onclick="this.closest('.cl-sheet-overlay').remove()" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">Cancel</button>
+        <button id="cl-batch-download-btn" onclick="clStartBatchDownload(this,${JSON.stringify(rows).length>0?'__ROWS__':null})"
+          style="flex:2;padding:10px;font-size:13px;font-weight:700;background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;">
+          ✓ Download All ${totalBatches} Files
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  // Store rows reference on overlay for download
+  overlay._batchData={rows,batchSize,totalBatches,fmt,watiMissing,defaultWati,base};
+  document.getElementById('cl-batch-download-btn').onclick=function(){
+    const names=[];
+    overlay.querySelectorAll('input[data-batch]').forEach(inp=>names[parseInt(inp.dataset.batch)]=inp.value.trim()||`${base}_batch${parseInt(inp.dataset.batch)+1}`);
+    overlay.remove();
+    clRunBatchDownload(rows,batchSize,totalBatches,names,fmt,watiMissing,defaultWati);
+  };
+}
+
+function clRunBatchDownload(rows,batchSize,totalBatches,names,fmt,watiMissing,defaultWati){
   let done=0;
-  clShowLoader(`Downloading batch 1 of ${batches}…`,`${rows.length.toLocaleString()} rows → ${batches} files`,'📦');
+  clShowLoader(`Downloading 1 of ${totalBatches}…`,`${rows.length.toLocaleString()} rows → ${totalBatches} files`,'📦');
 
   function downloadNext(){
-    if(done>=batches){
+    if(done>=totalBatches){
       clHideLoader();
       clShowExportSummary({
-        filename:`${base}_batch_1_to_${batches}.csv`,
+        filename:names[0]+' … '+names[totalBatches-1],
         rowCount:rows.length,
         format:fmt==='admin'?'Admin Panel':'VS Code',
-        wati:watiMissing?(defaultWati||'—'):'From sheet column',
+        wati:watiMissing?(document.getElementById('cl-wati-default')?.value||'—'):'From sheet column',
         dups:clState.removedDups,
         invalid:clState.removedInvalid,
         date:new Date(),
-        batches
+        batches:totalBatches
       });
       return;
     }
     const chunk=rows.slice(done*batchSize,(done+1)*batchSize);
     const csv=clMakeCSV(chunk);
-    const fname=`${base}_batch${done+1}of${batches}.csv`;
+    const fname=(names[done]||`batch${done+1}`)+'.csv';
     const blob=new Blob([csv],{type:'text/csv'});
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
     a.href=url;a.download=fname;a.click();
     URL.revokeObjectURL(url);
     done++;
-    clLoaderProgress(Math.round(done/batches*100),`Downloading batch ${done} of ${batches}…`);
+    clLoaderProgress(Math.round(done/totalBatches*100),`Downloading ${done} of ${totalBatches}…`);
     setTimeout(downloadNext,800);
   }
   setTimeout(downloadNext,200);
