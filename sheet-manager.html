@@ -5797,11 +5797,11 @@ function clRunBatchDownload(rows,batchSize,totalBatches,names,fmt,watiMissing,de
     document.querySelectorAll('#cl-self-rows > div').forEach(function(rowEl){
       const vals={};
       rowEl.querySelectorAll('input[data-key]').forEach(function(inp){vals[inp.dataset.key]=inp.value.trim();});
-      const sName=vals['name']||'';const sPhone=(vals['phone']||'').replace(/\D/g,'');
+      const sName=vals['name']||'';const sPhone=clCleanPhone(vals['phone']||'');
       if(!sName&&!sPhone)return;
       const sWati=vals['wati']||document.getElementById('cl-wati-default')?.value||'';
       const sr=fmt==='admin'?{name:sName,mobile_number:sPhone,wati_server_id:sWati}:{name:sName,phone:sPhone,watiserverid:sWati};
-      extras.forEach(function(f){sr[f.exportAs]=vals['extra_'+f.original]||'';});
+      extras.forEach(function(f){sr[f.exportName||f.field]=vals['extra_'+f.field]||'';});
       selfRows.push(sr);
     });
   }
