@@ -5670,6 +5670,15 @@ function clExport(){
   const rawName=(document.getElementById('cl-filename')?.value||'').trim();
   const filename=(rawName||`cleaned_data_${fmt}_${Date.now()}`).replace(/[^a-zA-Z0-9_\-]/g,'_')+'.csv';
 
+  // ── Batch export — check BEFORE downloading ──
+  const batchEnabled=document.getElementById('cl-batch-enable')?.checked;
+  const batchSize=parseInt(document.getElementById('cl-batch-size')?.value||'50000',10);
+  if(batchEnabled&&batchSize>0&&rows.length>batchSize){
+    clDoBatchExport(rows,batchSize,filename,fmt,watiMissing,defaultWati);
+    return;
+  }
+
+  // ── Single file download ──
   const csv=clMakeCSV(rows);
   const blob=new Blob([csv],{type:'text/csv'});
   const url=URL.createObjectURL(blob);
@@ -5678,7 +5687,6 @@ function clExport(){
   URL.revokeObjectURL(url);
   // Save to history
   const history=JSON.parse(localStorage.getItem('cl_export_history')||'[]');
-  // Only save row data for small exports (≤5000 rows) to avoid localStorage overflow
   const saveData=rows.length<=5000?rows:undefined;
   history.unshift({
     filename,
@@ -5691,19 +5699,10 @@ function clExport(){
   });
   try{localStorage.setItem('cl_export_history',JSON.stringify(history.slice(0,20)));}
   catch(e){
-    // Storage full — drop row data from older entries and retry
     const slim=history.slice(0,20).map((h,i)=>i===0?h:{...h,data:undefined});
     try{localStorage.setItem('cl_export_history',JSON.stringify(slim));}catch(e2){}
   }
   clRenderHistory();
-
-  // ── Batch export ──
-  const batchEnabled=document.getElementById('cl-batch-enable')?.checked;
-  const batchSize=parseInt(document.getElementById('cl-batch-size')?.value||'50000',10);
-  if(batchEnabled&&batchSize>0&&rows.length>batchSize){
-    clDoBatchExport(rows,batchSize,filename,fmt,watiMissing,defaultWati);
-    return;
-  }
 
   clShowExportSummary({filename,rowCount:rows.length,format:fmt==='admin'?'Admin Panel':'VS Code',wati:watiMissing?(defaultWati||'—'):'From sheet column',dups:clState.removedDups,invalid:clState.removedInvalid,date:new Date()});
 }
