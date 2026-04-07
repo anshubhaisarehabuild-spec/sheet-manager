@@ -5712,7 +5712,12 @@ function clUpdateBatchInfo(){
   const total=clGetFiltered().length;
   if(!size||size<=0){el.textContent='';return;}
   const batches=Math.ceil(total/size);
-  el.innerHTML=`<strong style="color:var(--accent);">${batches} file${batches>1?'s':''}</strong> will be downloaded &nbsp;·&nbsp; ${total.toLocaleString()} rows ÷ ${size.toLocaleString()} per batch`;
+  // Fix 1: batch size >= total rows — warn user
+  if(size>=total){
+    el.innerHTML=`<span style="color:#d97706;font-weight:700;">⚠️ Batch size is larger than total rows (${total.toLocaleString()}) — only 1 file will be created. No need for batch export.</span>`;
+    return;
+  }
+  el.innerHTML=`<strong style="color:var(--accent);">${batches} files</strong> will be downloaded &nbsp;·&nbsp; ${total.toLocaleString()} rows ÷ ${size.toLocaleString()} per batch &nbsp;·&nbsp; ~${Math.round(total/batches).toLocaleString()} rows each`;
 }
 
 function clMakeCSV(rows){
@@ -5818,8 +5823,8 @@ function clRunBatchDownload(rows,batchSize,totalBatches,names,fmt,watiMissing,de
       });
       return;
     }
-    // Add self-contact rows to each batch
-    const chunk=[...rows.slice(done*batchSize,(done+1)*batchSize),...selfRows];
+    const chunkRows=rows.slice(done*batchSize,(done+1)*batchSize);
+    const chunk=[...chunkRows,...selfRows];
     const csv=clMakeCSV(chunk);
     const fname=(names[done]||`batch${done+1}`)+'.csv';
     const blob=new Blob([csv],{type:'text/csv'});
@@ -5827,11 +5832,21 @@ function clRunBatchDownload(rows,batchSize,totalBatches,names,fmt,watiMissing,de
     const a=document.createElement('a');
     a.href=url;a.download=fname;a.click();
     URL.revokeObjectURL(url);
+    // Fix 3: save each batch as separate history entry
+    try{
+      const hist=JSON.parse(localStorage.getItem('cl_export_history')||'[]');
+      hist.unshift({filename:fname,rowCount:chunk.length,data:chunk.length<=5000?chunk:undefined,format:fmt==='admin'?'Admin Panel':'VS Code',dups:0,invalid:0,date:new Date().toISOString(),batchLabel:`Batch ${done+1}/${totalBatches}`});
+      localStorage.setItem('cl_export_history',JSON.stringify(hist.slice(0,20)));
+    }catch(e){}
     done++;
-    clLoaderProgress(Math.round(done/totalBatches*100),`Downloading ${done} of ${totalBatches}…`);
-    setTimeout(downloadNext,800);
+    const pct=Math.round(done/totalBatches*100);
+    const remaining=totalBatches-done;
+    clLoaderProgress(pct, done<totalBatches
+      ? `✓ Batch ${done} done &nbsp;·&nbsp; Downloading ${done+1} of ${totalBatches}… (${remaining} remaining)`
+      : `All ${totalBatches} files downloaded!`);
+    setTimeout(downloadNext,400);
   }
-  setTimeout(downloadNext,200);
+  setTimeout(downloadNext,100);
 }
 
 function clShowExportSummary(info){
@@ -5887,7 +5902,7 @@ function clRenderHistory(){
     meta.className='cl-history-meta';
     var dateStr=new Date(h.date).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
     var rowCount=h.rowCount||h.rows||0;
-    meta.textContent=dateStr+' · '+rowCount+' rows';
+    meta.textContent=dateStr+' · '+rowCount+' rows'+(h.batchLabel?' · '+h.batchLabel:'');
     info.appendChild(name);
     info.appendChild(meta);
 
