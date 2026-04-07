@@ -1245,6 +1245,23 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
             </div>
           </div>
 
+          <!-- Batch Export -->
+          <div style="margin-top:16px;padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:var(--input);">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text);">
+              <input type="checkbox" id="cl-batch-enable" style="accent-color:var(--accent);width:15px;height:15px;" onchange="document.getElementById('cl-batch-opts').style.display=this.checked?'flex':'none';clUpdateBatchInfo()"/>
+              Split export into batches (for large files)
+            </label>
+            <div id="cl-batch-opts" style="display:none;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;">
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);display:block;margin-bottom:4px;">Rows per batch</label>
+                <input type="number" id="cl-batch-size" value="50000" min="1000" max="200000" step="1000"
+                  style="width:130px;background:var(--card);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:14px;font-weight:700;color:var(--text);outline:none;"
+                  oninput="clUpdateBatchInfo()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+              </div>
+              <div id="cl-batch-info" style="font-size:13px;color:var(--muted);padding-top:18px;"></div>
+            </div>
+          </div>
+
           <div style="margin-top:16px;">
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);display:block;margin-bottom:6px;">File Name</label>
             <div style="display:flex;align-items:center;gap:6px;">
@@ -4705,25 +4722,7 @@ function clFinishLoad(file,data,headers){
   document.getElementById('cl-file-info').style.display='flex';
   document.getElementById('cl-next-1').disabled=false;
   clHideLoader();
-  if(data.length>150000){
-    clHideLoader();
-    const overlay=document.createElement('div');
-    overlay.className='cl-sheet-overlay';
-    overlay.innerHTML=`<div class="cl-summary-modal" style="max-width:420px;">
-      <div style="font-size:36px;text-align:center;margin-bottom:12px;">⚠️</div>
-      <div style="font-size:15px;font-weight:800;color:var(--text);text-align:center;margin-bottom:8px;">File Too Large</div>
-      <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.7;margin-bottom:20px;">
-        Your file has <strong style="color:#dc2626;">${data.length.toLocaleString()} rows</strong>.<br>
-        This tool supports up to <strong>1,50,000 rows</strong>.<br><br>
-        Please reduce your data and try again, or split it into smaller files.
-      </div>
-      <button onclick="this.closest('.cl-sheet-overlay').remove()" style="width:100%;padding:11px;font-size:13px;font-weight:700;background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;">OK, I'll reduce the data</button>
-    </div>`;
-    overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
-    document.body.appendChild(overlay);
-    return;
-  }
-  if(data.length>100000)toast(`Loaded ${data.length.toLocaleString()} rows — large file, processing may be slower`,'s');
+  if(data.length>100000)toast(`Loaded ${data.length.toLocaleString()} rows — use Batch Export to split into smaller files`,'s');
 }
 
 function clHandleFile(file){
@@ -5671,11 +5670,7 @@ function clExport(){
   const rawName=(document.getElementById('cl-filename')?.value||'').trim();
   const filename=(rawName||`cleaned_data_${fmt}_${Date.now()}`).replace(/[^a-zA-Z0-9_\-]/g,'_')+'.csv';
 
-  const headers=Object.keys(rows[0]);
-  const csv=[headers.join(','),...rows.map(r=>headers.map(h=>{
-    const v=String(r[h]||'');
-    return v.includes(',')||v.includes('"')?`"${v.replace(/"/g,'""')}"`  :v;
-  }).join(','))].join('\n');
+  const csv=clMakeCSV(rows);
   const blob=new Blob([csv],{type:'text/csv'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
@@ -5701,7 +5696,71 @@ function clExport(){
     try{localStorage.setItem('cl_export_history',JSON.stringify(slim));}catch(e2){}
   }
   clRenderHistory();
+
+  // ── Batch export ──
+  const batchEnabled=document.getElementById('cl-batch-enable')?.checked;
+  const batchSize=parseInt(document.getElementById('cl-batch-size')?.value||'50000',10);
+  if(batchEnabled&&batchSize>0&&rows.length>batchSize){
+    clDoBatchExport(rows,batchSize,filename,fmt,watiMissing,defaultWati);
+    return;
+  }
+
   clShowExportSummary({filename,rowCount:rows.length,format:fmt==='admin'?'Admin Panel':'VS Code',wati:watiMissing?(defaultWati||'—'):'From sheet column',dups:clState.removedDups,invalid:clState.removedInvalid,date:new Date()});
+}
+
+function clUpdateBatchInfo(){
+  const el=document.getElementById('cl-batch-info');
+  if(!el)return;
+  const size=parseInt(document.getElementById('cl-batch-size')?.value||'50000',10);
+  const total=clGetFiltered().length;
+  if(!size||size<=0){el.textContent='';return;}
+  const batches=Math.ceil(total/size);
+  el.innerHTML=`<strong style="color:var(--accent);">${batches} file${batches>1?'s':''}</strong> will be downloaded &nbsp;·&nbsp; ${total.toLocaleString()} rows ÷ ${size.toLocaleString()} per batch`;
+}
+
+function clMakeCSV(rows){
+  if(!rows.length)return'';
+  const headers=Object.keys(rows[0]);
+  return[headers.join(','),...rows.map(r=>headers.map(h=>{
+    const v=String(r[h]||'');
+    return v.includes(',')||v.includes('"')?`"${v.replace(/"/g,'""')}"`  :v;
+  }).join(','))].join('\n');
+}
+
+function clDoBatchExport(rows,batchSize,baseName,fmt,watiMissing,defaultWati){
+  const batches=Math.ceil(rows.length/batchSize);
+  const base=baseName.replace(/\.csv$/i,'');
+  let done=0;
+  clShowLoader(`Downloading batch 1 of ${batches}…`,`${rows.length.toLocaleString()} rows → ${batches} files`,'📦');
+
+  function downloadNext(){
+    if(done>=batches){
+      clHideLoader();
+      clShowExportSummary({
+        filename:`${base}_batch_1_to_${batches}.csv`,
+        rowCount:rows.length,
+        format:fmt==='admin'?'Admin Panel':'VS Code',
+        wati:watiMissing?(defaultWati||'—'):'From sheet column',
+        dups:clState.removedDups,
+        invalid:clState.removedInvalid,
+        date:new Date(),
+        batches
+      });
+      return;
+    }
+    const chunk=rows.slice(done*batchSize,(done+1)*batchSize);
+    const csv=clMakeCSV(chunk);
+    const fname=`${base}_batch${done+1}of${batches}.csv`;
+    const blob=new Blob([csv],{type:'text/csv'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=fname;a.click();
+    URL.revokeObjectURL(url);
+    done++;
+    clLoaderProgress(Math.round(done/batches*100),`Downloading batch ${done} of ${batches}…`);
+    setTimeout(downloadNext,800);
+  }
+  setTimeout(downloadNext,200);
 }
 
 function clShowExportSummary(info){
@@ -5715,6 +5774,7 @@ function clShowExportSummary(info){
         <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;color:var(--text);">✅ Export Successful</div>
         <button onclick="this.closest('.cl-sheet-overlay').remove()" style="background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;">×</button>
       </div>
+      ${info.batches?`<div class="cl-summary-row"><span class="cl-summary-label">Files Downloaded</span><span class="cl-summary-val" style="color:#6366f1;">📦 ${info.batches} batches</span></div>`:''}
       <div class="cl-summary-row"><span class="cl-summary-label">File Name</span><span class="cl-summary-val" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(info.filename)}">${esc(info.filename)}</span></div>
       <div class="cl-summary-row"><span class="cl-summary-label">Rows Exported</span><span class="cl-summary-val" style="color:#22c55e;">${info.rowCount.toLocaleString()}</span></div>
       <div class="cl-summary-row"><span class="cl-summary-label">Format</span><span class="cl-summary-val">${esc(info.format)}</span></div>
