@@ -800,13 +800,14 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .cl-ba-col h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:6px;padding:4px 8px;background:var(--input);border-radius:4px;}
 .cl-ba-row{padding:3px 8px;border-radius:4px;font-size:12px;}
 .cl-ba-row.changed{background:#fef9c3;}
-.cl-filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px;}
-.cl-filter-col label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px;}
-.cl-filter-col{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:12px;}
-.cl-filter-opts{max-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
-.cl-filter-opts label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text);font-weight:400;text-transform:none;letter-spacing:0;cursor:pointer;}
-.cl-filter-opts input[type=checkbox]{accent-color:var(--accent);}
-.cl-filter-search{width:100%;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;color:var(--text);outline:none;margin-bottom:6px;}
+.cl-filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:16px;}
+.cl-filter-col{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.cl-filter-opts{max-height:130px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
+.cl-filter-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text);font-weight:400;cursor:pointer;padding:4px 6px;border-radius:5px;transition:background .12s;}
+.cl-filter-item:hover{background:var(--input);}
+.cl-filter-item-on{background:rgba(99,102,241,.07);}
+.cl-filter-item input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;}
+.cl-filter-search{width:100%;background:var(--input);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box;}
 .cl-filter-search:focus{border-color:var(--accent);}
 .cl-filter-preview-txt{font-size:13px;color:var(--muted);margin-top:12px;font-weight:500;}
 .cl-format-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
@@ -5279,28 +5280,36 @@ function clBuildFilter(){
     if(!clState.filters[col]){
       clState.filters[col]=new Set(vals); // default: all selected
     } else {
-      // Remove any selected values that no longer exist in current data
+      // Remove stale values; reset to all only if ALL values went missing (data changed)
+      // NOT if user explicitly clicked None (prevSize===0 means already cleared)
+      const prevSize=clState.filters[col].size;
       clState.filters[col]=new Set([...clState.filters[col]].filter(v=>available.has(v)));
-      // If nothing is left selected (all old values gone), select all
-      if(clState.filters[col].size===0)clState.filters[col]=new Set(vals);
+      if(clState.filters[col].size===0&&prevSize>0)clState.filters[col]=new Set(vals);
     }
   });
 
   document.getElementById('cl-filter-grid').innerHTML=filterCols.map(col=>{
     const allVals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))].sort();
     const colId='fc-'+col.replace(/\W/g,'_');
+    const selCount=clState.filters[col]?.size||0;
+    const allSelected=selCount===allVals.length;
+    const noneSelected=selCount===0;
+    const badgeColor=allSelected?'#dcfce7':noneSelected?'#fee2e2':'#fef9c3';
+    const badgeText=allSelected?'#15803d':noneSelected?'#dc2626':'#a16207';
+    // Encode vals as JSON index to avoid quote/comma issues in onclick
+    const valsJson=JSON.stringify(allVals).replace(/"/g,'&quot;');
     return`<div class="cl-filter-col">
-      <label style="display:flex;justify-content:space-between;align-items:center;">
-        <span>${esc(col)}</span>
-        <span style="font-size:10px;font-weight:500;color:var(--text2);">${clState.filters[col]?.size||0}/${allVals.length} selected</span>
-      </label>
-      <input class="cl-filter-search" placeholder="Search..." oninput="clFilterSearch(this,'${colId}')"/>
-      <div style="display:flex;gap:6px;margin-bottom:5px;">
-        <button onclick="clSelectAllFilter('${esc(col)}',[${allVals.map(v=>`'${esc(v)}'`).join(',')}])" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--input);cursor:pointer;color:var(--muted);">All</button>
-        <button onclick="clClearFilter('${esc(col)}')" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--input);cursor:pointer;color:var(--muted);">None</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:11px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%;" title="${esc(col)}">${esc(col)}</span>
+        <span style="font-size:11px;font-weight:700;background:${badgeColor};color:${badgeText};border-radius:10px;padding:2px 9px;">${selCount}/${allVals.length}</span>
+      </div>
+      <input class="cl-filter-search" placeholder="🔍 Search..." oninput="clFilterSearch(this,'${colId}')"/>
+      <div style="display:flex;gap:6px;margin-bottom:8px;">
+        <button onclick="clSelectAllFilter('${esc(col)}',JSON.parse(this.dataset.vals))" data-vals="${valsJson}" style="flex:1;font-size:11px;font-weight:700;padding:5px 8px;border-radius:6px;border:1.5px solid #22c55e;background:#f0fdf4;cursor:pointer;color:#15803d;transition:opacity .15s;" onmouseenter="this.style.opacity='.75'" onmouseleave="this.style.opacity='1'">✓ All</button>
+        <button onclick="clClearFilter('${esc(col)}')" style="flex:1;font-size:11px;font-weight:700;padding:5px 8px;border-radius:6px;border:1.5px solid #f87171;background:#fff1f2;cursor:pointer;color:#dc2626;transition:opacity .15s;" onmouseenter="this.style.opacity='.75'" onmouseleave="this.style.opacity='1'">✕ None</button>
       </div>
       <div class="cl-filter-opts" id="${colId}">
-        ${allVals.map(v=>`<label><input type="checkbox" ${clState.filters[col]?.has(v)?'checked':''} onchange="clToggleFilter('${esc(col)}','${esc(v)}',this.checked)"/> ${esc(v)}</label>`).join('')}
+        ${allVals.map(v=>`<label class="cl-filter-item ${clState.filters[col]?.has(v)?'cl-filter-item-on':''}"><input type="checkbox" ${clState.filters[col]?.has(v)?'checked':''} onchange="clToggleFilter('${esc(col)}','${esc(v)}',this.checked)"/> ${esc(v)}</label>`).join('')}
       </div>
     </div>`;
   }).join('');
@@ -5308,7 +5317,7 @@ function clBuildFilter(){
 }
 
 function clSelectAllFilter(col,vals){
-  clState.filters[col]=new Set(vals);
+  clState.filters[col]=new Set(Array.isArray(vals)?vals:[]);
   clBuildFilter();
 }
 function clClearFilter(col){
