@@ -4667,7 +4667,7 @@ let clState={
   removedDups:0,removedInvalid:0,
   phoneChanges:[],autoCleanApplied:false,
   exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip',
-  _undoStack:[]
+  _undoStack:[],_autoDetected:{},_settingsLoaded:false
 };
 let clStep=1;
 
@@ -4881,14 +4881,21 @@ function clBuildPreview(){
   const isPhone=v=>/^\+?\d[\d\s\-()]{7,16}$/.test(v.replace(/\s/g,''));
   const isName=v=>/^[A-Za-z\s.'-]{2,50}$/.test(v)&&isNaN(Number(v));
   const isId=v=>/^\d{5,10}$/.test(v.trim());
-  if(!clState.mapping.name)
-    clState.mapping.name=guessByName(['name','user','contact','customer','first'])||guessByData(isName);
-  if(!clState.mapping.phone)
-    clState.mapping.phone=guessByName(['phone','mobile','number','whatsapp','cell'])||guessByData(isPhone);
+  if(!clState._autoDetected)clState._autoDetected={};
+  if(!clState.mapping.name){
+    clState.mapping.name=guessByName(['name','naam','fullname','full_name','customer_name','contact_name','client_name','lead_name','user','contact','customer','first','lead'])||guessByData(isName);
+    if(clState.mapping.name)clState._autoDetected.name=true;
+  }
+  if(!clState.mapping.phone){
+    clState.mapping.phone=guessByName(['phone','mobile','mob','tel','telephone','number','whatsapp','cell','ph','phone_no','mobile_no','contact_no','mob_no','phno','ph_number','whatsapp_no','mo_no'])||guessByData(isPhone);
+    if(clState.mapping.phone)clState._autoDetected.phone=true;
+  }
   // WATI Server ID: only map if column name clearly says "wati" or "server" — never guess by data pattern
-  if(!clState.mapping.serverId)
-    clState.mapping.serverId=guessByName(['wati','wati_server','serverid','wati_id'])||null;
-  const allMapped=clState.mapping.name&&clState.mapping.phone&&clState.mapping.serverId;
+  if(!clState.mapping.serverId){
+    clState.mapping.serverId=guessByName(['wati','wati_server','serverid','wati_id','server_id','wati_serverid'])||null;
+    if(clState.mapping.serverId)clState._autoDetected.serverId=true;
+  }
+  const allMapped=clState.mapping.name&&clState.mapping.phone;
   document.getElementById('cl-map-warn').style.display=allMapped?'none':'flex';
   // Insights
   const total=clState.raw.length;
@@ -4904,10 +4911,12 @@ function clBuildPreview(){
   `;
   // Map grid
   const opts=(selected)=>['(none)',...h].map(col=>`<option value="${esc(col)}" ${col===selected?'selected':''}>${esc(col)}</option>`).join('');
+  const ad=clState._autoDetected||{};
+  const autoBadge='<span style="font-size:10px;font-weight:700;background:#d1fae5;color:#065f46;border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:middle;">Auto</span>';
   document.getElementById('cl-map-grid').innerHTML=`
-    <div class="cl-map-item"><label>Name Column *</label><select onchange="clState.mapping.name=this.value==='(none)'?null:this.value;clBuildPreview()">${opts(clState.mapping.name||'(none)')}</select></div>
-    <div class="cl-map-item"><label>Phone Number *</label><select onchange="clState.mapping.phone=this.value==='(none)'?null:this.value;clBuildPreview()">${opts(clState.mapping.phone||'(none)')}</select></div>
-    <div class="cl-map-item"><label>Wati Server ID *</label><select onchange="clState.mapping.serverId=this.value==='(none)'?null:this.value;clBuildPreview()">${opts(clState.mapping.serverId||'(none)')}</select></div>
+    <div class="cl-map-item"><label>Name Column * ${ad.name?autoBadge:''}</label><select onchange="clState.mapping.name=this.value==='(none)'?null:this.value;if(clState._autoDetected)clState._autoDetected.name=false;clBuildPreview()">${opts(clState.mapping.name||'(none)')}</select></div>
+    <div class="cl-map-item"><label>Phone Number * ${ad.phone?autoBadge:''}</label><select onchange="clState.mapping.phone=this.value==='(none)'?null:this.value;if(clState._autoDetected)clState._autoDetected.phone=false;clBuildPreview()">${opts(clState.mapping.phone||'(none)')}</select></div>
+    <div class="cl-map-item"><label>WATI Server ID ${ad.serverId?autoBadge:''}</label><select onchange="clState.mapping.serverId=this.value==='(none)'?null:this.value;if(clState._autoDetected)clState._autoDetected.serverId=false;clBuildPreview()">${opts(clState.mapping.serverId||'(none)')}</select></div>
   `;
   // Preview table — reset search and render
   const searchEl=document.getElementById('cl-preview-search');
@@ -5355,6 +5364,7 @@ function clSelectFormat(fmt){
   document.getElementById('clf-admin').classList.toggle('active',fmt==='admin');
   document.getElementById('clf-vscode').classList.toggle('active',fmt==='vscode');
   clUpdateFinalReview();
+  clSaveSettings();
 }
 
 function clBuildExport(){
@@ -5474,6 +5484,8 @@ function clBuildExport(){
     </div>`:'');
 
   clUpdateFinalReview();
+  // Restore saved settings on first visit to Step 5
+  clLoadSettings();
 }
 
 function clUpdateFinalReview(){
@@ -5571,6 +5583,7 @@ function clAddSelfRow(){
 }
 
 function clExport(){
+  clSaveSettings();
   const filtered=clGetFiltered();
   const {name:nc,phone:pc,serverId:sc}=clState.mapping;
   const fmt=clState.exportFormat;
@@ -5724,6 +5737,64 @@ function clUpdateBatchInfo(){
     return;
   }
   el.innerHTML=`<strong style="color:var(--accent);">${batches} files</strong> will be downloaded &nbsp;·&nbsp; ${total.toLocaleString()} rows ÷ ${size.toLocaleString()} per batch &nbsp;·&nbsp; ~${Math.round(total/batches).toLocaleString()} rows each`;
+  clSaveSettings();
+}
+
+// ── Save / Load export settings across sessions ──
+function clSaveSettings(){
+  try{
+    const s={
+      format:clState.exportFormat||'admin',
+      batchEnabled:document.getElementById('cl-batch-enable')?.checked||false,
+      batchSize:parseInt(document.getElementById('cl-batch-size')?.value||'50000',10),
+      selfInclude:document.getElementById('cl-self-include')?.checked||false,
+      selfContacts:[]
+    };
+    document.querySelectorAll('#cl-self-rows > div').forEach(function(rowEl){
+      const vals={};
+      rowEl.querySelectorAll('input[data-key]').forEach(function(inp){vals[inp.dataset.key]=inp.value.trim();});
+      if(vals.name||vals.phone||vals.wati)s.selfContacts.push(vals);
+    });
+    localStorage.setItem('cl_export_settings',JSON.stringify(s));
+  }catch(e){}
+}
+
+function clLoadSettings(){
+  if(clState._settingsLoaded)return;
+  clState._settingsLoaded=true;
+  try{
+    const s=JSON.parse(localStorage.getItem('cl_export_settings')||'null');
+    if(!s)return;
+    // Format
+    if(s.format&&s.format!==clState.exportFormat)clSelectFormat(s.format);
+    // Batch
+    const batchEl=document.getElementById('cl-batch-enable');
+    const batchOptsEl=document.getElementById('cl-batch-opts');
+    const batchSizeEl=document.getElementById('cl-batch-size');
+    if(batchEl&&s.batchEnabled){batchEl.checked=true;if(batchOptsEl)batchOptsEl.style.display='flex';}
+    if(batchSizeEl&&s.batchSize)batchSizeEl.value=s.batchSize;
+    clUpdateBatchInfo();
+    // Self-contact rows
+    if(s.selfInclude&&s.selfContacts&&s.selfContacts.length){
+      const selfEl=document.getElementById('cl-self-include');
+      if(selfEl){
+        selfEl.checked=true;
+        clToggleSelfContacts(true);
+        setTimeout(function(){
+          // Add extra rows if saved more than 1
+          for(let i=1;i<s.selfContacts.length;i++)clAddSelfRow();
+          setTimeout(function(){
+            document.querySelectorAll('#cl-self-rows > div').forEach(function(rowEl,i){
+              const vals=s.selfContacts[i];if(!vals)return;
+              rowEl.querySelectorAll('input[data-key]').forEach(function(inp){
+                if(vals[inp.dataset.key]!==undefined&&vals[inp.dataset.key]!=='')inp.value=vals[inp.dataset.key];
+              });
+            });
+          },80);
+        },100);
+      }
+    }
+  }catch(e){}
 }
 
 function clMakeCSV(rows){
@@ -6041,7 +6112,8 @@ function clReset(){
     cleaned:[],filters:{},
     removedDups:0,removedInvalid:0,
     phoneChanges:[],autoCleanApplied:false,
-    exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip'
+    exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip',
+    _undoStack:[],_autoDetected:{},_settingsLoaded:false
   };
   // Reset file input so same file can be re-uploaded
   const fi=document.getElementById('cl-file-inp');
