@@ -1129,13 +1129,9 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         <div class="cl-steps">
           <div class="cl-step active" id="cls-1" onclick="clStepClick(1)" style="cursor:pointer;"><div class="cls-dot">1</div><div class="cls-label">Upload</div></div>
           <div class="cl-step-line"></div>
-          <div class="cl-step" id="cls-2" onclick="clStepClick(2)" style="cursor:pointer;"><div class="cls-dot">2</div><div class="cls-label">Preview</div></div>
+          <div class="cl-step" id="cls-2" onclick="clStepClick(2)" style="cursor:pointer;"><div class="cls-dot">2</div><div class="cls-label">Map & Clean</div></div>
           <div class="cl-step-line"></div>
-          <div class="cl-step" id="cls-3" onclick="clStepClick(3)" style="cursor:pointer;"><div class="cls-dot">3</div><div class="cls-label">Clean</div></div>
-          <div class="cl-step-line"></div>
-          <div class="cl-step" id="cls-4" onclick="clStepClick(4)" style="cursor:pointer;"><div class="cls-dot">4</div><div class="cls-label">Filter</div></div>
-          <div class="cl-step-line"></div>
-          <div class="cl-step" id="cls-5" onclick="clStepClick(5)" style="cursor:pointer;"><div class="cls-dot">5</div><div class="cls-label">Export</div></div>
+          <div class="cl-step" id="cls-3" onclick="clStepClick(3)" style="cursor:pointer;"><div class="cls-dot">3</div><div class="cls-label">Export</div></div>
         </div>
       </div>
 
@@ -1157,12 +1153,12 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
             <span id="cl-file-rows" class="cl-badge"></span>
           </div>
           <div class="cl-btn-row" style="justify-content:flex-end;margin-top:20px;">
-            <button class="cl-btn cl-btn-primary" id="cl-next-1" onclick="clGoStep(2)" disabled>Next: Preview →</button>
+            <button class="cl-btn cl-btn-primary" id="cl-next-1" onclick="clGoStep(2)" disabled>Next: Map & Clean →</button>
           </div>
         </div>
       </div>
 
-      <!-- Step 2: Preview & Column Mapping -->
+      <!-- Step 2: Map & Clean -->
       <div id="cl-s2" class="cl-step-content" style="display:none">
         <div class="cl-card">
           <h3 class="cl-title">Data Insights</h3>
@@ -1178,45 +1174,37 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
             <input type="text" id="cl-preview-search" placeholder="🔍  Search name, phone, or any value..." style="flex:1;background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;" oninput="clSearchPreview(this.value)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
             <span id="cl-preview-count" style="font-size:12px;color:var(--muted);white-space:nowrap;"></span>
           </div>
-          <div class="cl-table-wrap" id="cl-table-wrap" style="max-height:340px;overflow:auto;"></div>
-          <div class="cl-btn-row">
-            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(1)">← Back</button>
-            <button class="cl-btn cl-btn-primary" onclick="clGoStep(3)">Next: Clean Data →</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3: Clean -->
-      <div id="cl-s3" class="cl-step-content" style="display:none">
-        <div class="cl-card">
+          <div class="cl-table-wrap" id="cl-table-wrap" style="max-height:260px;overflow:auto;"></div>
+          <!-- Divider -->
+          <div style="border-top:1px solid var(--border);margin:22px 0;"></div>
+          <!-- Clean section -->
           <h3 class="cl-title">Data Cleaning</h3>
-          <p class="cl-sub">Review issues and apply fixes with full control</p>
+          <p class="cl-sub">Review issues and apply fixes before export</p>
           <div id="cl-clean-sections"></div>
           <div class="cl-btn-row">
-            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">← Back</button>
+            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(1)">← Back</button>
             <button class="cl-btn cl-btn-ghost" id="cl-undo-btn" onclick="clUndo()" style="display:none;border-color:#f59e0b;color:#f59e0b;">↩ Undo Last Action</button>
-            <button class="cl-btn cl-btn-primary" onclick="clGoStep(4)">Next: Filter →</button>
+            <button class="cl-btn cl-btn-primary" onclick="clGoStep(3)">Next: Export →</button>
           </div>
         </div>
       </div>
 
-      <!-- Step 4: Filter -->
-      <div id="cl-s4" class="cl-step-content" style="display:none">
+      <!-- Step 3: Filter & Export -->
+      <div id="cl-s3" class="cl-step-content" style="display:none">
         <div class="cl-card">
-          <h3 class="cl-title">Smart Filter</h3>
-          <p class="cl-sub">Select which values to include. Uncheck to exclude rows.</p>
-          <div id="cl-filter-grid" class="cl-filter-grid"></div>
-          <div id="cl-filter-preview" class="cl-filter-preview-txt"></div>
-          <div class="cl-btn-row">
-            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(3)">← Back</button>
-            <button class="cl-btn cl-btn-primary" onclick="clGoStep(5)">Next: Export →</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 5: Export -->
-      <div id="cl-s5" class="cl-step-content" style="display:none">
-        <div class="cl-card">
+          <!-- Filter section (collapsible) -->
+          <details id="cl-filter-details" style="margin-bottom:18px;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+            <summary style="padding:12px 16px;background:var(--input);cursor:pointer;font-size:13px;font-weight:800;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+              <span>🔍 Smart Filter <span style="font-size:11px;font-weight:500;color:var(--muted);margin-left:6px;">optional — filter rows before export</span></span>
+              <span style="font-size:11px;color:var(--muted);">▼</span>
+            </summary>
+            <div style="padding:14px 16px;">
+              <p class="cl-sub" style="margin-top:0;">Select which values to include. Uncheck to exclude rows.</p>
+              <div id="cl-filter-grid" class="cl-filter-grid"></div>
+              <div id="cl-filter-preview" class="cl-filter-preview-txt"></div>
+            </div>
+          </details>
+          <!-- Export format -->
           <h3 class="cl-title">Select Export Format</h3>
           <div class="cl-format-grid">
             <div class="cl-format-card active" id="clf-admin" onclick="clSelectFormat('admin')">
@@ -1244,7 +1232,6 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
               <button onclick="clAddSelfRow()" id="cl-self-add-btn" style="margin-top:8px;padding:6px 14px;font-size:12px;font-weight:700;background:none;border:1px dashed var(--accent);color:var(--accent);border-radius:7px;cursor:pointer;">+ Add More</button>
             </div>
           </div>
-
           <!-- Batch Export -->
           <div style="margin-top:16px;padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:var(--input);">
             <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text);">
@@ -1261,7 +1248,6 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
               <div id="cl-batch-info" style="font-size:13px;color:var(--muted);padding-top:18px;"></div>
             </div>
           </div>
-
           <div style="margin-top:16px;">
             <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);display:block;margin-bottom:6px;">File Name</label>
             <div style="display:flex;align-items:center;gap:6px;">
@@ -1270,7 +1256,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
             </div>
           </div>
           <div class="cl-btn-row">
-            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(4)">← Back & Review</button>
+            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">← Back</button>
             <button class="cl-btn cl-btn-export" onclick="clExport()">✓ Confirm & Export CSV</button>
             <button class="cl-btn" onclick="clReset()" style="background:#f1f5f9;color:var(--muted);border:1px solid var(--border);margin-left:auto;">🔄 Clean New File</button>
           </div>
@@ -4845,13 +4831,11 @@ function clParseFallback(buffer,ext,file){
 function clGoStep(n){
   if(n===2&&!clState.raw.length){toast('Please upload a file first','e');return;}
   if(n>=3&&!clState.raw.length){toast('Please upload a file first','e');return;}
-  if(n>=3&&(!clState.mapping.name||!clState.mapping.phone)){toast('Please map Name and Phone columns in Step 2 first','e');clGoStep(2);return;}
-  if(n===2){clBuildPreview();}
-  if(n===3){clBuildClean();}
-  if(n===4){clBuildFilter();}
-  if(n===5){clBuildExport();}
+  if(n>=3&&(!clState.mapping.name||!clState.mapping.phone)){toast('Please map Name and Phone columns first','e');clGoStep(2);return;}
+  if(n===2){clBuildPreview();clBuildClean();}
+  if(n===3){clBuildFilter();clBuildExport();}
   clStep=n;
-  for(let i=1;i<=5;i++){
+  for(let i=1;i<=3;i++){
     const s=document.getElementById('cl-s'+i);
     if(s)s.style.display=i===n?'':'none';
     const dot=document.getElementById('cls-'+i);
@@ -4924,6 +4908,8 @@ function clBuildPreview(){
   clRenderPreviewTable(clState.raw.slice(0,50));
   const countEl=document.getElementById('cl-preview-count');
   if(countEl)countEl.textContent=`Showing 50 of ${clState.raw.length} rows`;
+  // On step 2 (merged), also refresh clean section when mapping changes
+  if(clStep===2)clBuildClean();
 }
 
 function clRenderPreviewTable(rows){
@@ -6078,7 +6064,7 @@ function clCleanPhone(raw){
 
 // ── Safety: warn if leaving page with unsaved data ──
 window.addEventListener('beforeunload',e=>{
-  if(clState.raw.length>0&&clStep<5){
+  if(clState.raw.length>0&&clStep<3){
     e.preventDefault();
     e.returnValue='You have unsaved data in Data Cleaner. Are you sure you want to leave?';
   }
@@ -6100,7 +6086,7 @@ function clClearMemory(){
 function clStepClick(n){
   if(n===1){clGoStep(1);return;}
   if(!clState.raw.length){toast('Please upload a file first','e');return;}
-  if(n>=3&&!clState.mapping.name&&!clState.mapping.phone){toast('Please map columns first (Step 2)','e');return;}
+  if(n===3&&(!clState.mapping.name||!clState.mapping.phone)){toast('Please map columns first (Step 2)','e');return;}
   clGoStep(n);
 }
 
