@@ -4939,7 +4939,7 @@ function clSearchPreview(q){
 
 // ── Step 3: Clean ──
 function clBuildClean(){
-  clApplyAutoClean();
+  if(!clState.autoCleanApplied)clApplyAutoClean();
   const sections=[];
   const data=clState.cleaned;
   const {name:nc,phone:pc,serverId:sc}=clState.mapping;
@@ -5277,11 +5277,17 @@ function clBuildFilter(){
     return;
   }
 
-  // Init filter state
+  // Init filter state — always recompute available values; preserve selection only if value still exists
   filterCols.forEach(col=>{
+    const vals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))].sort();
+    const available=new Set(vals);
     if(!clState.filters[col]){
-      const vals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))].sort();
-      clState.filters[col]=new Set(vals);
+      clState.filters[col]=new Set(vals); // default: all selected
+    } else {
+      // Remove any selected values that no longer exist in current data
+      clState.filters[col]=new Set([...clState.filters[col]].filter(v=>available.has(v)));
+      // If nothing is left selected (all old values gone), select all
+      if(clState.filters[col].size===0)clState.filters[col]=new Set(vals);
     }
   });
 
