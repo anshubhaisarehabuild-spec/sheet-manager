@@ -728,19 +728,34 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
 /* ── DATA CLEANER ── */
 #cleaner-panel{padding:24px;max-width:960px;margin:0 auto;position:relative;}
-#cl-bg-wrap{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
-.cl-blob{position:absolute;border-radius:50%;filter:blur(90px);animation:clFloat 9s ease-in-out infinite;}
-.cl-blob-1{width:520px;height:520px;background:radial-gradient(circle,#6366f1,#818cf8);opacity:.10;top:-160px;left:-140px;animation-delay:0s;}
-.cl-blob-2{width:420px;height:420px;background:radial-gradient(circle,#8b5cf6,#a78bfa);opacity:.09;top:40%;right:-130px;animation-delay:-3.5s;}
-.cl-blob-3{width:380px;height:380px;background:radial-gradient(circle,#06b6d4,#67e8f9);opacity:.07;bottom:-100px;left:25%;animation-delay:-6s;}
-.cl-blob-4{width:300px;height:300px;background:radial-gradient(circle,#f59e0b,#fcd34d);opacity:.06;top:30%;left:10%;animation-delay:-2s;}
-#cl-bg-dots{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(circle,rgba(99,102,241,.13) 1.2px,transparent 1.2px);background-size:30px 30px;}
-[data-theme=dark] .cl-blob-1{opacity:.07;}
-[data-theme=dark] .cl-blob-2{opacity:.06;}
-[data-theme=dark] .cl-blob-3{opacity:.05;}
-[data-theme=dark] .cl-blob-4{opacity:.04;}
-[data-theme=dark] #cl-bg-dots{background-image:radial-gradient(circle,rgba(129,140,248,.10) 1.2px,transparent 1.2px);}
-@keyframes clFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-28px) scale(1.04);}}
+/* Full-page animated background when cleaner is active */
+#main.cl-active{
+  background:
+    radial-gradient(ellipse 55% 55% at -2% -5%,rgba(99,102,241,.22) 0%,transparent 52%),
+    radial-gradient(ellipse 45% 50% at 103% 52%,rgba(139,92,246,.18) 0%,transparent 52%),
+    radial-gradient(ellipse 55% 45% at 42% 104%,rgba(6,182,212,.15) 0%,transparent 52%),
+    radial-gradient(ellipse 38% 42% at 12% 72%,rgba(245,158,11,.12) 0%,transparent 52%),
+    var(--bg);
+  background-attachment:fixed;
+  animation:clBgPulse 10s ease-in-out infinite alternate;
+}
+#main.cl-active::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(99,102,241,.14) 1.2px,transparent 1.2px);
+  background-size:30px 30px;
+  pointer-events:none;
+  z-index:0;
+}
+[data-theme=dark] #main.cl-active{
+  background:
+    radial-gradient(ellipse 55% 55% at -2% -5%,rgba(99,102,241,.14) 0%,transparent 52%),
+    radial-gradient(ellipse 45% 50% at 103% 52%,rgba(139,92,246,.11) 0%,transparent 52%),
+    radial-gradient(ellipse 55% 45% at 42% 104%,rgba(6,182,212,.09) 0%,transparent 52%),
+    var(--bg);
+}
+[data-theme=dark] #main.cl-active::before{background-image:radial-gradient(circle,rgba(129,140,248,.10) 1.2px,transparent 1.2px);}
+@keyframes clBgPulse{0%{background-size:100% 100%,100% 100%,100% 100%,100% 100%,auto;}100%{background-size:110% 110%,110% 110%,110% 110%,110% 110%,auto;}}
 .cl-steps-wrap{margin-bottom:28px;position:relative;z-index:1;}
 .cl-steps{display:flex;align-items:center;gap:0;}
 .cl-step{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;}
@@ -753,6 +768,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .cl-step.done .cls-label{color:#22c55e;}
 .cl-step.done:hover .cls-dot,.cl-step.active:hover .cls-dot{opacity:.8;transform:scale(1.1);transition:all .15s;}
 .cl-step-content{animation:fadeIn .2s ease;position:relative;z-index:1;}
+#cleaner-panel>*:not(#cl-loader){position:relative;z-index:1;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .cl-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;}
 .cl-card+.cl-card{margin-top:16px;}
@@ -1105,15 +1121,6 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
     <!-- DATA CLEANER PANEL -->
     <div id="cleaner-panel" style="display:none;position:relative;">
-
-    <!-- Background graphic -->
-    <div id="cl-bg-wrap">
-      <div class="cl-blob cl-blob-1"></div>
-      <div class="cl-blob cl-blob-2"></div>
-      <div class="cl-blob cl-blob-3"></div>
-      <div class="cl-blob cl-blob-4"></div>
-    </div>
-    <div id="cl-bg-dots"></div>
 
     <!-- Parse / Processing Loader -->
     <div id="cl-loader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9998;align-items:center;justify-content:center;">
@@ -3357,10 +3364,12 @@ function setView(v,fid){
   const cleanerPanel=document.getElementById('cleaner-panel');
   const cardsEl=document.getElementById('cards');
   const emptyEl=document.getElementById('empty');
+  const mainEl=document.getElementById('main');
   if(v==='cleaner'){
     if(cleanerPanel)cleanerPanel.style.display='';
     if(cardsEl)cardsEl.style.display='none';
     if(emptyEl)emptyEl.style.display='none';
+    if(mainEl)mainEl.classList.add('cl-active');
   } else {
     // Clear sensitive data from memory when leaving cleaner
     if(cleanerPanel&&cleanerPanel.style.display!=='none'){
@@ -3368,6 +3377,7 @@ function setView(v,fid){
     }
     if(cleanerPanel)cleanerPanel.style.display='none';
     if(cardsEl)cardsEl.style.display='';
+    if(mainEl)mainEl.classList.remove('cl-active');
   }
   if(v==='links'){currentLinkBoard=null;renderLinks();}
   else if(v==='quiz'){currentQuizBank=null;renderQuiz();}
