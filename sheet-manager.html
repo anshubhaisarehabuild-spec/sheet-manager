@@ -5173,6 +5173,7 @@ function clShowPhoneModal(){
   const pc=clState.mapping.phone;
   const data=clState.cleaned;
 
+  const nc=clState.mapping.name;
   // Analyse all numbers
   const analysis=data.map(r=>{
     const raw=String(r[pc]||'').trim();
@@ -5184,7 +5185,8 @@ function clShowPhoneModal(){
     const country=clDetectCountry(digits);
     const hasPlus=raw.startsWith('+');
     const missingPlus=!hasPlus&&digits.length>=10;
-    return{raw,digits,country,hasPlus,missingPlus,hasInvalidChars,tooShort,tooLong};
+    const name=nc?String(r[nc]||'').trim():'';
+    return{raw,digits,country,hasPlus,missingPlus,hasInvalidChars,tooShort,tooLong,name};
   }).filter(Boolean);
 
   // Country breakdown
@@ -5206,7 +5208,27 @@ function clShowPhoneModal(){
       ${breakdown.map(([k,v])=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:3px 8px;background:var(--input);border-radius:4px;"><span>${k}</span><strong>${v}</strong></div>`).join('')}
     </div>
   </div>
-  ${realIssues.length?`<div style="font-size:12px;color:#991b1b;margin-bottom:8px;padding:8px 10px;background:#fef2f2;border-radius:6px;">⚠️ ${realIssues.length} numbers have actual issues (too short/long or invalid chars)</div>`:''}
+  ${realIssues.length?`
+    <div style="margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:700;color:#991b1b;margin-bottom:6px;padding:7px 10px;background:#fef2f2;border-radius:6px;">⚠️ ${realIssues.length} number${realIssues.length>1?'s':''} with actual issues (too short/long or invalid chars)</div>
+      <div style="max-height:140px;overflow:auto;border:1px solid #fecaca;border-radius:6px;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead><tr style="background:#fef2f2;position:sticky;top:0;">
+            <th style="padding:5px 10px;text-align:left;color:#991b1b;font-weight:700;white-space:nowrap;">Name</th>
+            <th style="padding:5px 10px;text-align:left;color:#991b1b;font-weight:700;white-space:nowrap;">Phone</th>
+            <th style="padding:5px 10px;text-align:left;color:#991b1b;font-weight:700;white-space:nowrap;">Issue</th>
+          </tr></thead>
+          <tbody>${realIssues.map(a=>{
+            const issue=a.hasInvalidChars?'Has letters':a.tooShort?'Too short ('+a.digits.length+' digits)':'Too long ('+a.digits.length+' digits)';
+            return`<tr style="border-top:1px solid #fecaca;">
+              <td style="padding:5px 10px;color:var(--text);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(a.name||'—')}</td>
+              <td style="padding:5px 10px;color:#dc2626;font-family:monospace;white-space:nowrap;">${esc(a.raw)}</td>
+              <td style="padding:5px 10px;color:#991b1b;white-space:nowrap;">${esc(issue)}</td>
+            </tr>`;
+          }).join('')}</tbody>
+        </table>
+      </div>
+    </div>`:''}
   ${missingPlus.length?`<div style="font-size:12px;color:#78350f;margin-bottom:8px;padding:8px 10px;background:#fffbeb;border-radius:6px;">ℹ️ ${missingPlus.length} numbers are missing the + prefix but appear to have country code</div>`:''}
   <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:8px 0 5px;">Add + prefix to numbers missing it</div>
   <select class="cl-cc-select" id="cl-cc-action" onchange="clToggleCCInput()" style="margin:4px 0 0;">
