@@ -4978,29 +4978,116 @@ function clBuildClean(){
     const tooShort=digits.length<8;
     const tooLong=digits.length>15;
     // Only flag truly invalid: too short, too long, or contains letters
-    if(tooShort||tooLong||hasInvalidChars)return{i,raw,digits,tooShort,tooLong,hasInvalidChars};
+    if(tooShort||tooLong||hasInvalidChars)return{i,raw,digits,tooShort,tooLong,hasInvalidChars,name:nc?String(r[nc]||'').trim():''};
     return null;
   }).filter(Boolean):[];
+
+  // ── Pre-compute inline previews ──
+
+  // Duplicate sample: top 3 phone numbers that appear more than once
+  const dupSample=Object.entries(phoneMap)
+    .filter(([,v])=>Array.isArray(v))
+    .sort((a,b)=>b[1].length-a[1].length)
+    .slice(0,3)
+    .map(([phone,allIdxs])=>({
+      phone,
+      count:allIdxs.length,
+      names:allIdxs.slice(0,3).map(idx=>nc?String(data[idx][nc]||'').trim()||'—':'—')
+    }));
+  const dupUniquePhones=Object.values(phoneMap).filter(v=>Array.isArray(v)).length;
+  const dupPreviewHTML=dupSample.length?`
+    <div style="margin-top:10px;border:1px solid #fde68a;border-radius:6px;overflow:hidden;">
+      <div style="padding:5px 10px;background:#fffbeb;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#92400e;">Example duplicates</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead><tr style="background:#fffbeb;">
+          <th style="padding:5px 10px;text-align:left;color:#92400e;">Phone Number</th>
+          <th style="padding:5px 10px;text-align:left;color:#92400e;">Appears</th>
+          <th style="padding:5px 10px;text-align:left;color:#92400e;">Names in those rows</th>
+        </tr></thead>
+        <tbody>${dupSample.map(d=>`<tr style="border-top:1px solid #fde68a;">
+          <td style="padding:5px 10px;font-family:monospace;color:#92400e;white-space:nowrap;">${esc(d.phone)}</td>
+          <td style="padding:5px 10px;font-weight:700;color:#b45309;">${d.count} times</td>
+          <td style="padding:5px 10px;color:var(--text);">${d.names.map(n=>esc(n)).join(', ')}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+      ${dupUniquePhones>3?`<div style="padding:5px 10px;font-size:11px;color:var(--muted);background:#fffbeb;">…and ${dupUniquePhones-3} more duplicate numbers. Click "See All" to view the full list.</div>`:''}
+    </div>`:'';
+
+  // Invalid rows sample: first 3 rows missing name or phone
+  const invalidSample=invalidIdxs.slice(0,3).map(idx=>({
+    name:nc?String(data[idx][nc]||'').trim():'',
+    phone:pc?String(data[idx][pc]||'').trim():'',
+    missingName:!nc||!String(data[idx][nc]||'').trim(),
+    missingPhone:!pc||!String(data[idx][pc]||'').trim()
+  }));
+  const invalidPreviewHTML=invalidSample.length?`
+    <div style="margin-top:10px;border:1px solid #fecaca;border-radius:6px;overflow:hidden;">
+      <div style="padding:5px 10px;background:#fef2f2;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#991b1b;">Example rows with missing data</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead><tr style="background:#fef2f2;">
+          <th style="padding:5px 10px;text-align:left;color:#991b1b;">Name</th>
+          <th style="padding:5px 10px;text-align:left;color:#991b1b;">Phone Number</th>
+          <th style="padding:5px 10px;text-align:left;color:#991b1b;">What's missing</th>
+        </tr></thead>
+        <tbody>${invalidSample.map(s=>`<tr style="border-top:1px solid #fecaca;">
+          <td style="padding:5px 10px;${s.missingName?'background:#fef2f2;color:#dc2626;font-weight:600;':''}">${s.missingName?'<em>MISSING</em>':esc(s.name)}</td>
+          <td style="padding:5px 10px;font-family:monospace;${s.missingPhone?'background:#fef2f2;color:#dc2626;font-weight:600;':''}">${s.missingPhone?'<em>MISSING</em>':esc(s.phone)}</td>
+          <td style="padding:5px 10px;color:#991b1b;">${[s.missingName?'No name':null,s.missingPhone?'No phone':null].filter(Boolean).join(' + ')}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+      ${invalidIdxs.length>3?`<div style="padding:5px 10px;font-size:11px;color:var(--muted);background:#fef2f2;">…and ${invalidIdxs.length-3} more rows. Click "See All" to view the full list.</div>`:''}
+    </div>`:'';
+
+  // Phone issues sample: first 3 invalid numbers
+  const phonePreviewHTML=phoneIssues.length?`
+    <div style="margin-top:10px;border:1px solid #fecaca;border-radius:6px;overflow:hidden;">
+      <div style="padding:5px 10px;background:#fef2f2;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#991b1b;">Example numbers with issues</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead><tr style="background:#fef2f2;">
+          <th style="padding:5px 10px;text-align:left;color:#991b1b;">Name</th>
+          <th style="padding:5px 10px;text-align:left;color:#991b1b;">Phone Number</th>
+          <th style="padding:5px 10px;text-align:left;color:#991b1b;">Problem</th>
+        </tr></thead>
+        <tbody>${phoneIssues.slice(0,3).map(a=>{
+          const issue=a.hasInvalidChars?'Contains letters — not a valid number':a.tooShort?`Too short (only ${a.digits.length} digits)`:`Too long (${a.digits.length} digits)`;
+          return`<tr style="border-top:1px solid #fecaca;">
+            <td style="padding:5px 10px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(a.name||'—')}</td>
+            <td style="padding:5px 10px;font-family:monospace;color:#dc2626;white-space:nowrap;">${esc(a.raw)}</td>
+            <td style="padding:5px 10px;color:#991b1b;">${esc(issue)}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+      ${phoneIssues.length>3?`<div style="padding:5px 10px;font-size:11px;color:var(--muted);background:#fef2f2;">…and ${phoneIssues.length-3} more. Click "Review & Fix" to see all.</div>`:''}
+    </div>`:'';
 
   // Build sections HTML
   sections.push(`<div class="cl-clean-section">
     <div class="cl-clean-header">
       <div class="cl-clean-title">🔁 Duplicate Phone Numbers <span class="cl-clean-badge ${dupCount?'cl-badge-warn':'cl-badge-ok'}">${dupCount} found</span></div>
       ${dupCount?`<div style="display:flex;gap:8px;">
-        <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="clPreviewDups()">Review</button>
+        <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="clPreviewDups()">See All</button>
         <button class="cl-btn cl-btn-danger" style="padding:6px 12px;font-size:12px;" onclick="clRemoveDups()">Remove Duplicates</button>
         <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="toast('Duplicates kept','s')">Keep All</button>
       </div>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ No duplicates</span>`}
     </div>
-    ${dupCount?`<div class="cl-clean-body"><p style="font-size:13px;color:var(--muted);">${dupCount} rows have duplicate phone numbers. Removing keeps only the first occurrence.</p></div>`:''}
+    ${dupCount?`<div class="cl-clean-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:0;">The same phone number appears more than once across ${dupCount} extra rows. Only the first row for each number will be kept.</p>
+      ${dupPreviewHTML}
+    </div>`:''}
   </div>`);
 
   sections.push(`<div class="cl-clean-section">
     <div class="cl-clean-header">
       <div class="cl-clean-title">🧹 Missing Required Data <span class="cl-clean-badge ${invalidIdxs.length?'cl-badge-warn':'cl-badge-ok'}">${invalidIdxs.length} rows</span></div>
-      ${invalidIdxs.length?`<button class="cl-btn cl-btn-danger" style="padding:6px 12px;font-size:12px;" onclick="clRemoveInvalid()">Remove Invalid Rows</button>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ All rows have required data</span>`}
+      ${invalidIdxs.length?`<div style="display:flex;gap:8px;">
+        <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="clPreviewInvalid()">See All</button>
+        <button class="cl-btn cl-btn-danger" style="padding:6px 12px;font-size:12px;" onclick="clRemoveInvalid()">Remove Invalid Rows</button>
+      </div>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ All rows have required data</span>`}
     </div>
-    ${invalidIdxs.length?`<div class="cl-clean-body"><p style="font-size:13px;color:var(--muted);">These rows are missing name or phone number and cannot be exported.</p></div>`:''}
+    ${invalidIdxs.length?`<div class="cl-clean-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:0;">These rows are missing a name or phone number — without both, a message cannot be sent. The red cells below show exactly what's missing.</p>
+      ${invalidPreviewHTML}
+    </div>`:''}
   </div>`);
 
   sections.push(`<div class="cl-clean-section">
@@ -5009,8 +5096,8 @@ function clBuildClean(){
       ${phoneIssues.length?`<button class="cl-btn cl-btn-warn" style="padding:6px 12px;font-size:12px;" onclick="clShowPhoneModal()">Review & Fix</button>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ All phones look valid</span>`}
     </div>
     ${phoneIssues.length?`<div class="cl-clean-body">
-      <div class="cl-warning cl-warning-red" style="margin-bottom:10px;"><span>⚠️</span><span>Incorrect formatting may send messages to wrong users. Do NOT apply without reviewing.</span></div>
-      <p style="font-size:13px;color:var(--muted);">${phoneIssues.length} numbers may be missing country code or have incorrect length.</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:0;">These phone numbers look incorrect — too short, too long, or contain letters. They may fail to deliver or reach the wrong person.</p>
+      ${phonePreviewHTML}
     </div>`:''}
   </div>`);
 
@@ -5048,6 +5135,30 @@ function clPreviewDups(){
   clShowModal('🔁','Duplicate Rows',`${dups.length} duplicate entries found (showing first 20):`,
     `<table><thead><tr>${h.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${dups.slice(0,20).map(r=>`<tr>${h.map(c=>`<td>${esc(String(r[c]||''))}</td>`).join('')}</tr>`).join('')}</tbody></table>`,
     [{label:'Remove Duplicates',cls:'cl-btn-danger',fn:'clRemoveDups'},{label:'Keep All',cls:'cl-btn-ghost',fn:'clClosModal'}]
+  );
+}
+
+function clPreviewInvalid(){
+  const {name:nc,phone:pc}=clState.mapping;
+  const invalid=clState.cleaned.filter(r=>{
+    const hasName=nc&&String(r[nc]||'').trim();
+    const hasPhone=pc&&String(r[pc]||'').trim();
+    return !hasName||!hasPhone;
+  });
+  const h=clState.headers.slice(0,5);
+  const rowsHTML=invalid.slice(0,30).map(r=>{
+    const hasName=nc&&String(r[nc]||'').trim();
+    const hasPhone=pc&&String(r[pc]||'').trim();
+    return`<tr>${h.map(c=>{
+      const isBad=(c===nc&&!hasName)||(c===pc&&!hasPhone);
+      const val=String(r[c]||'');
+      return`<td style="padding:5px 10px;${isBad?'background:#fef2f2;color:#dc2626;font-weight:600;':''}">${isBad&&!val?'<em>MISSING</em>':esc(val)}</td>`;
+    }).join('')}</tr>`;
+  }).join('');
+  clShowModal('🧹','Missing Required Data',
+    `${invalid.length} rows are missing name or phone number — these cannot be exported. Highlighted cells show what is missing.`,
+    `<div style="overflow:auto;max-height:280px;border:1px solid #fecaca;border-radius:6px;"><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr style="background:#fef2f2;position:sticky;top:0;">${h.map(c=>`<th style="padding:5px 10px;text-align:left;color:#991b1b;white-space:nowrap;">${esc(c)}</th>`).join('')}</tr></thead><tbody>${rowsHTML}</tbody></table></div>${invalid.length>30?`<p style="font-size:11px;color:var(--muted);margin-top:6px;">Showing first 30 of ${invalid.length} rows.</p>`:''}`,
+    [{label:'Remove Invalid Rows',cls:'cl-btn-danger',fn:'clRemoveInvalid'},{label:'Keep',cls:'cl-btn-ghost',fn:'clClosModal'}]
   );
 }
 
