@@ -1146,6 +1146,15 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         </div>
       </div>
 
+      <!-- Batch mode indicator — visible across all steps when batch mode is on -->
+      <div id="cl-batch-indicator" style="display:none;margin-bottom:14px;padding:11px 16px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <div>
+          <span style="font-size:13px;font-weight:700;color:#1d4ed8;">📦 Batch Mode ON — </span>
+          <span id="cl-batch-ind-text" style="font-size:13px;color:#1e40af;"></span>
+        </div>
+        <button id="cl-next-batch-btn" style="display:none;background:#2563eb;color:#fff;border:none;border-radius:7px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;" onclick="clNextBatch()">Next Batch →</button>
+      </div>
+
       <!-- Step 1: Upload -->
       <div id="cl-s1" class="cl-step-content">
         <div class="cl-card">
@@ -1163,6 +1172,28 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
             <span id="cl-file-name"></span>
             <span id="cl-file-rows" class="cl-badge"></span>
           </div>
+
+          <!-- Large file warning — only shown when > 2 lakh rows -->
+          <div id="cl-large-file-banner" style="display:none;margin-top:14px;padding:14px 16px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <span style="font-size:20px;flex-shrink:0;">⚠️</span>
+              <div style="flex:1;">
+                <div style="font-size:14px;font-weight:700;color:#92400e;margin-bottom:4px;">Badi file — <span id="cl-lf-rows"></span> rows</div>
+                <div style="font-size:13px;color:#78350f;line-height:1.6;margin-bottom:12px;">Browser slow ho sakta hai. <strong>Batch Mode</strong> enable karo — ek time par ek batch clean hogi, baad mein next batch load kar sakte ho. Ya ignore karke full file ke saath continue karo.</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                  <label style="font-size:12px;font-weight:700;color:#92400e;">Batch size:</label>
+                  <select id="cl-lf-batch-sel" style="background:#fff;border:1px solid #fde68a;border-radius:6px;padding:5px 10px;font-size:13px;color:#92400e;font-weight:700;outline:none;">
+                    <option value="100000">1,00,000 rows</option>
+                    <option value="50000">50,000 rows</option>
+                    <option value="200000">2,00,000 rows</option>
+                  </select>
+                  <button class="cl-btn" style="background:#f59e0b;color:#fff;border:none;padding:7px 18px;font-size:13px;font-weight:700;" onclick="clEnableBatchMode()">Enable Batch Mode</button>
+                  <button class="cl-btn cl-btn-ghost" style="font-size:13px;" onclick="clDismissLargeFileBanner()">Continue with full file</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="cl-btn-row" style="justify-content:flex-end;margin-top:20px;">
             <button class="cl-btn cl-btn-primary" id="cl-next-1" onclick="clGoStep(2)" disabled>Next: Map & Clean →</button>
           </div>
@@ -4675,7 +4706,8 @@ let clState={
   removedDups:0,removedInvalid:0,
   phoneChanges:[],autoCleanApplied:false,
   exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip',
-  _undoStack:[],_autoDetected:{},_settingsLoaded:false
+  _undoStack:[],_autoDetected:{},_settingsLoaded:false,
+  _allData:[],batchMode:false,batchSize:100000,batchIndex:0,totalBatches:0
 };
 let clStep=1;
 
@@ -4730,7 +4762,66 @@ function clFinishLoad(file,data,headers){
   document.getElementById('cl-file-info').style.display='flex';
   document.getElementById('cl-next-1').disabled=false;
   clHideLoader();
-  if(data.length>100000)toast(`Loaded ${data.length.toLocaleString()} rows — use Batch Export to split into smaller files`,'s');
+  // Show large-file batch mode banner if > 2 lakh rows
+  const lbb=document.getElementById('cl-large-file-banner');
+  if(lbb){
+    lbb.style.display=data.length>200000?'':'none';
+    const lbr=document.getElementById('cl-lf-rows');
+    if(lbr&&data.length>200000)lbr.textContent=data.length.toLocaleString();
+  }
+  if(data.length>100000&&data.length<=200000)toast(`Loaded ${data.length.toLocaleString()} rows — use Batch Export to split into smaller files`,'s');
+}
+
+// ── Batch Mode ──
+function clEnableBatchMode(){
+  const batchSize=parseInt(document.getElementById('cl-lf-batch-sel')?.value||'100000',10);
+  clState._allData=[...clState.raw];
+  clState.batchMode=true;
+  clState.batchSize=batchSize;
+  clState.totalBatches=Math.ceil(clState._allData.length/batchSize);
+  clState.batchIndex=0;
+  document.getElementById('cl-large-file-banner').style.display='none';
+  clLoadBatch(0);
+  toast(`Batch Mode on — Batch 1 of ${clState.totalBatches} ready (${batchSize.toLocaleString()} rows)`,'s');
+}
+
+function clDismissLargeFileBanner(){
+  const lbb=document.getElementById('cl-large-file-banner');
+  if(lbb)lbb.style.display='none';
+}
+
+function clLoadBatch(index){
+  const start=index*clState.batchSize;
+  const end=Math.min(start+clState.batchSize,clState._allData.length);
+  const batch=clState._allData.slice(start,end);
+  clState.batchIndex=index;
+  clState.raw=batch;
+  clState.cleaned=batch.map(r=>({...r}));
+  clState.removedDups=0;clState.removedInvalid=0;
+  clState.phoneChanges=[];clState.autoCleanApplied=false;
+  clState.filters={};clState._undoStack=[];
+  document.getElementById('cl-file-rows').textContent=`Batch ${index+1}/${clState.totalBatches} — ${batch.length.toLocaleString()} rows`;
+  clUpdateBatchIndicator();
+}
+
+function clUpdateBatchIndicator(){
+  const ind=document.getElementById('cl-batch-indicator');
+  if(!ind)return;
+  if(!clState.batchMode){ind.style.display='none';return;}
+  ind.style.display='flex';
+  const rowFrom=(clState.batchIndex*clState.batchSize+1).toLocaleString();
+  const rowTo=Math.min((clState.batchIndex+1)*clState.batchSize,clState._allData.length).toLocaleString();
+  const text=document.getElementById('cl-batch-ind-text');
+  if(text)text.textContent=`Batch ${clState.batchIndex+1} of ${clState.totalBatches} (rows ${rowFrom} – ${rowTo})`;
+  const nextBtn=document.getElementById('cl-next-batch-btn');
+  if(nextBtn)nextBtn.style.display=(clState.batchIndex+1<clState.totalBatches)?'':'none';
+}
+
+function clNextBatch(){
+  if(clState.batchIndex+1>=clState.totalBatches){toast('Saare batches complete ho gaye!','s');return;}
+  clLoadBatch(clState.batchIndex+1);
+  clGoStep(2);
+  toast(`Batch ${clState.batchIndex+1} of ${clState.totalBatches} loaded`,'s');
 }
 
 function clHandleFile(file){
@@ -6262,8 +6353,11 @@ function clReset(){
     removedDups:0,removedInvalid:0,
     phoneChanges:[],autoCleanApplied:false,
     exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip',
-    _undoStack:[],_autoDetected:{},_settingsLoaded:false
+    _undoStack:[],_autoDetected:{},_settingsLoaded:false,
+    _allData:[],batchMode:false,batchSize:100000,batchIndex:0,totalBatches:0
   };
+  const lbb=document.getElementById('cl-large-file-banner');if(lbb)lbb.style.display='none';
+  clUpdateBatchIndicator();
   // Reset file input so same file can be re-uploaded
   const fi=document.getElementById('cl-file-inp');
   if(fi)fi.value='';
