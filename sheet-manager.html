@@ -1174,22 +1174,23 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           </div>
 
           <!-- Large file warning — only shown when > 2 lakh rows -->
-          <div id="cl-large-file-banner" style="display:none;margin-top:14px;padding:14px 16px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;">
+          <div id="cl-large-file-banner" style="display:none;margin-top:14px;padding:14px 16px;border-radius:10px;">
             <div style="display:flex;align-items:flex-start;gap:10px;">
-              <span style="font-size:20px;flex-shrink:0;">⚠️</span>
+              <span id="cl-lf-icon" style="font-size:20px;flex-shrink:0;">⚠️</span>
               <div style="flex:1;">
-                <div style="font-size:14px;font-weight:700;color:#92400e;margin-bottom:4px;">Badi file — <span id="cl-lf-rows"></span> rows</div>
-                <div style="font-size:13px;color:#78350f;line-height:1.6;margin-bottom:12px;">Browser slow ho sakta hai. <strong>Batch Mode</strong> enable karo — ek time par ek batch clean hogi, baad mein next batch load kar sakte ho. Ya ignore karke full file ke saath continue karo.</div>
+                <div id="cl-lf-title" style="font-size:14px;font-weight:700;margin-bottom:4px;"></div>
+                <div id="cl-lf-desc" style="font-size:13px;line-height:1.6;margin-bottom:12px;"></div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-                  <label style="font-size:12px;font-weight:700;color:#92400e;">Batch size:</label>
+                  <label id="cl-lf-size-label" style="font-size:12px;font-weight:700;">Batch size:</label>
                   <select id="cl-lf-batch-sel" style="background:#fff;border:1px solid #fde68a;border-radius:6px;padding:5px 10px;font-size:13px;color:#92400e;font-weight:700;outline:none;">
                     <option value="100000">1,00,000 rows</option>
                     <option value="50000">50,000 rows</option>
                     <option value="200000">2,00,000 rows</option>
                   </select>
                   <button class="cl-btn" style="background:#f59e0b;color:#fff;border:none;padding:7px 18px;font-size:13px;font-weight:700;" onclick="clEnableBatchMode()">Enable Batch Mode</button>
-                  <button class="cl-btn cl-btn-ghost" style="font-size:13px;" onclick="clDismissLargeFileBanner()">Continue with full file</button>
+                  <button id="cl-lf-continue-btn" class="cl-btn cl-btn-ghost" style="font-size:13px;" onclick="clDismissLargeFileBanner()">Continue with full file</button>
                 </div>
+                <div id="cl-lf-continue-warn" style="display:none;margin-top:8px;font-size:12px;color:#dc2626;font-weight:600;">❌ "Continue with full file" is not recommended for this file size — browser crash ho sakta hai. Batch Mode use karo.</div>
               </div>
             </div>
           </div>
@@ -4764,10 +4765,43 @@ function clFinishLoad(file,data,headers){
   clHideLoader();
   // Show large-file batch mode banner if > 2 lakh rows
   const lbb=document.getElementById('cl-large-file-banner');
-  if(lbb){
-    lbb.style.display=data.length>200000?'':'none';
-    const lbr=document.getElementById('cl-lf-rows');
-    if(lbr&&data.length>200000)lbr.textContent=data.length.toLocaleString();
+  if(lbb&&data.length>200000){
+    const veryLarge=data.length>500000;
+    // Style banner based on severity
+    lbb.style.background=veryLarge?'#fef2f2':'#fffbeb';
+    lbb.style.border=`1.5px solid ${veryLarge?'#fecaca':'#fde68a'}`;
+    lbb.style.display='';
+    const icon=document.getElementById('cl-lf-icon');
+    if(icon)icon.textContent=veryLarge?'❌':'⚠️';
+    const title=document.getElementById('cl-lf-title');
+    if(title){
+      title.style.color=veryLarge?'#991b1b':'#92400e';
+      title.textContent=(veryLarge?'Bahut badi file — ':'Badi file — ')+data.length.toLocaleString()+' rows';
+    }
+    const desc=document.getElementById('cl-lf-desc');
+    if(desc){
+      desc.style.color=veryLarge?'#7f1d1d':'#78350f';
+      desc.innerHTML=veryLarge
+        ?'<strong>Browser crash ho jayega</strong> agar full file load ki. Sirf <strong>Batch Mode</strong> hi kaam karega is size ke liye. Neeche batch size select karo aur "Enable Batch Mode" click karo.'
+        :'Browser slow ho sakta hai. <strong>Batch Mode</strong> enable karo — ek time par ek batch clean hogi, baad mein next batch load kar sakte ho.';
+    }
+    const sizeLabel=document.getElementById('cl-lf-size-label');
+    if(sizeLabel)sizeLabel.style.color=veryLarge?'#991b1b':'#92400e';
+    const continueBtn=document.getElementById('cl-lf-continue-btn');
+    const continueWarn=document.getElementById('cl-lf-continue-warn');
+    if(continueBtn&&veryLarge){
+      continueBtn.disabled=true;
+      continueBtn.style.opacity='0.4';
+      continueBtn.style.cursor='not-allowed';
+      continueBtn.title='5 lakh+ rows ke liye recommended nahi — crash ho sakta hai';
+    }else if(continueBtn){
+      continueBtn.disabled=false;
+      continueBtn.style.opacity='';
+      continueBtn.style.cursor='';
+    }
+    if(continueWarn)continueWarn.style.display=veryLarge?'':'none';
+  }else if(lbb){
+    lbb.style.display='none';
   }
   if(data.length>100000&&data.length<=200000)toast(`Loaded ${data.length.toLocaleString()} rows — use Batch Export to split into smaller files`,'s');
 }
