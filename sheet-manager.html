@@ -1217,43 +1217,9 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <!-- REPORT BUILDER PANEL -->
     <div id="report-panel" style="display:none;max-width:860px;margin:0 auto;">
 
-      <!-- API Key -->
-      <div class="rp-api-row">
-        <label>Claude API Key</label>
-        <input type="password" id="rp-api-key" placeholder="sk-ant-… (ek baar enter karo, save ho jayega)" autocomplete="off">
-        <button onclick="rpSaveKey()" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Save</button>
-      </div>
-
-      <!-- Step 1: Images -->
+      <!-- Step 1: Count fields -->
       <div class="rp-card">
-        <div class="rp-card-title"><span class="rp-step">1</span> Upload Count Images</div>
-        <div class="rp-img-grid">
-          <div>
-            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">Normal Count Image</div>
-            <div class="rp-img-zone" id="rp-nzone" onclick="document.getElementById('rp-n-inp').click()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--muted)" id="rp-n-svg"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <div class="rp-img-lbl" id="rp-n-lbl">Click to upload</div>
-              <img id="rp-n-prev" src="" alt="" style="display:none;">
-            </div>
-            <input type="file" id="rp-n-inp" accept="image/*" style="display:none" onchange="rpLoadImg('normal',this)">
-          </div>
-          <div>
-            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">Distinct Count Image</div>
-            <div class="rp-img-zone" id="rp-dzone" onclick="document.getElementById('rp-d-inp').click()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--muted)" id="rp-d-svg"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <div class="rp-img-lbl" id="rp-d-lbl">Click to upload</div>
-              <img id="rp-d-prev" src="" alt="" style="display:none;">
-            </div>
-            <input type="file" id="rp-d-inp" accept="image/*" style="display:none" onchange="rpLoadImg('distinct',this)">
-          </div>
-        </div>
-        <button class="rp-extract-btn" id="rp-ext-btn" onclick="rpExtract()">Extract Counts from Images</button>
-        <div class="rp-status" id="rp-status"></div>
-      </div>
-
-      <!-- Step 2: Count fields -->
-      <div class="rp-card">
-        <div class="rp-card-title"><span class="rp-step">2</span> Count Data (auto-filled or enter manually)</div>
+        <div class="rp-card-title"><span class="rp-step">1</span> Count Data — Normal &amp; Distinct</div>
         <div class="rp-2col">
           <div>
             <div class="rp-count-lbl">Normal Counts</div>
@@ -1272,7 +1238,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
       <!-- Step 3: Attendance -->
       <div class="rp-card">
-        <div class="rp-card-title"><span class="rp-step">3</span> Attendance &amp; Keyword Count</div>
+        <div class="rp-card-title"><span class="rp-step">2</span> Attendance &amp; Keyword Count</div>
         <div class="rp-2col">
           <div>
             <div class="rp-field"><label>Batch 1 — 6:30 am</label><input type="number" id="rp-b1" placeholder="0" min="0" oninput="rpLive()"></div>
@@ -3231,8 +3197,6 @@ function setView(v,fid){
     if(cardsEl)cardsEl.style.display='none';
     if(emptyEl)emptyEl.style.display='none';
     if(mainEl){mainEl.classList.remove('cl-active');mainEl.style.backgroundImage='';mainEl.style.backgroundAttachment='';}
-    const savedKey=localStorage.getItem('rp_claude_key');
-    if(savedKey)document.getElementById('rp-api-key').value=savedKey;
   } else {
     // Clear sensitive data when leaving cleaner
     if(cleanerPanel&&cleanerPanel.style.display!=='none'){
@@ -5710,99 +5674,7 @@ document.addEventListener('DOMContentLoaded',function(){clRenderHistory();});
 // ══════════════════════════════════════════════════════
 //  REPORT BUILDER
 // ══════════════════════════════════════════════════════
-let rpNormalB64=null, rpDistinctB64=null, rpNormalMime='image/jpeg', rpDistinctMime='image/jpeg';
 
-function rpSaveKey(){
-  const k=document.getElementById('rp-api-key').value.trim();
-  if(!k){toast('API key enter karo','e');return;}
-  localStorage.setItem('rp_claude_key',k);
-  toast('API key save ho gayi!','s');
-}
-
-function rpLoadImg(type,inp){
-  const file=inp.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=function(e){
-    const data=e.target.result;
-    const mime=file.type||'image/jpeg';
-    if(type==='normal'){
-      rpNormalB64=data.split(',')[1]; rpNormalMime=mime;
-      const img=document.getElementById('rp-n-prev');
-      img.src=data;img.style.display='block';
-      document.getElementById('rp-n-svg').style.display='none';
-      document.getElementById('rp-n-lbl').textContent=file.name;
-      document.getElementById('rp-nzone').classList.add('has-img');
-    }else{
-      rpDistinctB64=data.split(',')[1]; rpDistinctMime=mime;
-      const img=document.getElementById('rp-d-prev');
-      img.src=data;img.style.display='block';
-      document.getElementById('rp-d-svg').style.display='none';
-      document.getElementById('rp-d-lbl').textContent=file.name;
-      document.getElementById('rp-dzone').classList.add('has-img');
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
-async function rpExtract(){
-  const key=document.getElementById('rp-api-key').value.trim()||localStorage.getItem('rp_claude_key')||'';
-  if(!key){toast('Pehle API key enter karke Save karo','e');return;}
-  if(!rpNormalB64&&!rpDistinctB64){toast('Upload at least one image first','e');return;}
-  const btn=document.getElementById('rp-ext-btn');
-  const status=document.getElementById('rp-status');
-  btn.disabled=true;btn.textContent='Extracting…';
-  status.className='rp-status';
-
-  const callAPI=async(b64,mime,label)=>{
-    status.textContent='Extracting '+label+' counts…';
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':key,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:200,
-        messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:mime,data:b64}},
-          {type:'text',text:'This is a WATI broadcast report showing quiz response counts for multiple batches. Extract the TOTAL count for Option A, Option B, and Option C (sum all batch rows if needed). Return ONLY valid JSON: {"A":number,"B":number,"C":number} — plain integers, no commas inside numbers, no extra text.'}
-        ]}]
-      })
-    });
-    if(!resp.ok){const e=await resp.text();throw new Error(e);}
-    const d=await resp.json();
-    const txt=d.content[0].text.trim();
-    const m=txt.match(/\{[^}]+\}/);
-    if(!m)throw new Error('Bad response: '+txt);
-    return JSON.parse(m[0]);
-  };
-
-  try{
-    if(rpNormalB64){
-      const r=await callAPI(rpNormalB64,rpNormalMime,'Normal');
-      document.getElementById('rp-na').value=r.A||0;
-      document.getElementById('rp-nb').value=r.B||0;
-      document.getElementById('rp-nc').value=r.C||0;
-    }
-    if(rpDistinctB64){
-      const r=await callAPI(rpDistinctB64,rpDistinctMime,'Distinct');
-      document.getElementById('rp-da').value=r.A||0;
-      document.getElementById('rp-db').value=r.B||0;
-      document.getElementById('rp-dc').value=r.C||0;
-    }
-    status.textContent='Counts extracted successfully!';
-    status.className='rp-status ok';
-    rpLive();
-  }catch(e){
-    status.textContent='Error: '+e.message.slice(0,120);
-    status.className='rp-status err';
-    toast('Extraction failed — check API key & network','e');
-  }
-  btn.disabled=false;btn.textContent='Extract Counts from Images';
-}
 
 function rpN(id){return parseInt(document.getElementById(id).value)||0;}
 
