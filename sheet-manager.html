@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lan
 
 
@@ -21,7 +21,7 @@ im// Apply saved theme immediately to prevent flash
   }
   // Remove old shared keys so new accounts don't inherit another account's data
   if(!localStorage.getItem('sm_shared_cleaned')){
-    ['mysheets','myfolders','mylinkboards','mylinkitems','myquizbanks','myquizqs'].forEach(function(k){
+    ['mysheets','myfolders','mylinkboards','mylinkitems'].forEach(function(k){
       localStorage.removeItem(k);
     });
     localStorage.setItem('sm_shared_cleaned','1');
@@ -236,140 +236,6 @@ h1,h2,h3,.logo span,.sb-section,.card-name,.bc-name,.qb-name{font-family:'Plus J
 .itab{flex:1;background:transparent;border:none;padding:9px 12px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s;}
 .itab.active{background:var(--accent);color:#fff;}
 .itab:hover:not(.active){background:var(--hover);color:var(--text);}
-
-/* QUIZ BANK CARDS */
-.qbank-card{background:var(--card);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;display:flex;flex-direction:column;}
-.qbank-card:hover{box-shadow:var(--shadow);transform:translateY(-2px);border-color:var(--accent);}
-.qbank-card .qb-bar{height:4px;width:100%;}
-.qbank-card .qb-top{padding:18px 16px 12px;display:flex;align-items:flex-start;gap:12px;}
-.qbank-card .qb-emoji{font-size:28px;line-height:1;flex-shrink:0;}
-.qbank-card .qb-info{flex:1;min-width:0;}
-.qbank-card .qb-name{font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
-.qbank-card .qb-desc{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.qbank-card .qb-footer{padding:10px 16px;border-top:1px solid var(--border);background:var(--hover);display:flex;align-items:center;gap:10px;}
-.qbank-card .qb-stat{font-size:12px;color:var(--text2);font-weight:600;display:flex;align-items:center;gap:5px;}
-.qbank-card .card-actions{position:absolute;top:8px;right:8px;display:flex;gap:2px;opacity:0;transition:opacity .15s;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:2px;z-index:10;}
-.qbank-card:hover .card-actions{opacity:1;}
-
-/* QUESTION CARDS */
-.q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .15s;position:relative;}
-.q-card:hover{box-shadow:var(--shadow);}
-.q-card .q-img{width:100%;height:150px;object-fit:cover;display:block;}
-.q-card .q-body{padding:14px;}
-.q-card .q-num{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
-.q-card .q-text{font-size:14px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:12px;}
-.q-card .q-options{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
-.q-card .q-opt{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:7px;border:1px solid var(--border);font-size:12px;color:var(--text2);background:var(--hover);transition:background .1s;}
-.q-card .q-opt.correct{background:#e8f5e9;border-color:#34a853;color:#1e7e34;}
-.q-card .q-opt.correct .opt-key{background:#34a853;color:#fff;}
-[data-theme=dark] .q-card .q-opt.correct{background:#0d3320;border-color:#34a853;color:#6fcf97;}
-.q-card .q-opt .opt-key{font-size:10px;font-weight:800;min-width:20px;height:20px;border-radius:5px;background:var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.q-card .q-opt .opt-text{flex:1;line-height:1.4;}
-.q-card .q-expander{font-size:11px;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:4px;margin-top:2px;font-weight:600;}
-.q-card .q-exp-panel{display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;}
-.q-card .q-exp-panel.open{display:block;}
-.q-card .q-exp-item{margin-bottom:10px;padding:9px 11px;border-radius:7px;background:var(--hover);border-left:3px solid var(--border);}
-.q-card .q-exp-item.ans-correct{border-left-color:#34a853;}
-.q-card .q-exp-item .exp-key{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
-.q-card .q-exp-item .exp-text{font-size:12px;color:var(--text);line-height:1.5;white-space:pre-wrap;}
-.q-card .q-exp-item .exp-img{width:100%;max-height:120px;object-fit:cover;border-radius:5px;margin-top:6px;}
-.q-card .q-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--border);background:var(--hover);}
-.q-card .card-actions{position:absolute;top:8px;right:8px;display:flex;gap:2px;opacity:0;transition:opacity .15s;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:2px;z-index:10;}
-.q-card:hover .card-actions{opacity:1;}
-
-/* Quiz option editor rows in modal */
-.q-opt-editor{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:var(--hover);}
-.q-opt-editor .qoe-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.q-opt-editor .qoe-key{font-size:12px;font-weight:800;background:var(--accent);color:#fff;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.q-opt-editor .qoe-del{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;padding:2px 5px;border-radius:4px;font-size:18px;line-height:1;}
-.q-opt-editor .qoe-del:hover{color:var(--danger);background:var(--hover);}
-.q-opt-editor label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;}
-.q-opt-editor input,.q-opt-editor textarea{width:100%;background:var(--input);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;margin-bottom:8px;font-family:inherit;transition:border-color .15s;box-sizing:border-box;}
-.q-opt-editor input:focus,.q-opt-editor textarea:focus{border-color:var(--accent);}
-.q-opt-editor textarea{resize:vertical;min-height:54px;}
-.q-correct-btn{padding:7px 14px;border-radius:7px;border:2px solid var(--border);background:var(--hover);color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
-.q-correct-btn.selected{border-color:#34a853;background:#e8f5e9;color:#1e7e34;}
-[data-theme=dark] .q-correct-btn.selected{background:#0d3320;color:#6fcf97;}
-
-/* ═══════════════════════════════════════
-   2PM SCHEDULE / POSTS VIEW
-═══════════════════════════════════════ */
-#cards.posts-view{display:block;padding:0;}
-
-/* Today hero banner */
-.today-hero{background:linear-gradient(135deg,#6366f1 0%,#4f46e5 100%);border-radius:14px;padding:20px 22px;margin-bottom:24px;color:#fff;position:relative;overflow:hidden;}
-.today-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none;}
-.today-hero-top{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
-.today-hero-badge{background:rgba(255,255,255,.22);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
-.today-hero-day{font-size:18px;font-weight:800;flex:1;}
-.today-hero-setup{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:7px;padding:5px 12px;font-size:11px;cursor:pointer;font-weight:600;}
-.today-hero-setup:hover{background:rgba(255,255,255,.3);}
-.today-hero-body{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.today-hero-col{}
-.today-hero-label{font-size:10px;font-weight:700;letter-spacing:.08em;opacity:.7;text-transform:uppercase;margin-bottom:6px;}
-.today-hero-img{width:100%;max-height:160px;object-fit:cover;border-radius:9px;border:2px solid rgba(255,255,255,.25);}
-.today-hero-img-placeholder{width:100%;height:100px;border-radius:9px;border:2px dashed rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.6;}
-.today-hero-question{font-size:14px;font-weight:600;line-height:1.5;margin-bottom:10px;}
-.today-hero-opts{display:flex;flex-direction:column;gap:5px;}
-.today-hero-opt{padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);font-size:12px;display:flex;align-items:center;gap:7px;}
-.today-hero-opt.correct{background:rgba(52,168,83,.35);border:1px solid rgba(52,168,83,.6);}
-.today-hero-opt .hopt-key{font-weight:800;font-size:11px;background:rgba(255,255,255,.2);width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.today-hero-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
-.today-hero-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .15s;}
-.today-hero-btn:hover{background:rgba(255,255,255,.28);}
-.today-hero-btn.primary{background:#fff;color:#6366f1;}
-.today-hero-btn.primary:hover{background:#f0f0f0;}
-.today-no-slot{text-align:center;padding:20px;opacity:.7;font-size:14px;}
-
-/* Week groups */
-.posts-week-group{margin-bottom:28px;}
-.posts-week-header{font-size:13px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;padding:0 2px 10px;border-bottom:2px solid var(--border);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.posts-week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
-
-/* Day cards */
-.day-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .15s;position:relative;}
-.day-card:hover{box-shadow:var(--shadow);}
-.day-card.is-today{border-color:#6366f1;box-shadow:0 0 0 2px #6366f120;}
-.day-card .dc-header{padding:10px 14px 8px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
-.day-card .dc-day{font-size:13px;font-weight:700;color:var(--text);flex:1;}
-.day-card .dc-badge{font-size:9px;font-weight:800;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.06em;}
-.dc-badge.today{background:#6366f1;color:#fff;}
-.dc-badge.filled{background:#e8f5e9;color:#1e7e34;}
-.dc-badge.empty{background:var(--hover);color:var(--muted);}
-[data-theme=dark] .dc-badge.filled{background:#0d3320;color:#6fcf97;}
-.day-card .dc-body{padding:12px 14px;}
-.day-card .dc-q-img{width:100%;height:110px;object-fit:cover;border-radius:7px;margin-bottom:10px;display:block;}
-.day-card .dc-q-img-ph{width:100%;height:60px;border-radius:7px;margin-bottom:10px;background:var(--hover);border:1.5px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);}
-.day-card .dc-question{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:9px;}
-.day-card .dc-opts{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
-.day-card .dc-opt{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);padding:4px 7px;border-radius:6px;background:var(--hover);}
-.day-card .dc-opt.correct{background:#e8f5e9;color:#1e7e34;font-weight:600;}
-[data-theme=dark] .day-card .dc-opt.correct{background:#0d3320;color:#6fcf97;}
-.day-card .dc-opt-key{font-weight:800;font-size:10px;background:var(--border);width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.day-card .dc-opt.correct .dc-opt-key{background:#34a853;color:#fff;}
-.day-card .dc-answer-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--hover);border-radius:7px;margin-bottom:10px;}
-.day-card .dc-ans-img{width:44px;height:44px;object-fit:cover;border-radius:5px;flex-shrink:0;}
-.day-card .dc-ans-text{font-size:12px;color:var(--text);font-weight:600;flex:1;line-height:1.4;}
-.day-card .dc-footer{padding:8px 14px;border-top:1px solid var(--border);background:var(--hover);display:flex;align-items:center;gap:6px;}
-.day-card .dc-empty-msg{text-align:center;padding:20px 0;color:var(--muted);font-size:12px;}
-
-/* Day edit modal sections */
-.de-section{background:var(--hover);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;}
-.de-section-head{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
-.de-section input,.de-section textarea{width:100%;background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--text);font-size:13px;outline:none;margin-bottom:10px;font-family:inherit;transition:border-color .15s;box-sizing:border-box;}
-.de-section input:focus,.de-section textarea:focus{border-color:var(--accent);}
-.de-section input:last-child,.de-section textarea:last-child{margin-bottom:0;}
-.de-opts{display:flex;flex-direction:column;gap:8px;}
-.de-opt-row{display:flex;align-items:center;gap:8px;}
-.de-opt-key{width:28px;height:28px;border-radius:7px;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.de-opt-row input{margin-bottom:0;flex:1;}
-.de-correct-btn{flex:1;padding:8px;border-radius:7px;border:2px solid var(--border);background:var(--card);color:var(--text2);font-size:13px;font-weight:800;cursor:pointer;transition:all .15s;}
-.de-correct-btn.selected{border-color:#34a853;background:#e8f5e9;color:#1e7e34;}
-[data-theme=dark] .de-correct-btn.selected{background:#ecfdf5;color:#065f46;}
-.de-img-preview{position:relative;margin:-4px 0 10px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
-.de-img-preview img{width:100%;max-height:180px;object-fit:cover;display:block;}
-.de-img-copy{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;}
-.de-img-copy:hover{background:rgba(0,0,0,.8);}
 
 /* LIST VIEW */
 #cards.list-view .sheet-card{flex-direction:row;align-items:center;padding:0;}
@@ -659,7 +525,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
 /* Spring card entrance */
 @keyframes cardSpring{0%{opacity:0;transform:translateY(28px) scale(.94);}65%{opacity:1;transform:translateY(-5px) scale(1.015);}100%{opacity:1;transform:translateY(0) scale(1);}}
-.sheet-card,.board-card,.qbank-card{animation:cardSpring .55s cubic-bezier(.34,1.56,.64,1) both;transform-style:preserve-3d;will-change:transform;}
+.sheet-card,.board-card{animation:cardSpring .55s cubic-bezier(.34,1.56,.64,1) both;transform-style:preserve-3d;will-change:transform;}
 
 /* Animated gradient glow border on hover */
 .sheet-card{position:relative;}
@@ -689,11 +555,11 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.28);transform:scale(0);animation:rippleAnim .6s linear;pointer-events:none;}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
 
-/* Board/quiz card hover glow */
-.board-card:hover,.qbank-card:hover{box-shadow:0 8px 36px rgba(99,102,241,.15),0 2px 10px rgba(0,0,0,.5);border-color:rgba(99,102,241,.4);}
+/* Board card hover glow */
+.board-card:hover{box-shadow:0 8px 36px rgba(99,102,241,.15),0 2px 10px rgba(0,0,0,.5);border-color:rgba(99,102,241,.4);}
 
 /* Animated color bar */
-.card-color-bar,.bc-color-bar,.qb-bar{animation:barGlow 2.5s ease-in-out infinite alternate;}
+.card-color-bar,.bc-color-bar{animation:barGlow 2.5s ease-in-out infinite alternate;}
 @keyframes barGlow{from{filter:brightness(1);}to{filter:brightness(1.4) saturate(1.3);}}
 
 /* ── TEXT REVEAL (Rive-style) ── */
@@ -715,10 +581,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 /* Rive card minimal */
 .sheet-card{border-radius:6px !important;border-color:#1a1a1a;}
 .sheet-card .card-footer{border-radius:0 0 6px 6px;}
-.board-card,.qbank-card{border-radius:6px !important;}
+.board-card{border-radius:6px !important;}
 
 /* Rive board card name */
-.board-card .bc-name,.qbank-card .qb-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
+.board-card .bc-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
 
 /* Sort select Rive style */
 .sort-sel{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;}
@@ -915,7 +781,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
       <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:20px;color:#6366f1;">MS</span>
     </div>
     <h1 id="ls-title-main" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:800;color:#fff;line-height:1.05;margin-bottom:12px;text-align:center;letter-spacing:-.5px;">My Sheets</h1>
-    <p id="ls-subtitle-main" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:rgba(165,180,252,0.75);line-height:1.6;text-align:center;max-width:260px;font-weight:400;letter-spacing:.01em;">Sheets · Folders · Links · Quizzes<br>Everything in one place.</p>
+    <p id="ls-subtitle-main" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:rgba(165,180,252,0.75);line-height:1.6;text-align:center;max-width:260px;font-weight:400;letter-spacing:.01em;">Sheets · Folders · Links<br>Everything in one place.</p>
     <!-- Feature pills -->
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:32px;justify-content:center;">
       <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:5px 14px;font-size:12px;color:#e0e7ff;font-weight:500;">📄 All Sheets</div>
@@ -1034,14 +900,6 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <div class="sb-item" id="sb-links" onclick="setView('links')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
       Links & Media <span class="cnt" id="cnt-links">0</span>
-    </div>
-    <div class="sb-item" id="sb-quiz" onclick="setView('quiz')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      Quiz Builder <span class="cnt" id="cnt-quiz">0</span>
-    </div>
-    <div class="sb-item" id="sb-posts" onclick="setView('posts')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      2pm Schedule <span class="cnt" id="cnt-posts" style="font-size:9px;padding:1px 5px;">0/12</span>
     </div>
     <div class="sb-item" id="sb-cleaner" onclick="setView('cleaner')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -1613,169 +1471,6 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
   </div>
 </div>
 
-<!-- QUIZ BANK MODAL -->
-<div class="ov" id="qbank-md">
-  <div class="md" style="width:380px;">
-    <h2>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <span id="qbank-modal-title">Create Quiz Bank</span>
-    </h2>
-    <label>Emoji Icon</label>
-    <div id="qbank-emoji-row" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-      <span class="emoji-pick" onclick="pickQBankEmoji('🧘')">🧘</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('🏋️')">🏋️</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('📚')">📚</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('🧠')">🧠</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('🎯')">🎯</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('🏆')">🏆</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('🌿')">🌿</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('💪')">💪</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('🔬')">🔬</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('🌟')">🌟</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('📝')">📝</span>
-      <span class="emoji-pick" onclick="pickQBankEmoji('🎨')">🎨</span>
-    </div>
-    <label>Quiz Bank Name *</label>
-    <input type="text" id="qbank-inp-name" placeholder="e.g. Yoga Asanas, Science MCQ, GK 2024" onkeydown="if(event.key==='Enter')saveQBank()">
-    <label>Color</label>
-    <div class="color-row" id="qbank-color-row"></div>
-    <label>Description <small style="color:var(--text2);font-weight:400;">(optional)</small></label>
-    <input type="text" id="qbank-inp-desc" placeholder="Topic, class, subject…">
-    <div class="md-btns">
-      <button class="btn-s" onclick="closeModal('qbank-md')">Cancel</button>
-      <button class="btn-p" onclick="saveQBank()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD / EDIT QUESTION MODAL -->
-<div class="ov" id="qitem-md">
-  <div class="md" style="width:600px;max-height:90vh;overflow-y:auto;">
-    <h2>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <span id="qitem-modal-title">Add Question</span>
-    </h2>
-
-    <!-- Question -->
-    <label>Question Text *</label>
-    <textarea id="qi-question" placeholder="e.g. Which asana is shown in this image?" rows="2" style="resize:vertical;"></textarea>
-
-    <!-- Question image -->
-    <label>Question Image URL <small style="color:var(--text2);font-weight:400;">(optional)</small></label>
-    <input type="text" id="qi-img-url" placeholder="https://..." oninput="qiImgPreview()">
-    <div id="qi-img-preview" style="display:none;margin:-6px 0 12px;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
-      <img id="qi-img-el" src="" alt="" style="width:100%;max-height:180px;object-fit:cover;">
-    </div>
-
-    <!-- Options -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-      <label style="margin:0;">Options &amp; Explanations *</label>
-      <button onclick="addQOption()" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">+ Add Option</button>
-    </div>
-    <div id="qi-options-list"></div>
-
-    <!-- Correct answer -->
-    <label style="margin-top:4px;">Correct Answer *</label>
-    <div id="qi-correct-row" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
-
-    <div class="md-btns">
-      <button class="btn-s" onclick="closeModal('qitem-md')">Cancel</button>
-      <button class="btn-p" onclick="saveQuestion()">Save Question</button>
-    </div>
-  </div>
-</div>
-
-<!-- DAY EDIT MODAL -->
-<div class="ov" id="dayedit-md">
-  <div class="md" style="width:600px;max-height:92vh;overflow-y:auto;">
-    <h2 style="position:sticky;top:0;background:var(--card);padding-bottom:12px;margin-bottom:0;z-index:2;border-bottom:1px solid var(--border);">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <span id="dayedit-title">Edit Day</span>
-    </h2>
-
-    <!-- QUESTION SECTION -->
-    <div class="de-section">
-      <div class="de-section-head">📷 Question Image</div>
-      <input type="text" id="de-q-img" placeholder="Paste image URL here…" oninput="dePreview('de-q-img','de-q-img-preview')">
-      <div id="de-q-img-preview" class="de-img-preview" style="display:none;">
-        <img id="de-q-img-el" src="" alt="" onerror="this.parentNode.style.display='none'">
-        <button class="de-img-copy" onclick="copyText(document.getElementById('de-q-img').value,'Image URL copied')">Copy URL</button>
-      </div>
-
-      <div class="de-section-head" style="margin-top:14px;">❓ Question Text</div>
-      <textarea id="de-question" placeholder="e.g. Which asana is shown in this image?" rows="2" style="resize:vertical;"></textarea>
-    </div>
-
-    <!-- OPTIONS SECTION -->
-    <div class="de-section">
-      <div class="de-section-head">🔤 Options</div>
-      <div class="de-opts">
-        <div class="de-opt-row">
-          <div class="de-opt-key" style="background:#3b82f6;">A</div>
-          <input type="text" id="de-opt-a" placeholder="Option A text">
-        </div>
-        <div class="de-opt-row">
-          <div class="de-opt-key" style="background:#8b5cf6;">B</div>
-          <input type="text" id="de-opt-b" placeholder="Option B text">
-        </div>
-        <div class="de-opt-row">
-          <div class="de-opt-key" style="background:#ec4899;">C</div>
-          <input type="text" id="de-opt-c" placeholder="Option C text">
-        </div>
-      </div>
-      <div class="de-section-head" style="margin-top:12px;">✅ Correct Answer</div>
-      <div style="display:flex;gap:10px;margin-bottom:4px;">
-        <button class="de-correct-btn" id="de-ans-a" onclick="setDeCorrect('A')">A</button>
-        <button class="de-correct-btn" id="de-ans-b" onclick="setDeCorrect('B')">B</button>
-        <button class="de-correct-btn" id="de-ans-c" onclick="setDeCorrect('C')">C</button>
-      </div>
-    </div>
-
-    <!-- ANSWER SECTION -->
-    <div class="de-section">
-      <div class="de-section-head">🖼️ Answer Image</div>
-      <input type="text" id="de-a-img" placeholder="Paste answer image URL here…" oninput="dePreview('de-a-img','de-a-img-preview')">
-      <div id="de-a-img-preview" class="de-img-preview" style="display:none;">
-        <img id="de-a-img-el" src="" alt="" onerror="this.parentNode.style.display='none'">
-        <button class="de-img-copy" onclick="copyText(document.getElementById('de-a-img').value,'Image URL copied')">Copy URL</button>
-      </div>
-      <div class="de-section-head" style="margin-top:14px;">💬 Answer Text</div>
-      <input type="text" id="de-answer" placeholder="e.g. B) Tadasana — The Mountain Pose">
-    </div>
-
-    <!-- 2PM MESSAGE SECTION -->
-    <div class="de-section">
-      <div class="de-section-head" style="display:flex;align-items:center;justify-content:space-between;">
-        <span>📩 2pm Message</span>
-        <button onclick="autoGenMessage()" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;">Auto-generate</button>
-      </div>
-      <textarea id="de-message" placeholder="Type the full message you send to users at 2pm…" rows="6" style="resize:vertical;font-family:inherit;"></textarea>
-    </div>
-
-    <div class="md-btns" style="position:sticky;bottom:0;background:var(--card);padding-top:12px;border-top:1px solid var(--border);margin-top:4px;">
-      <button class="btn-s" onclick="closeModal('dayedit-md')">Cancel</button>
-      <button class="btn-p" onclick="saveDayPost()">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- CYCLE SETUP MODAL -->
-<div class="ov" id="cyclesetup-md">
-  <div class="md" style="width:360px;">
-    <h2>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Set Cycle Start Date
-    </h2>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6;">Pick the <strong>Monday</strong> that was your Day 1 (Week 1 Monday). The system will auto-calculate which day's content to show today.</p>
-    <label>Week 1 · Monday Start Date</label>
-    <input type="date" id="cycle-start-inp" style="margin-bottom:16px;">
-    <div class="md-btns">
-      <button class="btn-s" onclick="closeModal('cyclesetup-md')">Cancel</button>
-      <button class="btn-p" onclick="saveCycleStart()">Save</button>
-    </div>
-  </div>
-</div>
-
 <style>
 @keyframes spin{to{transform:rotate(360deg);}}
 </style>
@@ -1872,10 +1567,7 @@ function load(){
     folders=JSON.parse(localStorage.getItem(acctKey('myfolders'))||'[]');
     linkBoards=JSON.parse(localStorage.getItem(acctKey('mylinkboards'))||'[]');
     linkItems=JSON.parse(localStorage.getItem(acctKey('mylinkitems'))||'[]');
-    quizBanks=JSON.parse(localStorage.getItem(acctKey('myquizbanks'))||'[]');
-    quizQuestions=JSON.parse(localStorage.getItem(acctKey('myquizqs'))||'[]');
-  }catch(e){sheets=[];folders=[];linkBoards=[];linkItems=[];quizBanks=[];quizQuestions=[];}
-  initDailyPosts();
+  }catch(e){sheets=[];folders=[];linkBoards=[];linkItems=[];}
 }
 function save(){
   localStorage.setItem(acctKey('mysheets'),JSON.stringify(sheets));
@@ -3341,8 +3033,6 @@ function setView(v,fid){
   if(v==='pinned')document.getElementById('sb-pin').classList.add('active');
   if(v==='recent')document.getElementById('sb-recent').classList.add('active');
   if(v==='links')document.getElementById('sb-links').classList.add('active');
-  if(v==='quiz')document.getElementById('sb-quiz').classList.add('active');
-  if(v==='posts')document.getElementById('sb-posts').classList.add('active');
   if(v==='team')document.getElementById('sb-team').classList.add('active');
   if(v==='cleaner')document.getElementById('sb-cleaner').classList.add('active');
   if(v==='folder'){
@@ -3350,30 +3040,24 @@ function setView(v,fid){
       if(el.dataset.fid===fid)el.classList.add('active');
     });
   }
-  const titles={all:'All Sheets',pinned:'Pinned',recent:'Recently Opened',links:'Links & Media',quiz:'Quiz Builder',posts:'2pm Schedule',team:'Team Activity',cleaner:'Data Cleaner',folder:folders.find(f=>f.id===fid)?.name||'Folder'};
+  const titles={all:'All Sheets',pinned:'Pinned',recent:'Recently Opened',links:'Links & Media',team:'Team Activity',cleaner:'Data Cleaner',folder:folders.find(f=>f.id===fid)?.name||'Folder'};
   document.getElementById('view-title').textContent=titles[v]||'All Sheets';
   // Update add button label
   const lbl=document.getElementById('main-add-label');
-  if(lbl)lbl.textContent=v==='links'?'Create Collection':v==='quiz'?'Create Quiz Bank':v==='posts'?'Set Start Date':'Add Sheet';
+  if(lbl)lbl.textContent=v==='links'?'Create Collection':'Add Sheet';
   // Show/hide sort and view-toggle for non-sheet views
   const sortSel=document.getElementById('sort-sel');
   const viewToggle=document.querySelector('.view-toggle');
-  const hideControls=v==='team'||v==='quiz'||v==='posts'||v==='cleaner';
+  const hideControls=v==='team'||v==='cleaner';
   const hideSort=v==='links'||hideControls;
   if(sortSel)sortSel.style.display=hideSort?'none':'';
   if(viewToggle)viewToggle.style.display=hideControls?'none':'';
-  // Clean up board/quiz view if switching away
   if(v!=='links'){
     currentLinkBoard=null;
     const bb=document.getElementById('board-back-btn');if(bb)bb.remove();
     const ab=document.getElementById('board-add-btns');if(ab)ab.remove();
   }
-  if(v!=='quiz'){
-    currentQuizBank=null;
-    const qb=document.getElementById('qbank-back-btn');if(qb)qb.remove();
-    const qa=document.getElementById('qbank-add-btns');if(qa)qa.remove();
-  }
-  if(v!=='links'&&v!=='quiz')document.getElementById('main-add-btn').style.display=(v==='team'||v==='cleaner')?'none':'';
+  if(v!=='links')document.getElementById('main-add-btn').style.display=(v==='team'||v==='cleaner')?'none':'';
   // Show/hide cleaner panel vs cards
   const cleanerPanel=document.getElementById('cleaner-panel');
   const cardsEl=document.getElementById('cards');
@@ -3402,8 +3086,6 @@ function setView(v,fid){
     }
   }
   if(v==='links'){currentLinkBoard=null;renderLinks();}
-  else if(v==='quiz'){currentQuizBank=null;renderQuiz();}
-  else if(v==='posts'){renderPosts();}
   else if(v==='team'){renderTeam();}
   else{renderCards();}
 }
@@ -3438,8 +3120,6 @@ function getFilteredSheets(){
 function renderAll(){
   renderFolderSidebar();
   if(currentView==='links'){if(currentLinkBoard)renderBoardItems();else renderLinks();}
-  else if(currentView==='quiz'){if(currentQuizBank)renderQBankItems();else renderQuiz();}
-  else if(currentView==='posts'){renderPosts();}
   else{renderCards();}
   updateCounts();
 }
@@ -3449,9 +3129,6 @@ function updateCounts(){
   document.getElementById('cnt-pin').textContent=sheets.filter(s=>s.pinned).length;
   document.getElementById('cnt-rec').textContent=sheets.filter(s=>s.lastOpened).length;
   document.getElementById('cnt-links').textContent=linkBoards.length;
-  document.getElementById('cnt-quiz').textContent=quizBanks.length;
-  const filledPosts=dailyPosts.filter(p=>p.question||p.questionImg).length;
-  document.getElementById('cnt-posts').textContent=filledPosts+'/12';
 }
 
 function renderFolderSidebar(){
@@ -3661,10 +3338,6 @@ function mainAddClick(){
   if(currentView==='links'){
     if(currentLinkBoard===null){openCreateBoard();}
     else{openAddItem('link');}
-  }else if(currentView==='quiz'){
-    openCreateQBank();
-  }else if(currentView==='posts'){
-    openCycleSetup();
   }else{openAddModal();}
 }
 
@@ -4072,559 +3745,6 @@ function closeModal(id){
   if(el._ovClick){el.removeEventListener('click',el._ovClick);el._ovClick=null;}
 }
 let tt;
-// ══════════════════════════════════════════════════════
-//  2PM SCHEDULE — 12-DAY CONTENT CALENDAR
-// ══════════════════════════════════════════════════════
-const POST_DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-let dailyPosts=[], cycleStartDate=null, editingDaySlot=-1, deCorrectAns='A';
-
-function initDailyPosts(){
-  const saved=JSON.parse(localStorage.getItem(acctKey('mydailyposts'))||localStorage.getItem('mydailyposts')||'null');
-  dailyPosts=Array.from({length:12},(_,i)=>{
-    const def={slot:i,week:i<6?1:2,dayName:POST_DAYS[i%6],questionImg:'',question:'',optA:'',optB:'',optC:'',correctOpt:'A',answerImg:'',answer:'',message2pm:''};
-    return saved?{...def,...(saved[i]||{})}:def;
-  });
-  cycleStartDate=localStorage.getItem('mycyclestartdate')||null;
-}
-function saveDailyPostsData(){
-  localStorage.setItem(acctKey('mydailyposts'),JSON.stringify(dailyPosts));
-  localStorage.setItem(acctKey('mycyclestartdate'),cycleStartDate||'');
-}
-
-// How many Mon-Sat days from start up to and including today
-function countWorkDays(fromISO,toDate){
-  let count=0;
-  const d=new Date(fromISO);d.setHours(0,0,0,0);
-  const end=new Date(toDate);end.setHours(0,0,0,0);
-  while(d<=end){const dw=d.getDay();if(dw>=1&&dw<=6)count++;d.setDate(d.getDate()+1);}
-  return count;
-}
-function getTodaySlot(){
-  if(!cycleStartDate)return -1;
-  const today=new Date();
-  if(today.getDay()===0)return -1; // Sunday = no post
-  const n=countWorkDays(cycleStartDate,today);
-  return n>0?(n-1)%12:-1;
-}
-function getTodayLabel(){
-  const slot=getTodaySlot();
-  if(slot<0)return null;
-  const p=dailyPosts[slot];
-  return`Week ${p.week} · ${p.dayName}`;
-}
-
-// Cycle start date modal
-function openCycleSetup(){
-  const inp=document.getElementById('cycle-start-inp');
-  if(cycleStartDate)inp.value=cycleStartDate;
-  else{const m=new Date();while(m.getDay()!==1)m.setDate(m.getDate()-1);inp.value=m.toISOString().slice(0,10);}
-  openModal('cyclesetup-md');
-}
-function saveCycleStart(){
-  const v=document.getElementById('cycle-start-inp').value;
-  if(!v){toast('Pick a date','e');return;}
-  cycleStartDate=v;
-  saveDailyPostsData();closeModal('cyclesetup-md');
-  renderPosts();toast('Cycle start date saved','s');
-}
-
-// Open day editor
-function openDayEdit(slot){
-  editingDaySlot=slot;
-  const p=dailyPosts[slot];
-  deCorrectAns=p.correctOpt||'A';
-  document.getElementById('dayedit-title').textContent=`Week ${p.week} · ${p.dayName}`;
-  document.getElementById('de-q-img').value=p.questionImg||'';
-  document.getElementById('de-question').value=p.question||'';
-  document.getElementById('de-opt-a').value=p.optA||'';
-  document.getElementById('de-opt-b').value=p.optB||'';
-  document.getElementById('de-opt-c').value=p.optC||'';
-  document.getElementById('de-a-img').value=p.answerImg||'';
-  document.getElementById('de-answer').value=p.answer||'';
-  document.getElementById('de-message').value=p.message2pm||'';
-  // Previews
-  dePreview('de-q-img','de-q-img-preview');
-  dePreview('de-a-img','de-a-img-preview');
-  renderDeCorrect();
-  openModal('dayedit-md');
-  setTimeout(()=>document.getElementById('de-question').focus(),100);
-}
-function dePreview(inpId,wrapId){
-  const url=document.getElementById(inpId).value.trim();
-  const wrap=document.getElementById(wrapId);
-  if(!url){wrap.style.display='none';return;}
-  wrap.style.display='block';
-  const imgId=inpId==='de-q-img'?'de-q-img-el':'de-a-img-el';
-  const img=document.getElementById(imgId);
-  img.src=url;img.onerror=()=>{wrap.style.display='none';};
-}
-function setDeCorrect(k){deCorrectAns=k;renderDeCorrect();}
-function renderDeCorrect(){
-  ['A','B','C'].forEach(k=>{
-    const btn=document.getElementById('de-ans-'+k.toLowerCase());
-    if(btn)btn.classList.toggle('selected',k===deCorrectAns);
-  });
-}
-function autoGenMessage(){
-  const q=document.getElementById('de-question').value.trim();
-  const a=document.getElementById('de-opt-a').value.trim();
-  const b=document.getElementById('de-opt-b').value.trim();
-  const c=document.getElementById('de-opt-c').value.trim();
-  if(!q){toast('Enter question first','e');return;}
-  const msg=`🧘 Today's Yoga Quiz!\n\n${q} 👆\n\nA) ${a||'...'}\nB) ${b||'...'}\nC) ${c||'...'}\n\nReply with your answer!\n✅ Answer will be revealed at 3pm.`;
-  document.getElementById('de-message').value=msg;
-}
-function saveDayPost(){
-  if(editingDaySlot<0)return;
-  const p=dailyPosts[editingDaySlot];
-  p.questionImg=document.getElementById('de-q-img').value.trim();
-  p.question=document.getElementById('de-question').value.trim();
-  p.optA=document.getElementById('de-opt-a').value.trim();
-  p.optB=document.getElementById('de-opt-b').value.trim();
-  p.optC=document.getElementById('de-opt-c').value.trim();
-  p.correctOpt=deCorrectAns;
-  p.answerImg=document.getElementById('de-a-img').value.trim();
-  p.answer=document.getElementById('de-answer').value.trim();
-  p.message2pm=document.getElementById('de-message').value.trim();
-  saveDailyPostsData();renderPosts();updateCounts();closeModal('dayedit-md');
-  toast('Day content saved','s');
-}
-
-function copyText(text,msg){
-  navigator.clipboard.writeText(text).then(()=>toast(msg||'Copied','s')).catch(()=>{
-    const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();toast(msg||'Copied','s');
-  });
-}
-
-// RENDER POSTS VIEW
-function renderPosts(){
-  const container=document.getElementById('cards');
-  const empty=document.getElementById('empty');
-  empty.style.display='none';
-  container.className='posts-view';
-
-  const todaySlot=getTodaySlot();
-  const todayPost=todaySlot>=0?dailyPosts[todaySlot]:null;
-
-  let html='';
-
-  // ── Today Hero ──
-  if(todayPost){
-    const dayLabel=`Week ${todayPost.week} · ${todayPost.dayName}`;
-    const qImgHtml=todayPost.questionImg
-      ?`<img class="today-hero-img" src="${esc(todayPost.questionImg)}" alt="" onerror="this.style.display='none'">`
-      :`<div class="today-hero-img-placeholder">No image set</div>`;
-    const aImgHtml=todayPost.answerImg
-      ?`<img class="today-hero-img" src="${esc(todayPost.answerImg)}" alt="" onerror="this.style.display='none'">`
-      :`<div class="today-hero-img-placeholder">No image set</div>`;
-    const opts=['A','B','C'].map(k=>{
-      const txt=k==='A'?todayPost.optA:k==='B'?todayPost.optB:todayPost.optC;
-      if(!txt)return'';
-      const cor=k===todayPost.correctOpt;
-      return`<div class="today-hero-opt${cor?' correct':''}"><div class="hopt-key">${k}</div>${esc(txt)}${cor?' ✓':''}</div>`;
-    }).join('');
-    html+=`<div class="today-hero">
-      <div class="today-hero-top">
-        <div class="today-hero-badge">📅 Today</div>
-        <div class="today-hero-day">${dayLabel}</div>
-        <button class="today-hero-setup" onclick="openCycleSetup()">⚙ Change Date</button>
-      </div>
-      <div class="today-hero-body">
-        <div class="today-hero-col">
-          <div class="today-hero-label">📷 Question Image (post at 1pm)</div>
-          ${qImgHtml}
-        </div>
-        <div class="today-hero-col">
-          <div class="today-hero-label">🖼️ Answer Image (post at 3pm)</div>
-          ${aImgHtml}
-        </div>
-      </div>
-      ${todayPost.question?`<div class="today-hero-question" style="margin-top:14px;">${esc(todayPost.question)}</div>`:''}
-      ${opts?`<div class="today-hero-opts">${opts}</div>`:''}
-      <div class="today-hero-actions">
-        ${todayPost.questionImg?`<button class="today-hero-btn" onclick="copyText('${esc(todayPost.questionImg)}','Question image URL copied')">📷 Copy Q Image URL</button>`:''}
-        ${todayPost.answerImg?`<button class="today-hero-btn" onclick="copyText('${esc(todayPost.answerImg)}','Answer image URL copied')">🖼️ Copy A Image URL</button>`:''}
-        ${todayPost.message2pm?`<button class="today-hero-btn primary" onclick="copyText(dailyPosts[${todaySlot}].message2pm,'2pm message copied!')">📩 Copy 2pm Message</button>`:''}
-        <button class="today-hero-btn" onclick="openDayEdit(${todaySlot})">✏️ Edit</button>
-      </div>
-    </div>`;
-  }else{
-    html+=`<div class="today-hero" style="background:linear-gradient(135deg,#64748b,#475569);">
-      <div class="today-hero-top">
-        <div class="today-hero-badge">${cycleStartDate?'☀️ Sunday — No Post':'⚙ Setup Required'}</div>
-        <div class="today-hero-day">${cycleStartDate?'No post scheduled today':'Set your cycle start date'}</div>
-        <button class="today-hero-setup" onclick="openCycleSetup()">Set Start Date</button>
-      </div>
-      <p style="font-size:13px;opacity:.8;margin:8px 0 0;">${cycleStartDate?'Come back Monday!':'Click "Set Start Date" so the system knows which day is your Week 1 Monday.'}</p>
-    </div>`;
-  }
-
-  // ── Week Groups ──
-  [1,2].forEach(wk=>{
-    const slots=dailyPosts.filter(p=>p.week===wk);
-    html+=`<div class="posts-week-group">
-      <div class="posts-week-header">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Week ${wk} — Monday to Saturday
-      </div>
-      <div class="posts-week-grid">${slots.map(p=>dayCardHTML(p,p.slot===todaySlot)).join('')}</div>
-    </div>`;
-  });
-
-  container.innerHTML=html;
-}
-
-function dayCardHTML(p,isToday){
-  const filled=p.question||p.questionImg;
-  const badge=isToday?'<span class="dc-badge today">Today</span>':filled?'<span class="dc-badge filled">Ready</span>':'<span class="dc-badge empty">Empty</span>';
-  const opts=['A','B','C'].map(k=>{
-    const t=k==='A'?p.optA:k==='B'?p.optB:p.optC;
-    if(!t)return'';
-    const cor=k===p.correctOpt;
-    return`<div class="dc-opt${cor?' correct':''}"><div class="dc-opt-key">${k}</div>${esc(t)}${cor?' ✓':''}</div>`;
-  }).filter(Boolean).join('');
-  const qImg=p.questionImg?`<img class="dc-q-img" src="${esc(p.questionImg)}" alt="" onerror="this.style.display='none'">`
-    :`<div class="dc-q-img-ph">${filled?'Image loading…':'No image set'}</div>`;
-  const ansRow=p.answer?`<div class="dc-answer-row">
-    ${p.answerImg?`<img class="dc-ans-img" src="${esc(p.answerImg)}" alt="" onerror="this.style.display='none'">`:''}
-    <div class="dc-ans-text">✅ ${esc(p.answer)}</div>
-  </div>`:'';
-  return`<div class="day-card${isToday?' is-today':''}">
-    <div class="dc-header">
-      <div class="dc-day">${p.dayName}</div>
-      ${badge}
-    </div>
-    <div class="dc-body">
-      ${filled?`${qImg}${p.question?`<div class="dc-question">${esc(p.question)}</div>`:''}
-      ${opts?`<div class="dc-opts">${opts}</div>`:''}${ansRow}`
-      :`<div class="dc-empty-msg">No content added yet</div>`}
-    </div>
-    <div class="dc-footer">
-      ${p.message2pm?`<button class="card-open-btn" style="background:#34a853;font-size:11px;padding:5px 10px;" onclick="copyText(dailyPosts[${p.slot}].message2pm,'2pm message copied!')">📩 Copy Message</button>`:'<span style="font-size:11px;color:var(--muted);">No message</span>'}
-      <button class="ca-btn" onclick="openDayEdit(${p.slot})" title="Edit" style="margin-left:auto;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </button>
-    </div>
-  </div>`;
-}
-
-// ══════════════════════════════════════════════════════
-//  QUIZ BUILDER
-// ══════════════════════════════════════════════════════
-let quizBanks=[], quizQuestions=[];
-let currentQuizBank=null;
-let editingQBankId=null, currentQBankColor=null, currentQBankEmoji='🧘';
-let editingQId=null, qOptions=[], qCorrectKey='A';
-
-// ── Save ──
-function saveQuiz(){
-  localStorage.setItem(acctKey('myquizbanks'),JSON.stringify(quizBanks));
-  localStorage.setItem(acctKey('myquizqs'),JSON.stringify(quizQuestions));
-}
-
-// ── Bank CRUD ──
-function openCreateQBank(){
-  editingQBankId=null; currentQBankColor=COLORS[3]; currentQBankEmoji='🧘';
-  document.getElementById('qbank-modal-title').textContent='Create Quiz Bank';
-  document.getElementById('qbank-inp-name').value='';
-  document.getElementById('qbank-inp-desc').value='';
-  renderQBankColorPicker();renderQBankEmojiPicker();
-  openModal('qbank-md');
-  setTimeout(()=>document.getElementById('qbank-inp-name').focus(),100);
-}
-function editQBank(id){
-  const b=quizBanks.find(x=>x.id===id);if(!b)return;
-  editingQBankId=id; currentQBankColor=b.color||COLORS[3]; currentQBankEmoji=b.emoji||'🧘';
-  document.getElementById('qbank-modal-title').textContent='Edit Quiz Bank';
-  document.getElementById('qbank-inp-name').value=b.name;
-  document.getElementById('qbank-inp-desc').value=b.desc||'';
-  renderQBankColorPicker();renderQBankEmojiPicker();
-  openModal('qbank-md');
-}
-function saveQBank(){
-  const name=document.getElementById('qbank-inp-name').value.trim();
-  if(!name){toast('Name is required','e');return;}
-  const now=new Date().toISOString();
-  if(editingQBankId){
-    const b=quizBanks.find(x=>x.id===editingQBankId);
-    if(b){b.name=name;b.desc=document.getElementById('qbank-inp-desc').value.trim();b.color=currentQBankColor;b.emoji=currentQBankEmoji;}
-  }else{
-    quizBanks.unshift({id:uid(),name,desc:document.getElementById('qbank-inp-desc').value.trim(),color:currentQBankColor||COLORS[3],emoji:currentQBankEmoji,createdAt:now});
-  }
-  saveQuiz();renderQuiz();updateCounts();closeModal('qbank-md');
-  toast(editingQBankId?'Bank updated':'Quiz bank created','s');
-}
-async function deleteQBank(id){
-  const ok=await showConfirm('Delete Quiz Bank','Are you sure you want to delete this quiz bank and all its questions? This cannot be undone.','Delete');
-  if(!ok)return;
-  quizBanks=quizBanks.filter(x=>x.id!==id);
-  quizQuestions=quizQuestions.filter(x=>x.bankId!==id);
-  saveQuiz();renderQuiz();updateCounts();toast('Deleted','s');
-}
-function pickQBankEmoji(e){currentQBankEmoji=e;renderQBankEmojiPicker();}
-function renderQBankEmojiPicker(){
-  document.querySelectorAll('#qbank-emoji-row .emoji-pick').forEach(el=>{
-    el.classList.toggle('on',el.textContent===currentQBankEmoji);
-  });
-}
-function renderQBankColorPicker(){
-  document.getElementById('qbank-color-row').innerHTML=COLORS.map(c=>
-    `<div class="csw ${currentQBankColor===c?'on':''}" style="background:${c}" onclick="pickQBankColor('${c}')"></div>`
-  ).join('');
-}
-function pickQBankColor(c){currentQBankColor=c;renderQBankColorPicker();}
-
-// ── Open a bank ──
-function openQBank(id){
-  currentQuizBank=id;
-  const b=quizBanks.find(x=>x.id===id);if(!b)return;
-  document.getElementById('view-title').textContent=b.name;
-  document.getElementById('sort-sel').style.display='none';
-  document.getElementById('main-add-btn').style.display='none';
-  const vb=document.getElementById('view-bar');
-  if(!document.getElementById('qbank-back-btn')){
-    const bc=document.createElement('div');bc.id='qbank-back-btn';bc.className='board-breadcrumb';
-    bc.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"/></svg> Quiz Banks`;
-    bc.onclick=exitQBank; vb.insertBefore(bc,vb.firstChild);
-  }
-  if(!document.getElementById('qbank-add-btns')){
-    const ab=document.createElement('div');ab.id='qbank-add-btns';ab.className='board-add-btns';
-    ab.innerHTML=`<button onclick="openAddQuestion()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Question</button>`;
-    vb.appendChild(ab);
-  }
-  renderQBankItems();
-}
-function exitQBank(){
-  currentQuizBank=null;
-  const bb=document.getElementById('qbank-back-btn');if(bb)bb.remove();
-  const ab=document.getElementById('qbank-add-btns');if(ab)ab.remove();
-  document.getElementById('main-add-btn').style.display='';
-  document.getElementById('sort-sel').style.display='none';
-  document.getElementById('view-title').textContent='Quiz Builder';
-  renderQuiz();
-}
-
-// ── Add / Edit question ──
-function openAddQuestion(){
-  editingQId=null;
-  // Default 3 options A, B, C
-  qOptions=[
-    {key:'A',text:'',expText:'',expImg:''},
-    {key:'B',text:'',expText:'',expImg:''},
-    {key:'C',text:'',expText:'',expImg:''}
-  ];
-  qCorrectKey='A';
-  document.getElementById('qitem-modal-title').textContent='Add Question';
-  document.getElementById('qi-question').value='';
-  document.getElementById('qi-img-url').value='';
-  document.getElementById('qi-img-preview').style.display='none';
-  renderQOptions();renderCorrectRow();
-  openModal('qitem-md');
-  setTimeout(()=>document.getElementById('qi-question').focus(),100);
-}
-function editQuestion(id){
-  const q=quizQuestions.find(x=>x.id===id);if(!q)return;
-  editingQId=id;
-  qOptions=(q.options||[]).map(o=>({key:o.key,text:o.text||'',expText:o.expText||'',expImg:o.expImg||''}));
-  qCorrectKey=q.correctKey||'A';
-  document.getElementById('qitem-modal-title').textContent='Edit Question';
-  document.getElementById('qi-question').value=q.question||'';
-  document.getElementById('qi-img-url').value=q.imageUrl||'';
-  qiImgPreview();
-  renderQOptions();renderCorrectRow();
-  openModal('qitem-md');
-}
-function addQOption(){
-  const keys=['A','B','C','D','E','F'];
-  const usedKeys=qOptions.map(o=>o.key);
-  const nextKey=keys.find(k=>!usedKeys.includes(k));
-  if(!nextKey){toast('Max 6 options','e');return;}
-  qOptions.push({key:nextKey,text:'',expText:'',expImg:''});
-  renderQOptions();renderCorrectRow();
-}
-function removeQOption(key){
-  if(qOptions.length<=2){toast('Minimum 2 options required','e');return;}
-  qOptions=qOptions.filter(o=>o.key!==key);
-  if(qCorrectKey===key)qCorrectKey=qOptions[0].key;
-  renderQOptions();renderCorrectRow();
-}
-function syncQOption(key,field,value){
-  const o=qOptions.find(x=>x.key===key);if(o)o[field]=value;
-}
-function renderQOptions(){
-  document.getElementById('qi-options-list').innerHTML=qOptions.map(o=>`
-    <div class="q-opt-editor" id="qoe-${o.key}">
-      <div class="qoe-header">
-        <div class="qoe-key">${o.key}</div>
-        <span style="font-size:12px;font-weight:600;color:var(--text);">Option ${o.key}</span>
-        <button class="qoe-del" onclick="removeQOption('${o.key}')" title="Remove option">×</button>
-      </div>
-      <label>Option Text *</label>
-      <input type="text" value="${esc(o.text)}" placeholder="e.g. Vrikshasana" oninput="syncQOption('${o.key}','text',this.value)">
-      <label>Explanation / Response Message</label>
-      <textarea placeholder="Explanation shown when student picks this option. Include correct answer reference, pose description, motivation…" oninput="syncQOption('${o.key}','expText',this.value)">${esc(o.expText)}</textarea>
-      <label>Explanation Image URL <small style="color:var(--text2);font-weight:400;">(optional)</small></label>
-      <input type="text" value="${esc(o.expImg)}" placeholder="https://..." oninput="syncQOption('${o.key}','expImg',this.value)">
-    </div>`).join('');
-}
-function renderCorrectRow(){
-  document.getElementById('qi-correct-row').innerHTML=qOptions.map(o=>
-    `<button class="q-correct-btn ${qCorrectKey===o.key?'selected':''}" onclick="setCorrectKey('${o.key}')">✓ Option ${o.key}</button>`
-  ).join('');
-}
-function setCorrectKey(k){qCorrectKey=k;renderCorrectRow();}
-function qiImgPreview(){
-  const url=document.getElementById('qi-img-url').value.trim();
-  const wrap=document.getElementById('qi-img-preview');
-  const img=document.getElementById('qi-img-el');
-  if(!url){wrap.style.display='none';return;}
-  wrap.style.display='block';img.src=url;
-  img.onerror=()=>{wrap.style.display='none';};
-}
-function saveQuestion(){
-  const question=document.getElementById('qi-question').value.trim();
-  if(!question){toast('Question text is required','e');return;}
-  const emptyOpt=qOptions.find(o=>!o.text.trim());
-  if(emptyOpt){toast(`Option ${emptyOpt.key} text is required`,'e');return;}
-  const now=new Date().toISOString();
-  const data={
-    question,
-    imageUrl:document.getElementById('qi-img-url').value.trim(),
-    options:qOptions.map(o=>({key:o.key,text:o.text.trim(),expText:o.expText.trim(),expImg:o.expImg.trim()})),
-    correctKey:qCorrectKey,
-    bankId:currentQuizBank,
-    updatedAt:now
-  };
-  if(editingQId){
-    const q=quizQuestions.find(x=>x.id===editingQId);
-    if(q)Object.assign(q,data);
-  }else{
-    data.id=uid();data.createdAt=now;
-    quizQuestions.unshift(data);
-  }
-  saveQuiz();renderQBankItems();closeModal('qitem-md');
-  toast(editingQId?'Question updated':'Question saved','s');
-}
-function deleteQuestion(id){
-  quizQuestions=quizQuestions.filter(x=>x.id!==id);
-  saveQuiz();renderQBankItems();toast('Question removed','s');
-}
-function toggleExpPanel(id){
-  const p=document.getElementById('qexp-'+id);
-  if(p)p.classList.toggle('open');
-}
-
-// ── Render quiz banks grid ──
-function renderQuiz(){
-  const container=document.getElementById('cards');
-  const empty=document.getElementById('empty');
-  if(!quizBanks.length){
-    container.innerHTML='';empty.style.display='flex';
-    document.getElementById('empty-title').textContent='No quiz banks yet';
-    document.getElementById('empty-msg').textContent='Click "Create Quiz Bank" to start building your question set';
-    return;
-  }
-  empty.style.display='none';
-  container.innerHTML=quizBanks.map(b=>qBankCardHTML(b)).join('');
-}
-function qBankCardHTML(b){
-  const count=quizQuestions.filter(x=>x.bankId===b.id).length;
-  const color=b.color||COLORS[3];
-  return`<div class="qbank-card" onclick="openQBank('${b.id}')">
-    <div class="qb-bar" style="background:${color}"></div>
-    <div class="qb-top">
-      <div class="qb-emoji">${b.emoji||'🧘'}</div>
-      <div class="qb-info">
-        <div class="qb-name">${esc(b.name)}</div>
-        <div class="qb-desc">${b.desc?esc(b.desc):'<span style="opacity:.4">No description</span>'}</div>
-      </div>
-    </div>
-    <div class="qb-footer">
-      <div class="qb-stat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        ${count} question${count!==1?'s':''}
-      </div>
-      <div class="qb-stat" style="margin-left:auto;font-size:11px;color:var(--muted);">${timeAgo(b.createdAt)}</div>
-    </div>
-    <div class="card-actions" onclick="event.stopPropagation()">
-      <button class="ca-btn" onclick="editQBank('${b.id}')" title="Edit bank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </button>
-      <button class="ca-btn" onclick="exportQBank('${b.id}')" title="Export JSON">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </button>
-      <button class="ca-btn" onclick="deleteQBank('${b.id}')" title="Delete bank" style="color:var(--danger)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-      </button>
-    </div>
-  </div>`;
-}
-
-// ── Render questions inside a bank ──
-function renderQBankItems(){
-  const container=document.getElementById('cards');
-  const empty=document.getElementById('empty');
-  const items=quizQuestions.filter(x=>x.bankId===currentQuizBank);
-  if(!items.length){
-    container.innerHTML='';empty.style.display='flex';
-    document.getElementById('empty-title').textContent='No questions yet';
-    document.getElementById('empty-msg').textContent='Click "Add Question" to create your first question';
-    return;
-  }
-  empty.style.display='none';
-  container.innerHTML=items.map((q,i)=>qCardHTML(q,i+1)).join('');
-}
-function qCardHTML(q,num){
-  const opts=q.options||[];
-  const optsHtml=opts.map(o=>`
-    <div class="q-opt ${o.key===q.correctKey?'correct':''}">
-      <div class="opt-key">${o.key}</div>
-      <div class="opt-text">${esc(o.text)}</div>
-      ${o.key===q.correctKey?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13" style="flex-shrink:0;color:#34a853;margin-left:auto;"><polyline points="20 6 9 17 4 12"/></svg>':''}
-    </div>`).join('');
-  const expItems=opts.filter(o=>o.expText||o.expImg).map(o=>`
-    <div class="q-exp-item ${o.key===q.correctKey?'ans-correct':''}">
-      <div class="exp-key">Option ${o.key}${o.key===q.correctKey?' — Correct Answer':''}</div>
-      ${o.expText?`<div class="exp-text">${esc(o.expText)}</div>`:''}
-      ${o.expImg?`<img class="exp-img" src="${esc(o.expImg)}" alt="" onerror="this.style.display='none'">`:''}
-    </div>`).join('');
-  return`<div class="q-card">
-    ${q.imageUrl?`<img class="q-img" src="${esc(q.imageUrl)}" alt="" onerror="this.style.display='none'">`:''}
-    <div class="q-body">
-      <div class="q-num">Question ${num}</div>
-      <div class="q-text">${esc(q.question)}</div>
-      <div class="q-options">${optsHtml}</div>
-      ${expItems?`
-        <div class="q-expander" onclick="toggleExpPanel('${q.id}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="6 9 12 15 18 9"/></svg>
-          View Explanations
-        </div>
-        <div class="q-exp-panel" id="qexp-${q.id}">${expItems}</div>`:''}
-    </div>
-    <div class="q-footer">
-      <span style="font-size:11px;color:var(--muted);">${timeAgo(q.createdAt)}</span>
-    </div>
-    <div class="card-actions" onclick="event.stopPropagation()">
-      <button class="ca-btn" onclick="editQuestion('${q.id}')" title="Edit question">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </button>
-      <button class="ca-btn" onclick="deleteQuestion('${q.id}')" title="Delete" style="color:var(--danger)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-      </button>
-    </div>
-  </div>`;
-}
-
-// ── Export bank as JSON ──
-function exportQBank(id){
-  const b=quizBanks.find(x=>x.id===id);if(!b)return;
-  const qs=quizQuestions.filter(x=>x.bankId===id);
-  const data=JSON.stringify({bank:b,questions:qs},null,2);
-  const blob=new Blob([data],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=b.name.replace(/\s+/g,'_')+'_quiz.json';a.click();
-  toast('Exported as JSON','s');
-}
 
 function toast(msg,type='s'){
   const el=document.getElementById('toast');el.textContent=msg;el.className='show '+type;
@@ -4635,7 +3755,7 @@ function toast(msg,type='s'){
 (function(){
   // 3D tilt on cards
   function initTilt(){
-    document.querySelectorAll('.sheet-card,.board-card,.qbank-card').forEach(card=>{
+    document.querySelectorAll('.sheet-card,.board-card').forEach(card=>{
       card.addEventListener('mousemove',e=>{
         const r=card.getBoundingClientRect();
         const x=(e.clientX-r.left)/r.width-.5;
@@ -4648,7 +3768,7 @@ function toast(msg,type='s'){
 
   // Staggered entrance
   function stagger(){
-    document.querySelectorAll('#cards .sheet-card,#cards .board-card,#cards .qbank-card').forEach((c,i)=>{
+    document.querySelectorAll('#cards .sheet-card,#cards .board-card').forEach((c,i)=>{
       c.style.animationDelay=`${i*0.065}s`;
     });
     document.querySelectorAll('#sidebar .sb-item,#sidebar .folder-row').forEach((el,i)=>{
