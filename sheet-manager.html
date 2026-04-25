@@ -1242,6 +1242,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         </div>
         <button class="rp-extract-btn" id="rp-ext-btn" onclick="rpExtract()">Extract Counts from Images</button>
         <div class="rp-status" id="rp-status"></div>
+        <div id="rp-debug" style="display:none;margin-top:8px;">
+          <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;cursor:pointer;user-select:none;" onclick="const p=document.getElementById('rp-raw-text');p.style.display=p.style.display==='none'?'block':'none'">&#9658; Raw OCR text (tap to view)</div>
+          <pre id="rp-raw-text" style="display:none;background:var(--hover);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:10px;color:var(--muted);max-height:130px;overflow-y:auto;white-space:pre-wrap;margin:4px 0 0;"></pre>
+        </div>
       </div>
 
       <!-- Step 2: Count fields -->
@@ -5729,15 +5733,41 @@ function rpLoadImg(type, inp){
 }
 
 function rpParseOptions(text){
-  const lines=text.split('\n');
+  const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+
+  // ── Table mode: WATI spreadsheet export with option_A / option_B column headers ──
+  let headerIdx=-1, aCol=-1, bCol=-1, cCol=-1;
+  for(let i=0;i<Math.min(lines.length,8);i++){
+    // Normalise: lowercase, strip underscores/dots, collapse spaces
+    const norm=lines[i].toLowerCase().replace(/[_\.]/g,'').replace(/\s+/g,' ').trim();
+    const words=norm.split(' ');
+    const ai=words.findIndex(w=>w==='optiona'||w==='opta');
+    const bi=words.findIndex(w=>w==='optionb'||w==='optb');
+    const ci=words.findIndex(w=>w==='optionc'||w==='optc');
+    if(ai!==-1&&bi!==-1){headerIdx=i;aCol=ai;bCol=bi;cCol=ci;break;}
+  }
+
+  if(headerIdx!==-1){
+    let a=0,b=0,c=0;
+    for(let i=headerIdx+1;i<lines.length;i++){
+      // Strip commas from numbers, tokenise
+      const tokens=lines[i].replace(/,/g,'').replace(/\s+/g,' ').trim().split(' ');
+      // Only process rows whose first token looks like an id/number
+      if(!/^\d/.test(tokens[0]))continue;
+      const get=col=>col!==-1&&col<tokens.length?(parseInt(tokens[col])||0):0;
+      a+=get(aCol);b+=get(bCol);c+=get(cCol);
+    }
+    return {a,b,c};
+  }
+
+  // ── Fallback: inline format — "Option A: 1234" on the same line ──
+  const lastNum=s=>{const m=s.match(/\d[\d,]*/g);return m?parseInt(m[m.length-1].replace(/,/g,'')):0;};
   let a=0,b=0,c=0;
-  const numRe=/[\d,]+/g;
-  const lastNum=s=>{const m=s.match(/[\d,]+/g);return m?parseInt(m[m.length-1].replace(/,/g,'')):0;};
   for(const line of lines){
     const l=line.toLowerCase();
-    if(/option\s*a|button\s*1|opt\s*a|btn\s*1/.test(l)) a=lastNum(line)||a;
-    else if(/option\s*b|button\s*2|opt\s*b|btn\s*2/.test(l)) b=lastNum(line)||b;
-    else if(/option\s*c|button\s*3|opt\s*c|btn\s*3/.test(l)) c=lastNum(line)||c;
+    if(/option\s*a|button\s*1/.test(l)) a=lastNum(line)||a;
+    else if(/option\s*b|button\s*2/.test(l)) b=lastNum(line)||b;
+    else if(/option\s*c|button\s*3/.test(l)) c=lastNum(line)||c;
   }
   return {a,b,c};
 }
@@ -5750,8 +5780,11 @@ async function rpExtract(){
   }
   const btn=document.getElementById('rp-ext-btn');
   const status=document.getElementById('rp-status');
+  const debugBox=document.getElementById('rp-debug');
+  const rawPre=document.getElementById('rp-raw-text');
   btn.disabled=true; btn.textContent='Extracting…';
   status.className='rp-status'; status.textContent='Loading OCR engine…';
+  debugBox.style.display='none'; rawPre.textContent='';
 
   try{
     if(!window.Tesseract){
@@ -5763,10 +5796,12 @@ async function rpExtract(){
       });
     }
     const worker=await Tesseract.createWorker('eng');
+    let debugLines=[];
 
     if(rpNormalFile){
       status.textContent='Reading Normal Count image…';
       const {data:{text}}=await worker.recognize(rpNormalFile);
+      debugLines.push('=== Normal Count Image ===\n'+text);
       const {a,b,c}=rpParseOptions(text);
       document.getElementById('rp-na').value=a||'';
       document.getElementById('rp-nb').value=b||'';
@@ -5775,6 +5810,7 @@ async function rpExtract(){
     if(rpDistinctFile){
       status.textContent='Reading Distinct Count image…';
       const {data:{text}}=await worker.recognize(rpDistinctFile);
+      debugLines.push('=== Distinct Count Image ===\n'+text);
       const {a,b,c}=rpParseOptions(text);
       document.getElementById('rp-da').value=a||'';
       document.getElementById('rp-db').value=b||'';
@@ -5783,7 +5819,19 @@ async function rpExtract(){
 
     await worker.terminate();
     rpLive();
-    status.className='rp-status ok'; status.textContent='Counts extracted! Check values and correct if needed.';
+
+    // Show debug text so user can verify / diagnose
+    rawPre.textContent=debugLines.join('\n\n');
+    debugBox.style.display='block';
+
+    const filled=[document.getElementById('rp-na'),document.getElementById('rp-da')]
+      .some(el=>el.value&&el.value!=='0');
+    if(filled){
+      status.className='rp-status ok'; status.textContent='Counts extracted! Check values below and correct if needed.';
+    }else{
+      status.className='rp-status err';
+      status.textContent='Could not auto-read numbers — see raw OCR text below and enter manually.';
+    }
   }catch(e){
     status.className='rp-status err'; status.textContent='OCR failed: '+e.message+'. Please enter counts manually.';
   }
