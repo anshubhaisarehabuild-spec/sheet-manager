@@ -732,6 +732,49 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .cl-summary-row:last-of-type{border-bottom:none;}
 .cl-summary-label{color:var(--muted);font-weight:600;}
 .cl-summary-val{color:var(--text);font-weight:700;text-align:right;}
+
+/* ── CLEANER PANEL TABS ── */
+.cp-tab-bar{display:flex;gap:0;background:var(--hover);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:20px;}
+.cp-tab{flex:1;background:transparent;border:none;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;font-family:inherit;}
+.cp-tab.active{background:var(--card);color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.15);}
+.cp-tab:hover:not(.active){color:var(--text);}
+
+/* ── REPORT BUILDER ── */
+.rp-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;}
+.rp-card-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.rp-step{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;font-weight:800;flex-shrink:0;}
+.rp-api-row{background:var(--hover);border:1px solid var(--border);border-radius:9px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.rp-api-row label{font-size:11px;font-weight:700;color:var(--text2);white-space:nowrap;}
+.rp-api-row input{flex:1;min-width:180px;background:var(--input);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;outline:none;font-family:inherit;transition:border-color .15s;}
+.rp-api-row input:focus{border-color:var(--accent);}
+.rp-img-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;}
+.rp-img-zone{border:2px dashed var(--border);border-radius:10px;padding:14px;cursor:pointer;text-align:center;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
+.rp-img-zone:hover,.rp-img-zone.has-img{border-color:var(--accent);background:var(--hover);}
+.rp-img-zone img{max-width:100%;max-height:140px;border-radius:6px;object-fit:contain;}
+.rp-img-lbl{font-size:11px;font-weight:700;color:var(--text2);}
+.rp-extract-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.rp-extract-btn:hover{opacity:.88;}
+.rp-extract-btn:disabled{opacity:.4;cursor:not-allowed;}
+.rp-status{font-size:12px;color:var(--muted);text-align:center;padding:6px 0;min-height:20px;}
+.rp-status.ok{color:#34a853;font-weight:600;}
+.rp-status.err{color:#ef4444;font-weight:600;}
+.rp-2col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.rp-count-lbl{font-size:11px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.rp-field{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
+.rp-field:last-child{margin-bottom:0;}
+.rp-field label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.rp-field input{background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--text);font-size:13px;outline:none;font-family:inherit;transition:border-color .15s;width:100%;box-sizing:border-box;}
+.rp-field input:focus{border-color:var(--accent);}
+.rp-stat-box{background:var(--hover);border:1px solid var(--border);border-radius:9px;padding:12px;margin-top:2px;}
+.rp-stat-lbl{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+.rp-stat-val{font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.rp-gen-btn{width:100%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:20px;letter-spacing:.02em;transition:opacity .15s;}
+.rp-gen-btn:hover{opacity:.9;}
+.rp-out-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;}
+.rp-out-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.rp-out-pre{background:var(--hover);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;font-family:inherit;color:var(--text);white-space:pre;line-height:1.9;overflow-x:auto;margin:0;}
+.rp-copy-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer;}
+.rp-copy-btn:hover{opacity:.85;}
 </style>
 </head>
 <body>
@@ -904,6 +947,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <div class="sb-item" id="sb-cleaner" onclick="setView('cleaner')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       Data Cleaner
+    </div>
+    <div class="sb-item" id="sb-report" onclick="setView('report')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Report Builder
     </div>
     <div class="sb-item" id="sb-team" onclick="setView('team')" style="display:none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
@@ -1166,6 +1213,108 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
       </div>
     </div>
     <!-- /DATA CLEANER PANEL -->
+
+    <!-- REPORT BUILDER PANEL -->
+    <div id="report-panel" style="display:none;max-width:860px;margin:0 auto;">
+
+      <!-- API Key -->
+      <div class="rp-api-row">
+        <label>Claude API Key</label>
+        <input type="password" id="rp-api-key" placeholder="sk-ant-… (needed for auto image extraction)" autocomplete="off">
+        <button onclick="rpSaveKey()" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Save Key</button>
+      </div>
+
+      <!-- Step 1: Images -->
+      <div class="rp-card">
+        <div class="rp-card-title"><span class="rp-step">1</span> Upload Count Images</div>
+        <div class="rp-img-grid">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">Normal Count Image</div>
+            <div class="rp-img-zone" id="rp-nzone" onclick="document.getElementById('rp-n-inp').click()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--muted)" id="rp-n-svg"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div class="rp-img-lbl" id="rp-n-lbl">Click to upload</div>
+              <img id="rp-n-prev" src="" alt="" style="display:none;">
+            </div>
+            <input type="file" id="rp-n-inp" accept="image/*" style="display:none" onchange="rpLoadImg('normal',this)">
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">Distinct Count Image</div>
+            <div class="rp-img-zone" id="rp-dzone" onclick="document.getElementById('rp-d-inp').click()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--muted)" id="rp-d-svg"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div class="rp-img-lbl" id="rp-d-lbl">Click to upload</div>
+              <img id="rp-d-prev" src="" alt="" style="display:none;">
+            </div>
+            <input type="file" id="rp-d-inp" accept="image/*" style="display:none" onchange="rpLoadImg('distinct',this)">
+          </div>
+        </div>
+        <button class="rp-extract-btn" id="rp-ext-btn" onclick="rpExtract()">Extract Counts from Images</button>
+        <div class="rp-status" id="rp-status"></div>
+      </div>
+
+      <!-- Step 2: Count fields -->
+      <div class="rp-card">
+        <div class="rp-card-title"><span class="rp-step">2</span> Count Data (auto-filled or enter manually)</div>
+        <div class="rp-2col">
+          <div>
+            <div class="rp-count-lbl">Normal Counts</div>
+            <div class="rp-field"><label>Option A</label><input type="number" id="rp-na" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Option B</label><input type="number" id="rp-nb" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Option C</label><input type="number" id="rp-nc" placeholder="0" min="0" oninput="rpLive()"></div>
+          </div>
+          <div>
+            <div class="rp-count-lbl">Distinct Counts</div>
+            <div class="rp-field"><label>Option A</label><input type="number" id="rp-da" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Option B</label><input type="number" id="rp-db" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Option C</label><input type="number" id="rp-dc" placeholder="0" min="0" oninput="rpLive()"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Attendance -->
+      <div class="rp-card">
+        <div class="rp-card-title"><span class="rp-step">3</span> Attendance &amp; Keyword Count</div>
+        <div class="rp-2col">
+          <div>
+            <div class="rp-field"><label>Batch 1 — 6:30 am</label><input type="number" id="rp-b1" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Batch 2 — 7:30 am</label><input type="number" id="rp-b2" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Batch 3 — 8:30 am</label><input type="number" id="rp-b3" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Today Keyword Trigger Count</label><input type="number" id="rp-kw" placeholder="0" min="0" oninput="rpLive()"></div>
+          </div>
+          <div>
+            <div class="rp-stat-box">
+              <div class="rp-stat-lbl">Total Morning Attendance</div>
+              <div class="rp-stat-val" id="rp-s-att">—</div>
+              <div class="rp-stat-lbl">Total Users Clicked</div>
+              <div class="rp-stat-val" id="rp-s-clk" style="color:#34a853;">—</div>
+              <div class="rp-stat-lbl">Click Percentage</div>
+              <div class="rp-stat-val" id="rp-s-pct" style="color:#6366f1;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="rp-gen-btn" onclick="rpGenerate()">Generate Both Reports</button>
+
+      <!-- Outputs -->
+      <div id="rp-outputs" style="display:none;">
+        <div class="rp-out-card">
+          <div class="rp-out-title">
+            <span>WhatsApp Group Message</span>
+            <button class="rp-copy-btn" onclick="rpCopy('rp-wa','WhatsApp message copied!')">Copy</button>
+          </div>
+          <pre class="rp-out-pre" id="rp-wa"></pre>
+        </div>
+        <div class="rp-out-card">
+          <div class="rp-out-title">
+            <span>Sheet Format</span>
+            <button class="rp-copy-btn" onclick="rpCopy('rp-sh','Sheet format copied!')">Copy</button>
+          </div>
+          <pre class="rp-out-pre" id="rp-sh"></pre>
+        </div>
+      </div>
+
+    </div>
+    <!-- /REPORT BUILDER PANEL -->
 
   </div>
 </div>
@@ -3035,12 +3184,13 @@ function setView(v,fid){
   if(v==='links')document.getElementById('sb-links').classList.add('active');
   if(v==='team')document.getElementById('sb-team').classList.add('active');
   if(v==='cleaner')document.getElementById('sb-cleaner').classList.add('active');
+  if(v==='report')document.getElementById('sb-report').classList.add('active');
   if(v==='folder'){
     document.querySelectorAll('.folder-row').forEach(el=>{
       if(el.dataset.fid===fid)el.classList.add('active');
     });
   }
-  const titles={all:'All Sheets',pinned:'Pinned',recent:'Recently Opened',links:'Links & Media',team:'Team Activity',cleaner:'Data Cleaner',folder:folders.find(f=>f.id===fid)?.name||'Folder'};
+  const titles={all:'All Sheets',pinned:'Pinned',recent:'Recently Opened',links:'Links & Media',team:'Team Activity',cleaner:'Data Cleaner',report:'Report Builder',folder:folders.find(f=>f.id===fid)?.name||'Folder'};
   document.getElementById('view-title').textContent=titles[v]||'All Sheets';
   // Update add button label
   const lbl=document.getElementById('main-add-label');
@@ -3048,7 +3198,7 @@ function setView(v,fid){
   // Show/hide sort and view-toggle for non-sheet views
   const sortSel=document.getElementById('sort-sel');
   const viewToggle=document.querySelector('.view-toggle');
-  const hideControls=v==='team'||v==='cleaner';
+  const hideControls=v==='team'||v==='cleaner'||v==='report';
   const hideSort=v==='links'||hideControls;
   if(sortSel)sortSel.style.display=hideSort?'none':'';
   if(viewToggle)viewToggle.style.display=hideControls?'none':'';
@@ -3057,14 +3207,16 @@ function setView(v,fid){
     const bb=document.getElementById('board-back-btn');if(bb)bb.remove();
     const ab=document.getElementById('board-add-btns');if(ab)ab.remove();
   }
-  if(v!=='links')document.getElementById('main-add-btn').style.display=(v==='team'||v==='cleaner')?'none':'';
-  // Show/hide cleaner panel vs cards
+  if(v!=='links')document.getElementById('main-add-btn').style.display=(v==='team'||v==='cleaner'||v==='report')?'none':'';
+  // Show/hide panels vs cards
   const cleanerPanel=document.getElementById('cleaner-panel');
+  const reportPanel=document.getElementById('report-panel');
   const cardsEl=document.getElementById('cards');
   const emptyEl=document.getElementById('empty');
   const mainEl=document.getElementById('main');
   if(v==='cleaner'){
     if(cleanerPanel)cleanerPanel.style.display='';
+    if(reportPanel)reportPanel.style.display='none';
     if(cardsEl)cardsEl.style.display='none';
     if(emptyEl)emptyEl.style.display='none';
     if(mainEl){
@@ -3072,12 +3224,23 @@ function setView(v,fid){
       mainEl.style.backgroundImage='radial-gradient(ellipse 65% 60% at -5% -5%,rgba(99,102,241,.30) 0%,transparent 55%),radial-gradient(ellipse 55% 60% at 108% 50%,rgba(139,92,246,.24) 0%,transparent 55%),radial-gradient(ellipse 60% 55% at 45% 110%,rgba(6,182,212,.20) 0%,transparent 55%),radial-gradient(ellipse 45% 50% at 15% 75%,rgba(245,158,11,.16) 0%,transparent 55%)';
       mainEl.style.backgroundAttachment='local';
     }
+  } else if(v==='report'){
+    if(cleanerPanel&&cleanerPanel.style.display!=='none')clClearMemory();
+    if(cleanerPanel)cleanerPanel.style.display='none';
+    if(reportPanel)reportPanel.style.display='';
+    if(cardsEl)cardsEl.style.display='none';
+    if(emptyEl)emptyEl.style.display='none';
+    if(mainEl){mainEl.classList.remove('cl-active');mainEl.style.backgroundImage='';mainEl.style.backgroundAttachment='';}
+    // restore saved API key
+    const saved=localStorage.getItem('rp_claude_key');
+    if(saved)document.getElementById('rp-api-key').value=saved;
   } else {
-    // Clear sensitive data from memory when leaving cleaner
+    // Clear sensitive data when leaving cleaner
     if(cleanerPanel&&cleanerPanel.style.display!=='none'){
       clClearMemory();
     }
     if(cleanerPanel)cleanerPanel.style.display='none';
+    if(reportPanel)reportPanel.style.display='none';
     if(cardsEl)cardsEl.style.display='';
     if(mainEl){
       mainEl.classList.remove('cl-active');
@@ -3087,7 +3250,7 @@ function setView(v,fid){
   }
   if(v==='links'){currentLinkBoard=null;renderLinks();}
   else if(v==='team'){renderTeam();}
-  else{renderCards();}
+  else if(v!=='cleaner'&&v!=='report'){renderCards();}
 }
 function setViewMode(m){
   viewMode=m;
@@ -5544,6 +5707,184 @@ function timeAgo(iso){
 }
 // Render history on load so Open buttons are always present
 document.addEventListener('DOMContentLoaded',function(){clRenderHistory();});
+
+// ══════════════════════════════════════════════════════
+//  REPORT BUILDER
+// ══════════════════════════════════════════════════════
+let rpNormalB64=null, rpDistinctB64=null, rpNormalMime='image/jpeg', rpDistinctMime='image/jpeg';
+
+function rpSaveKey(){
+  const k=document.getElementById('rp-api-key').value.trim();
+  if(!k){toast('Enter an API key first','e');return;}
+  localStorage.setItem('rp_claude_key',k);
+  toast('API key saved','s');
+}
+
+function rpLoadImg(type,inp){
+  const file=inp.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const data=e.target.result;
+    const mime=file.type||'image/jpeg';
+    if(type==='normal'){
+      rpNormalB64=data.split(',')[1]; rpNormalMime=mime;
+      const img=document.getElementById('rp-n-prev');
+      img.src=data;img.style.display='block';
+      document.getElementById('rp-n-svg').style.display='none';
+      document.getElementById('rp-n-lbl').textContent=file.name;
+      document.getElementById('rp-nzone').classList.add('has-img');
+    }else{
+      rpDistinctB64=data.split(',')[1]; rpDistinctMime=mime;
+      const img=document.getElementById('rp-d-prev');
+      img.src=data;img.style.display='block';
+      document.getElementById('rp-d-svg').style.display='none';
+      document.getElementById('rp-d-lbl').textContent=file.name;
+      document.getElementById('rp-dzone').classList.add('has-img');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function rpExtract(){
+  const key=localStorage.getItem('rp_claude_key')||document.getElementById('rp-api-key').value.trim();
+  if(!key){toast('Enter & save your Claude API key first','e');return;}
+  if(!rpNormalB64&&!rpDistinctB64){toast('Upload at least one image first','e');return;}
+  const btn=document.getElementById('rp-ext-btn');
+  const status=document.getElementById('rp-status');
+  btn.disabled=true;btn.textContent='Extracting…';
+  status.className='rp-status';
+
+  const callAPI=async(b64,mime,label)=>{
+    status.textContent='Extracting '+label+' counts…';
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:200,
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:mime,data:b64}},
+          {type:'text',text:'This is a WATI broadcast report showing quiz response counts for multiple batches. Extract the TOTAL count for Option A, Option B, and Option C (sum all batch rows if needed). Return ONLY valid JSON: {"A":number,"B":number,"C":number} — plain integers, no commas inside numbers, no extra text.'}
+        ]}]
+      })
+    });
+    if(!resp.ok){const e=await resp.text();throw new Error(e);}
+    const d=await resp.json();
+    const txt=d.content[0].text.trim();
+    const m=txt.match(/\{[^}]+\}/);
+    if(!m)throw new Error('Bad response: '+txt);
+    return JSON.parse(m[0]);
+  };
+
+  try{
+    if(rpNormalB64){
+      const r=await callAPI(rpNormalB64,rpNormalMime,'Normal');
+      document.getElementById('rp-na').value=r.A||0;
+      document.getElementById('rp-nb').value=r.B||0;
+      document.getElementById('rp-nc').value=r.C||0;
+    }
+    if(rpDistinctB64){
+      const r=await callAPI(rpDistinctB64,rpDistinctMime,'Distinct');
+      document.getElementById('rp-da').value=r.A||0;
+      document.getElementById('rp-db').value=r.B||0;
+      document.getElementById('rp-dc').value=r.C||0;
+    }
+    status.textContent='Counts extracted successfully!';
+    status.className='rp-status ok';
+    rpLive();
+  }catch(e){
+    status.textContent='Error: '+e.message.slice(0,120);
+    status.className='rp-status err';
+    toast('Extraction failed — check API key & network','e');
+  }
+  btn.disabled=false;btn.textContent='Extract Counts from Images';
+}
+
+function rpN(id){return parseInt(document.getElementById(id).value)||0;}
+
+function rpFmt(n){return n.toLocaleString('en-US');}
+
+function rpLive(){
+  const b1=rpN('rp-b1'),b2=rpN('rp-b2'),b3=rpN('rp-b3');
+  const da=rpN('rp-da'),db=rpN('rp-db'),dc=rpN('rp-dc');
+  const att=b1+b2+b3, clk=da+db+dc;
+  const pct=att>0?((clk/att)*100).toFixed(2):'0.00';
+  document.getElementById('rp-s-att').textContent=att?rpFmt(att):'—';
+  document.getElementById('rp-s-clk').textContent=clk?rpFmt(clk):'—';
+  document.getElementById('rp-s-pct').textContent=att?pct+'%':'—';
+}
+
+function rpGenerate(){
+  const b1=rpN('rp-b1'),b2=rpN('rp-b2'),b3=rpN('rp-b3');
+  const na=rpN('rp-na'),nb=rpN('rp-nb'),nc=rpN('rp-nc');
+  const da=rpN('rp-da'),db=rpN('rp-db'),dc=rpN('rp-dc');
+  const kw=rpN('rp-kw');
+  const att=b1+b2+b3, clk=da+db+dc;
+  const pct=att>0?((clk/att)*100).toFixed(2):'0.00';
+
+  document.getElementById('rp-wa').textContent=
+`Batch 1 attendance was sent to ${rpFmt(b1)} users
+Batch 2 attendance was sent to ${rpFmt(b2)} users
+Batch 3 attendance was sent to ${rpFmt(b3)} users
+
+Distinct:
+
+Option A: ${rpFmt(da)}
+Option B: ${rpFmt(db)}
+Option C: ${rpFmt(dc)}
+
+Normal:
+
+Option A: ${rpFmt(na)}
+Option B: ${rpFmt(nb)}
+Option C: ${rpFmt(nc)}
+
+Today Keyword Trigger count till Now: ${rpFmt(kw)}
+
+Total Morning attendance sent: ${rpFmt(att)}
+Total users who clicked till now: ${rpFmt(clk)}
+Click percentage: ${pct}%`;
+
+  document.getElementById('rp-sh').textContent=
+`6:30 am attendance: ${rpFmt(b1)}
+7:30 am attendance: ${rpFmt(b2)}
+8:30 am attendance: ${rpFmt(b3)}
+
+Total Morning attendance: ${rpFmt(att)}
+Total Morning clicked: ${rpFmt(clk)}
+Morning percentage %: ${pct}
+
+Option A: ${rpFmt(da)}
+Option B: ${rpFmt(db)}
+Option C: ${rpFmt(dc)}
+
+Today: ${rpFmt(kw)}
+Total Morning clicked: ${rpFmt(clk)}`;
+
+  const out=document.getElementById('rp-outputs');
+  out.style.display='block';
+  out.scrollIntoView({behavior:'smooth',block:'start'});
+  rpLive();
+}
+
+function rpCopy(id,msg){
+  const text=document.getElementById(id).textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>toast(msg,'s')).catch(()=>rpCopyFallback(text,msg));
+  }else{rpCopyFallback(text,msg);}
+}
+function rpCopyFallback(text,msg){
+  const el=document.createElement('textarea');
+  el.value=text;el.style.position='fixed';el.style.opacity='0';
+  document.body.appendChild(el);el.select();
+  document.execCommand('copy');document.body.removeChild(el);
+  toast(msg,'s');
+}
 </script>
 </body>
 </html>
