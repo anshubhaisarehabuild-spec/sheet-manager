@@ -1217,13 +1217,6 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <!-- REPORT BUILDER PANEL -->
     <div id="report-panel" style="display:none;max-width:860px;margin:0 auto;">
 
-      <!-- API Key -->
-      <div class="rp-api-row">
-        <label>Claude API Key</label>
-        <input type="password" id="rp-api-key" placeholder="sk-ant-… (needed for auto image extraction)" autocomplete="off">
-        <button onclick="rpSaveKey()" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">Save Key</button>
-      </div>
-
       <!-- Step 1: Images -->
       <div class="rp-card">
         <div class="rp-card-title"><span class="rp-step">1</span> Upload Count Images</div>
@@ -3231,9 +3224,6 @@ function setView(v,fid){
     if(cardsEl)cardsEl.style.display='none';
     if(emptyEl)emptyEl.style.display='none';
     if(mainEl){mainEl.classList.remove('cl-active');mainEl.style.backgroundImage='';mainEl.style.backgroundAttachment='';}
-    // restore saved API key
-    const saved=localStorage.getItem('rp_claude_key');
-    if(saved)document.getElementById('rp-api-key').value=saved;
   } else {
     // Clear sensitive data when leaving cleaner
     if(cleanerPanel&&cleanerPanel.style.display!=='none'){
@@ -5713,13 +5703,6 @@ document.addEventListener('DOMContentLoaded',function(){clRenderHistory();});
 // ══════════════════════════════════════════════════════
 let rpNormalB64=null, rpDistinctB64=null, rpNormalMime='image/jpeg', rpDistinctMime='image/jpeg';
 
-function rpSaveKey(){
-  const k=document.getElementById('rp-api-key').value.trim();
-  if(!k){toast('Enter an API key first','e');return;}
-  localStorage.setItem('rp_claude_key',k);
-  toast('API key saved','s');
-}
-
 function rpLoadImg(type,inp){
   const file=inp.files[0];if(!file)return;
   const reader=new FileReader();
@@ -5746,8 +5729,13 @@ function rpLoadImg(type,inp){
 }
 
 async function rpExtract(){
-  const key=localStorage.getItem('rp_claude_key')||document.getElementById('rp-api-key').value.trim();
-  if(!key){toast('Enter & save your Claude API key first','e');return;}
+  let key=localStorage.getItem('rp_claude_key')||'';
+  if(!key){
+    key=prompt('Enter your Claude API key (sk-ant-…):\n(Only asked once — saved in browser)','');
+    if(!key)return;
+    localStorage.setItem('rp_claude_key',key.trim());
+    key=key.trim();
+  }
   if(!rpNormalB64&&!rpDistinctB64){toast('Upload at least one image first','e');return;}
   const btn=document.getElementById('rp-ext-btn');
   const status=document.getElementById('rp-status');
