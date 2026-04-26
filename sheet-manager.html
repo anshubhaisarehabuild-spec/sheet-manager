@@ -5788,23 +5788,41 @@ function rpReset(){
   rpLive();
 }
 
+// OCR splits comma-formatted numbers into two tokens: "20,718" → ["20","718"]
+// This solver tries all merge combinations of a row's numbers and picks the one
+// where optionA + optionB + optionC === total_all_options (WATI's checksum column)
+function rpSolveRow(rest){
+  // rest = all numbers after watiServerId; should resolve to [A, B, C, total]
+  function solve(i,acc){
+    if(acc.length===4){
+      return(i===rest.length&&acc[0]+acc[1]+acc[2]===acc[3])?acc:null;
+    }
+    if(i>=rest.length)return null;
+    // Option 1: take this number as-is
+    const r=solve(i+1,acc.concat(rest[i]));
+    if(r)return r;
+    // Option 2: merge with next token (OCR read a comma as space: "20 718" → 20718)
+    // Only valid when the next token is exactly 3 digits (100-999)
+    if(i+1<rest.length&&rest[i+1]>=100&&rest[i+1]<1000){
+      return solve(i+2,acc.concat(rest[i]*1000+rest[i+1]));
+    }
+    return null;
+  }
+  return solve(0,[]);
+}
+
 function rpParseOptions(text, filterIds=[]){
   const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
 
   // ── Table mode: WATI spreadsheet export with option_A / option_B column headers ──
-  let headerIdx=-1, aCol=-1, bCol=-1, cCol=-1;
+  let headerIdx=-1;
   for(let i=0;i<Math.min(lines.length,8);i++){
-    // Collapse "option A/B/C" (space-separated from OCR) → "optionA/B/C" before splitting
     const collapsed=lines[i]
       .replace(/option[\s_\.]*a\b/gi,'optionA')
       .replace(/option[\s_\.]*b\b/gi,'optionB')
       .replace(/option[\s_\.]*c\b/gi,'optionC');
     const norm=collapsed.toLowerCase().replace(/[_\.]/g,'').replace(/\s+/g,' ').trim();
-    const words=norm.split(' ');
-    const ai=words.findIndex(w=>w==='optiona'||w==='opta');
-    const bi=words.findIndex(w=>w==='optionb'||w==='optb');
-    const ci=words.findIndex(w=>w==='optionc'||w==='optc');
-    if(ai!==-1&&bi!==-1){headerIdx=i;aCol=ai;bCol=bi;cCol=ci;break;}
+    if(norm.includes('optiona')&&norm.includes('optionb')){headerIdx=i;break;}
   }
 
   if(headerIdx!==-1){
@@ -5812,13 +5830,15 @@ function rpParseOptions(text, filterIds=[]){
     for(let i=headerIdx+1;i<lines.length;i++){
       const tokens=lines[i].replace(/,/g,'').replace(/\s+/g,' ').trim().split(' ');
       if(!/^\d/.test(tokens[0]))continue;
-      // Apply watiServerId filter if provided
       if(filterIds.length>0){
         const rowId=parseInt(tokens[0]);
         if(!filterIds.includes(rowId))continue;
       }
-      const get=col=>col!==-1&&col<tokens.length?(parseInt(tokens[col])||0):0;
-      a+=get(aCol);b+=get(bCol);c+=get(cCol);
+      const nums=tokens.map(t=>parseInt(t)).filter(n=>!isNaN(n)&&n>=0);
+      if(nums.length<4)continue;
+      // Use checksum solver to handle comma-split OCR numbers
+      const solved=rpSolveRow(nums.slice(1));
+      if(solved){a+=solved[0];b+=solved[1];c+=solved[2];}
     }
     return {a,b,c};
   }
