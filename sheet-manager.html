@@ -1223,18 +1223,18 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         <div class="rp-img-grid">
           <div>
             <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">Normal Count Image</div>
-            <div class="rp-img-zone" id="rp-nzone" onclick="document.getElementById('rp-n-inp').click()">
+            <div class="rp-img-zone" id="rp-nzone" onclick="rpActiveZone='normal';document.getElementById('rp-n-inp').click()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--muted)" id="rp-n-svg"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <div class="rp-img-lbl" id="rp-n-lbl">Click to upload</div>
+              <div class="rp-img-lbl" id="rp-n-lbl">Click or Ctrl+V to paste</div>
               <img id="rp-n-prev" src="" alt="" style="display:none;">
             </div>
             <input type="file" id="rp-n-inp" accept="image/*" style="display:none" onchange="rpLoadImg('normal',this)">
           </div>
           <div>
             <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">Distinct Count Image</div>
-            <div class="rp-img-zone" id="rp-dzone" onclick="document.getElementById('rp-d-inp').click()">
+            <div class="rp-img-zone" id="rp-dzone" onclick="rpActiveZone='distinct';document.getElementById('rp-d-inp').click()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--muted)" id="rp-d-svg"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <div class="rp-img-lbl" id="rp-d-lbl">Click to upload</div>
+              <div class="rp-img-lbl" id="rp-d-lbl">Click or Ctrl+V to paste</div>
               <img id="rp-d-prev" src="" alt="" style="display:none;">
             </div>
             <input type="file" id="rp-d-inp" accept="image/*" style="display:none" onchange="rpLoadImg('distinct',this)">
@@ -5711,30 +5711,53 @@ document.addEventListener('DOMContentLoaded',function(){clRenderHistory();});
 // ══════════════════════════════════════════════════════
 
 
-let rpNormalFile=null, rpDistinctFile=null;
+let rpNormalFile=null, rpDistinctFile=null, rpActiveZone='normal';
 
-function rpLoadImg(type, inp){
-  const file=inp.files[0]; if(!file) return;
+function rpLoadImgFile(type, file){
   const url=URL.createObjectURL(file);
   if(type==='normal'){
     rpNormalFile=file;
     const prev=document.getElementById('rp-n-prev');
-    const svg=document.getElementById('rp-n-svg');
+    document.getElementById('rp-n-svg').style.display='none';
     prev.src=url; prev.style.display='block';
-    svg.style.display='none';
-    document.getElementById('rp-n-lbl').textContent=file.name;
+    document.getElementById('rp-n-lbl').textContent=file.name||'Pasted image';
     document.getElementById('rp-nzone').classList.add('has-img');
+    rpActiveZone='distinct'; // auto-advance to next zone
   } else {
     rpDistinctFile=file;
     const prev=document.getElementById('rp-d-prev');
-    const svg=document.getElementById('rp-d-svg');
+    document.getElementById('rp-d-svg').style.display='none';
     prev.src=url; prev.style.display='block';
-    svg.style.display='none';
-    document.getElementById('rp-d-lbl').textContent=file.name;
+    document.getElementById('rp-d-lbl').textContent=file.name||'Pasted image';
     document.getElementById('rp-dzone').classList.add('has-img');
+    rpActiveZone='normal';
   }
   document.getElementById('rp-status').textContent='';
 }
+
+function rpLoadImg(type, inp){
+  const file=inp.files[0]; if(!file) return;
+  rpLoadImgFile(type, file);
+}
+
+// Global paste handler — works anywhere on the page when report panel is open
+document.addEventListener('paste', function(e){
+  const panel=document.getElementById('report-panel');
+  if(!panel||panel.style.display==='none') return;
+  const items=e.clipboardData&&e.clipboardData.items;
+  if(!items) return;
+  for(let i=0;i<items.length;i++){
+    if(items[i].type.startsWith('image/')){
+      const file=items[i].getAsFile();
+      if(!file) continue;
+      e.preventDefault();
+      // Paste into first empty zone, else use rpActiveZone
+      const target=!rpNormalFile?'normal':!rpDistinctFile?'distinct':rpActiveZone;
+      rpLoadImgFile(target, file);
+      break;
+    }
+  }
+});
 
 function rpParseOptions(text, filterIds=[]){
   const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
