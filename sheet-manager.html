@@ -1226,7 +1226,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         <div class="rp-img-grid">
           <div>
             <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">Normal Count Image</div>
-            <div class="rp-img-zone" id="rp-nzone" onclick="rpActiveZone='normal';document.getElementById('rp-n-inp').click()">
+            <div class="rp-img-zone" id="rp-nzone" onmouseenter="rpActiveZone='normal'" onclick="rpActiveZone='normal';document.getElementById('rp-n-inp').click()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--muted)" id="rp-n-svg"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               <div class="rp-img-lbl" id="rp-n-lbl">Click or Ctrl+V to paste</div>
               <img id="rp-n-prev" src="" alt="" style="display:none;">
@@ -1235,7 +1235,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           </div>
           <div>
             <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">Distinct Count Image</div>
-            <div class="rp-img-zone" id="rp-dzone" onclick="rpActiveZone='distinct';document.getElementById('rp-d-inp').click()">
+            <div class="rp-img-zone" id="rp-dzone" onmouseenter="rpActiveZone='distinct'" onclick="rpActiveZone='distinct';document.getElementById('rp-d-inp').click()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--muted)" id="rp-d-svg"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               <div class="rp-img-lbl" id="rp-d-lbl">Click or Ctrl+V to paste</div>
               <img id="rp-d-prev" src="" alt="" style="display:none;">
@@ -5757,7 +5757,7 @@ document.addEventListener('paste', function(e){
       const file=items[i].getAsFile();
       if(!file) continue;
       e.preventDefault();
-      const target=!rpNormalFile?'normal':!rpDistinctFile?'distinct':rpActiveZone;
+      const target=rpActiveZone;
       rpLoadImgFile(target, file);
       break;
     }
