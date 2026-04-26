@@ -5829,7 +5829,12 @@ function rpParseOptions(text, filterIds=[]){
     let a=0,b=0,c=0;
     const dbg=[];
     for(let i=headerIdx+1;i<lines.length;i++){
-      const tokens=lines[i].replace(/,/g,'').replace(/\s+/g,' ').trim().split(' ');
+      // Remove thousands separators — both comma ("20,718") and dot ("20.718" from OCR)
+      // Apply twice to handle numbers with two separators like "1,234,567"
+      let ln=lines[i];
+      ln=ln.replace(/(\d+)[,.](\d{3})(?!\d)/g,'$1$2');
+      ln=ln.replace(/(\d+)[,.](\d{3})(?!\d)/g,'$1$2');
+      const tokens=ln.replace(/\s+/g,' ').trim().split(' ');
       if(!/^\d/.test(tokens[0]))continue;
       const rowId=parseInt(tokens[0]);
       if(filterIds.length>0&&!filterIds.includes(rowId))continue;
