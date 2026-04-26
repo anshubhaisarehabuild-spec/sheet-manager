@@ -5898,20 +5898,20 @@ Total users who clicked till now: ${rpFmt(clk)}
 Click percentage: ${pct}%`;
 
   document.getElementById('rp-sh').textContent=
-`6:30 am attendance: ${rpFmt(b1)}
-7:30 am attendance: ${rpFmt(b2)}
-8:30 am attendance: ${rpFmt(b3)}
-
-Total Morning attendance: ${rpFmt(att)}
-Total Morning clicked: ${rpFmt(clk)}
-Morning percentage %: ${pct}
-
-Option A: ${rpFmt(da)}
-Option B: ${rpFmt(db)}
-Option C: ${rpFmt(dc)}
-
-Today: ${rpFmt(kw)}
-Total Morning clicked: ${rpFmt(clk)}`;
+`6:30 am attendance\t${rpFmt(b1)}
+7:30 am attendance\t${rpFmt(b2)}
+8:30 am attendance\t${rpFmt(b3)}
+\t
+Total Morning attendance\t${rpFmt(att)}
+Total Morning clicked\t${rpFmt(clk)}
+Morning percentage %\t${pct}
+\t
+Option A\t${rpFmt(da)}
+Option B\t${rpFmt(db)}
+Option C\t${rpFmt(dc)}
+\t
+Today\t${rpFmt(kw)}
+Total Morning clicked\t${rpFmt(clk)}`;
 
   const out=document.getElementById('rp-outputs');
   out.style.display='block';
