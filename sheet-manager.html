@@ -5827,20 +5827,23 @@ function rpParseOptions(text, filterIds=[]){
 
   if(headerIdx!==-1){
     let a=0,b=0,c=0;
+    const dbg=[];
     for(let i=headerIdx+1;i<lines.length;i++){
       const tokens=lines[i].replace(/,/g,'').replace(/\s+/g,' ').trim().split(' ');
       if(!/^\d/.test(tokens[0]))continue;
-      if(filterIds.length>0){
-        const rowId=parseInt(tokens[0]);
-        if(!filterIds.includes(rowId))continue;
-      }
+      const rowId=parseInt(tokens[0]);
+      if(filterIds.length>0&&!filterIds.includes(rowId))continue;
       const nums=tokens.map(t=>parseInt(t)).filter(n=>!isNaN(n)&&n>=0);
       if(nums.length<4)continue;
-      // Use checksum solver to handle comma-split OCR numbers
       const solved=rpSolveRow(nums.slice(1));
-      if(solved){a+=solved[0];b+=solved[1];c+=solved[2];}
+      if(solved){
+        a+=solved[0];b+=solved[1];c+=solved[2];
+        dbg.push(`ID ${rowId}: A=${solved[0]} B=${solved[1]} C=${solved[2]} total=${solved[3]}`);
+      }else{
+        dbg.push(`ID ${rowId}: SOLVER FAILED — raw tokens: [${nums.join(',')}]`);
+      }
     }
-    return {a,b,c};
+    return {a,b,c,dbg};
   }
 
   // ── Fallback: inline format — "Option A: 1234" on the same line ──
@@ -5887,8 +5890,9 @@ async function rpExtract(){
     if(rpNormalFile){
       status.textContent='Reading Normal Count image…';
       const {data:{text}}=await worker.recognize(rpNormalFile);
-      debugLines.push('=== Normal Count Image ===\n'+text);
-      const {a,b,c}=rpParseOptions(text,filterIds);
+      const {a,b,c,dbg}=rpParseOptions(text,filterIds);
+      debugLines.push('=== Normal Count Image — Raw OCR ===\n'+text);
+      if(dbg&&dbg.length) debugLines.push('--- Rows parsed ---\n'+dbg.join('\n')+`\nTOTAL → A=${a} B=${b} C=${c}`);
       document.getElementById('rp-na').value=a||'';
       document.getElementById('rp-nb').value=b||'';
       document.getElementById('rp-nc').value=c||'';
@@ -5896,8 +5900,9 @@ async function rpExtract(){
     if(rpDistinctFile){
       status.textContent='Reading Distinct Count image…';
       const {data:{text}}=await worker.recognize(rpDistinctFile);
-      debugLines.push('=== Distinct Count Image ===\n'+text);
-      const {a,b,c}=rpParseOptions(text,filterIds);
+      const {a,b,c,dbg}=rpParseOptions(text,filterIds);
+      debugLines.push('=== Distinct Count Image — Raw OCR ===\n'+text);
+      if(dbg&&dbg.length) debugLines.push('--- Rows parsed ---\n'+dbg.join('\n')+`\nTOTAL → A=${a} B=${b} C=${c}`);
       document.getElementById('rp-da').value=a||'';
       document.getElementById('rp-db').value=b||'';
       document.getElementById('rp-dc').value=c||'';
