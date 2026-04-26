@@ -1219,7 +1219,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
       <!-- Step 1: Images -->
       <div class="rp-card">
-        <div class="rp-card-title"><span class="rp-step">1</span> Upload Count Images</div>
+        <div class="rp-card-title" style="display:flex;align-items:center;justify-content:space-between;">
+          <span><span class="rp-step">1</span> Upload Count Images</span>
+          <button onclick="rpReset()" style="font-size:11px;font-weight:700;color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;">Reset All</button>
+        </div>
         <div class="rp-img-grid">
           <div>
             <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">Normal Count Image</div>
@@ -5744,6 +5747,9 @@ function rpLoadImg(type, inp){
 document.addEventListener('paste', function(e){
   const panel=document.getElementById('report-panel');
   if(!panel||panel.style.display==='none') return;
+  // Don't intercept when user is typing in a text/number input or textarea
+  const tag=(document.activeElement||{}).tagName||'';
+  if(tag==='INPUT'||tag==='TEXTAREA') return;
   const items=e.clipboardData&&e.clipboardData.items;
   if(!items) return;
   for(let i=0;i<items.length;i++){
@@ -5751,13 +5757,36 @@ document.addEventListener('paste', function(e){
       const file=items[i].getAsFile();
       if(!file) continue;
       e.preventDefault();
-      // Paste into first empty zone, else use rpActiveZone
       const target=!rpNormalFile?'normal':!rpDistinctFile?'distinct':rpActiveZone;
       rpLoadImgFile(target, file);
       break;
     }
   }
 });
+
+function rpReset(){
+  rpNormalFile=null; rpDistinctFile=null; rpActiveZone='normal';
+  // Reset image zones
+  ['n','d'].forEach(t=>{
+    document.getElementById('rp-'+t+'zone').classList.remove('has-img');
+    const prev=document.getElementById('rp-'+t+'-prev');
+    prev.src=''; prev.style.display='none';
+    document.getElementById('rp-'+t+'-svg').style.display='';
+    document.getElementById('rp-'+t+'-lbl').textContent='Click or Ctrl+V to paste';
+    document.getElementById('rp-'+t+'-inp').value='';
+  });
+  // Clear all inputs
+  ['rp-na','rp-nb','rp-nc','rp-da','rp-db','rp-dc','rp-b1','rp-b2','rp-b3','rp-kw']
+    .forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rp-filter-ids').value='';
+  // Clear status, debug, outputs
+  const st=document.getElementById('rp-status');
+  st.textContent=''; st.className='rp-status';
+  document.getElementById('rp-debug').style.display='none';
+  document.getElementById('rp-raw-text').textContent='';
+  document.getElementById('rp-outputs').style.display='none';
+  rpLive();
+}
 
 function rpParseOptions(text, filterIds=[]){
   const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
