@@ -1301,14 +1301,14 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         <div class="rp-out-card">
           <div class="rp-out-title">
             <span>WhatsApp Group Message</span>
-            <button class="rp-copy-btn" onclick="rpCopy('rp-wa','WhatsApp message copied!')">Copy</button>
+            <button class="rp-copy-btn" id="rp-copy-wa" onclick="rpCopy('rp-wa',this)">Copy</button>
           </div>
           <pre class="rp-out-pre" id="rp-wa"></pre>
         </div>
         <div class="rp-out-card">
           <div class="rp-out-title">
             <span>Sheet Format</span>
-            <button class="rp-copy-btn" onclick="rpCopy('rp-sh','Sheet format copied!')">Copy</button>
+            <button class="rp-copy-btn" id="rp-copy-sh" onclick="rpCopy('rp-sh',this)">Copy</button>
           </div>
           <pre class="rp-out-pre" id="rp-sh"></pre>
         </div>
@@ -5942,18 +5942,23 @@ Total Morning clicked\t${rpFmt(clk)}`;
   rpLive();
 }
 
-function rpCopy(id,msg){
+function rpCopyDone(btn){
+  btn.textContent='Copied ✓';
+  btn.style.background='#22c55e';
+  setTimeout(()=>{btn.textContent='Copy';btn.style.background='';},2000);
+}
+function rpCopy(id,btn){
   const text=document.getElementById(id).textContent;
   if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(()=>toast(msg,'s')).catch(()=>rpCopyFallback(text,msg));
-  }else{rpCopyFallback(text,msg);}
+    navigator.clipboard.writeText(text).then(()=>rpCopyDone(btn)).catch(()=>rpCopyFallback(text,btn));
+  }else{rpCopyFallback(text,btn);}
 }
-function rpCopyFallback(text,msg){
+function rpCopyFallback(text,btn){
   const el=document.createElement('textarea');
   el.value=text;el.style.position='fixed';el.style.opacity='0';
   document.body.appendChild(el);el.select();
   document.execCommand('copy');document.body.removeChild(el);
-  toast(msg,'s');
+  rpCopyDone(btn);
 }
 </script>
 </body>
