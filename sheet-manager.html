@@ -5,7 +5,9 @@
 ="en" data-theme="dark">
 <head>
 <script>
-im// Apply saved theme immediately to prevent flash
+// Force one reload to ensure latest JS is running (clears stale browser cache)
+if(sessionStorage.getItem('smVer')!=='v6'){sessionStorage.setItem('smVer','v6');location.reload(true);}
+// Apply saved theme immediately to prevent flash
 (function(){
   var t=localStorage.getItem('sm_theme')||'light';
   document.documentElement.setAttribute('data-theme',t);
@@ -1247,7 +1249,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <label style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px;display:block;">Include only these watiServerId rows <span style="font-weight:400;color:var(--muted)">(comma-separated — leave blank for all)</span></label>
           <input type="text" id="rp-filter-ids" placeholder="e.g. 8, 10, 26, 27, 28, 29" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--hover);color:var(--text);font-size:13px;box-sizing:border-box;">
         </div>
-        <button class="rp-extract-btn" id="rp-ext-btn" onclick="rpExtract()">Extract Counts from Images</button>
+        <button class="rp-extract-btn" id="rp-ext-btn" onclick="rpExtract()">Extract Counts from Images ✦</button>
         <div class="rp-status" id="rp-status"></div>
         <div id="rp-debug" style="display:none;margin-top:8px;">
           <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;cursor:pointer;user-select:none;" onclick="const p=document.getElementById('rp-raw-text');p.style.display=p.style.display==='none'?'block':'none'">&#9658; Raw OCR text (tap to view)</div>
@@ -5793,22 +5795,51 @@ function rpReset(){
 // where optionA + optionB + optionC === total_all_options (WATI's checksum column)
 function rpSolveRow(rest){
   // rest = all numbers after watiServerId; should resolve to [A, B, C, total]
+  // Uses string concatenation so any OCR digit-split is handled:
+  //   2-part: "20"+"718"→"20718", "44"+"1"→"441"
+  //   3-part: "20"+"6"+"96"→"20696"  (OCR sometimes splits 5-digit numbers into 3 fragments)
+  const strs=rest.map(String);
   function solve(i,acc){
     if(acc.length===4){
-      return(i===rest.length&&acc[0]+acc[1]+acc[2]===acc[3])?acc:null;
+      return(i===strs.length&&acc[0]+acc[1]+acc[2]===acc[3])?acc:null;
     }
-    if(i>=rest.length)return null;
-    // Option 1: take this number as-is
-    const r=solve(i+1,acc.concat(rest[i]));
+    if(i>=strs.length)return null;
+    // Option 1: take this token as-is
+    let r=solve(i+1,acc.concat(parseInt(strs[i])));
     if(r)return r;
-    // Option 2: merge with next token (OCR read a comma as space: "20 718" → 20718)
-    // Only valid when the next token is exactly 3 digits (100-999)
-    if(i+1<rest.length&&rest[i+1]>=100&&rest[i+1]<1000){
-      return solve(i+2,acc.concat(rest[i]*1000+rest[i+1]));
+    // Option 2: concatenate 2 consecutive tokens
+    if(i+1<strs.length){
+      r=solve(i+2,acc.concat(parseInt(strs[i]+strs[i+1])));
+      if(r)return r;
+    }
+    // Option 3: concatenate 3 consecutive tokens
+    if(i+2<strs.length){
+      r=solve(i+3,acc.concat(parseInt(strs[i]+strs[i+1]+strs[i+2])));
+      if(r)return r;
     }
     return null;
   }
   return solve(0,[]);
+}
+
+// When the checksum solver fails, try to repair the one wrong value using the total column.
+// OCR typically drops a leading digit (10× error). We try fixing each of A/B/C via total,
+// and pick the fix where corrected/original ratio is closest to a power of 10 (5×–500×).
+function rpRepairRow(a,b,c,total){
+  const opts=[
+    {vals:[total-b-c, b, c], orig:a, fixed:total-b-c},
+    {vals:[a, total-a-c, c], orig:b, fixed:total-a-c},
+    {vals:[a, b, total-a-b], orig:c, fixed:total-a-b},
+  ];
+  let best=null, bestDist=Infinity;
+  for(const o of opts){
+    if(o.fixed<=0||o.orig<=0)continue;
+    const ratio=o.fixed/o.orig;
+    if(ratio<5||ratio>500)continue; // only accept plausible dropped-digit corrections
+    const dist=Math.abs(Math.log10(ratio)-Math.round(Math.log10(ratio)));
+    if(dist<bestDist){bestDist=dist; best=o.vals;}
+  }
+  return best;
 }
 
 function rpParseOptions(text, filterIds=[]){
@@ -5845,7 +5876,34 @@ function rpParseOptions(text, filterIds=[]){
         a+=solved[0];b+=solved[1];c+=solved[2];
         dbg.push(`ID ${rowId}: A=${solved[0]} B=${solved[1]} C=${solved[2]} total=${solved[3]}`);
       }else{
-        dbg.push(`ID ${rowId}: SOLVER FAILED — raw tokens: [${nums.join(',')}]`);
+        // Checksum solver failed (OCR digit error or unusual split).
+        // Step 1: greedily merge obvious comma-split pairs to get positional values.
+        const rest=nums.slice(1);
+        const fb=[];
+        let j=0;
+        while(j<rest.length){
+          if(j+1<rest.length&&String(rest[j]).length<=2&&String(rest[j+1]).length===3){
+            fb.push(parseInt(String(rest[j])+String(rest[j+1]))); j+=2;
+          } else { fb.push(rest[j]); j++; }
+        }
+        // Step 2: if we have all 4 positional values, try repairing the wrong one via total.
+        if(fb.length>=4){
+          const repaired=rpRepairRow(fb[0],fb[1],fb[2],fb[3]);
+          if(repaired){
+            a+=repaired[0]; b+=repaired[1]; c+=repaired[2];
+            dbg.push(`ID ${rowId}: A=${repaired[0]} B=${repaired[1]} C=${repaired[2]} (REPAIRED via total=${fb[3]}, raw: [${nums.join(',')}])`);
+          } else if(fb.length>=3){
+            a+=fb[0]; b+=fb[1]; c+=fb[2];
+            dbg.push(`ID ${rowId}: A=${fb[0]} B=${fb[1]} C=${fb[2]} (FALLBACK — raw: [${nums.join(',')}])`);
+          } else {
+            dbg.push(`ID ${rowId}: SOLVER FAILED — raw tokens: [${nums.join(',')}]`);
+          }
+        } else if(fb.length>=3){
+          a+=fb[0]; b+=fb[1]; c+=fb[2];
+          dbg.push(`ID ${rowId}: A=${fb[0]} B=${fb[1]} C=${fb[2]} (FALLBACK — raw: [${nums.join(',')}])`);
+        } else {
+          dbg.push(`ID ${rowId}: SOLVER FAILED — raw tokens: [${nums.join(',')}]`);
+        }
       }
     }
     return {a,b,c,dbg};
@@ -5861,6 +5919,36 @@ function rpParseOptions(text, filterIds=[]){
     else if(/option\s*c|button\s*3/.test(l)) c=lastNum(line)||c;
   }
   return {a,b,c};
+}
+
+// Scale image 3× and threshold to pure B&W so Tesseract reads small digits reliably.
+async function rpPreprocessImage(file){
+  return new Promise(resolve=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const scale=3;
+      const w=img.naturalWidth*scale, h=img.naturalHeight*scale;
+      const canvas=document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
+      ctx.imageSmoothingEnabled=true;
+      ctx.imageSmoothingQuality='high';
+      ctx.drawImage(img,0,0,w,h);
+      const idata=ctx.getImageData(0,0,w,h);
+      const d=idata.data;
+      for(let i=0;i<d.length;i+=4){
+        const gray=Math.round(0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]);
+        const v=gray<140?0:255;
+        d[i]=d[i+1]=d[i+2]=v; d[i+3]=255;
+      }
+      ctx.putImageData(idata,0,0);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(resolve,'image/png');
+    };
+    img.src=url;
+  });
 }
 
 async function rpExtract(){
@@ -5931,7 +6019,7 @@ async function rpExtract(){
   }catch(e){
     status.className='rp-status err'; status.textContent='OCR failed: '+e.message+'. Please enter counts manually.';
   }
-  btn.disabled=false; btn.textContent='Extract Counts from Images';
+  btn.disabled=false; btn.textContent='Extract Counts from Images ✦';
 }
 
 function rpN(id){return parseInt(document.getElementById(id).value)||0;}
