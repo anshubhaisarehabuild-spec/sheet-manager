@@ -6,7 +6,7 @@
 <head>
 <script>
 // Force one reload to ensure latest JS is running (clears stale browser cache)
-if(sessionStorage.getItem('smVer')!=='v8'){sessionStorage.setItem('smVer','v8');location.reload(true);}
+if(sessionStorage.getItem('smVer')!=='v9'){sessionStorage.setItem('smVer','v9');location.reload(true);}
 // Apply saved theme immediately to prevent flash
 (function(){
   var t=localStorage.getItem('sm_theme')||'light';
@@ -800,7 +800,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .tc-meta-lbl{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
 .tc-meta-val{font-size:13.5px;font-weight:700;color:var(--text);font-family:'Inter',sans-serif;word-break:break-word;}
 .tc-var-list{display:flex;flex-direction:column;gap:6px;padding:10px 12px;}
-.tc-var-row{display:grid;grid-template-columns:50px 110px 1fr;gap:10px;align-items:center;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--border);}
+.tc-var-row{display:grid;grid-template-columns:minmax(140px,max-content) 110px 1fr;gap:10px;align-items:center;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--border);}
 .tc-var-row:last-child{border-bottom:none;}
 .tc-var-key{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;color:var(--accent);}
 .tc-var-type{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--tag-text);background:var(--tag);padding:3px 8px;border-radius:5px;text-align:center;}
@@ -1488,7 +1488,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <button onclick="tcReset()" style="font-size:11px;font-weight:700;color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;">Reset</button>
         </div>
         <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.55;">
-          Paste the message you want to send on WATI. The converter wraps marketing phrases and dynamic details (names, dates, IDs, amounts) in <code style="background:var(--hover);padding:1px 5px;border-radius:3px;font-size:11px;">&#123;&#123;n&#125;&#125;</code> variables — and for every promo variable, it suggests a <b>neutral utility-friendly replacement</b> you can use at send-time to keep the template approved as Utility.
+          Paste the message you want to send on WATI. The converter wraps marketing phrases and dynamic details (names, dates, IDs, amounts) in <b>named variables</b> like <code style="background:var(--hover);padding:1px 5px;border-radius:3px;font-size:11px;">&#123;&#123;customer_name&#125;&#125;</code> or <code style="background:var(--hover);padding:1px 5px;border-radius:3px;font-size:11px;">&#123;&#123;info&#125;&#125;</code> — and for every promo variable, it suggests a <b>neutral utility-friendly replacement</b> you can use at send-time to keep the template approved as Utility.
         </div>
         <textarea id="tc-input" placeholder="e.g.&#10;Hi Aditya, your yoga session is confirmed for tomorrow at 7 AM. Booking ID: HBD12345. Don't miss our exclusive offer — 20% off on the next 10 classes! Hurry, limited time only." spellcheck="false"></textarea>
         <div class="tc-row">
@@ -6540,11 +6540,42 @@ function tcBuildTemplate(raw,opts){
   let text=raw;
   const variables=[];
   const warnings=[];
-  let n=0;
+  const usedNames=new Set();
+  // Pool of neutral utility-style names for marketing/promo variables — cycled through in order.
+  const PROMO_POOL=['info','update','details','notice','note','info_update','service_update','status_update','message','content','summary'];
+  function makeName(type,sample){
+    let base;
+    if(type==='Name') base='customer_name';
+    else if(type==='Day') base='day';
+    else if(type==='Date') base='date';
+    else if(type==='Time') base='time';
+    else if(type==='Code') base='verification_code';
+    else if(type==='Phone') base='phone_number';
+    else if(type==='Email') base='email';
+    else if(type==='URL') base='link';
+    else if(type==='Amount') base='amount';
+    else if(type==='ID'){
+      const s=String(sample||'').toLowerCase();
+      if(/book|hbd|appt|sess/.test(s)) base='booking_id';
+      else if(/^(ord|inv|invoice)/.test(s)) base='order_id';
+      else if(/ticket|tkt/.test(s)) base='ticket_id';
+      else base='order_id';
+    }
+    else if(type==='Promo'){
+      for(const name of PROMO_POOL){if(!usedNames.has(name)) return name;}
+      base='info';
+    }
+    else base='var';
+    if(!usedNames.has(base)) return base;
+    let i=2;
+    while(usedNames.has(`${base}_${i}`)) i++;
+    return `${base}_${i}`;
+  }
   const nextVar=(type,sample,note,replacement)=>{
-    n++;
-    variables.push({n,type,sample,note,replacement:replacement||''});
-    return `{{${n}}}`;
+    const name=makeName(type,sample);
+    usedNames.add(name);
+    variables.push({name,type,sample,note,replacement:replacement||''});
+    return `{{${name}}}`;
   };
 
   // 1. URLs (strip trailing punctuation like . , ; ! ?)
@@ -6659,17 +6690,15 @@ function tcBuildTemplate(raw,opts){
     });
   }
 
-  // Renumber sequentially based on order of appearance in final text
-  const order=[];
-  text.replace(/\{\{(\d+)\}\}/g,(_,k)=>{order.push(parseInt(k,10));return _;});
-  const map={};
-  let seq=0;
-  order.forEach(k=>{if(!(k in map)){seq++;map[k]=seq;}});
-  text=text.replace(/\{\{(\d+)\}\}/g,(_,k)=>`{{${map[parseInt(k,10)]}}}`);
-  const finalVars=variables
-    .filter(v=>map[v.n])
-    .map(v=>({...v,n:map[v.n]}))
-    .sort((a,b)=>a.n-b.n);
+  // Filter to variables that survive in the final body, order by appearance
+  const appearOrder=[];
+  text.replace(/\{\{([a-zA-Z_][a-zA-Z0-9_]*)\}\}/g,(_,name)=>{
+    if(!appearOrder.includes(name)) appearOrder.push(name);
+    return _;
+  });
+  const finalVars=appearOrder
+    .map(name=>variables.find(v=>v.name===name))
+    .filter(Boolean);
 
   return {
     body:text,
@@ -6713,7 +6742,7 @@ function tcRenderResult(r){
   } else {
     vl.innerHTML=r.variables.map(v=>`
       <div class="tc-var-row${v.replacement?' has-suggest':''}">
-        <span class="tc-var-key">{{${v.n}}}</span>
+        <span class="tc-var-key">{{${tcEsc(v.name)}}}</span>
         <span class="tc-var-type">${tcEsc(v.type)}</span>
         <span class="tc-var-sample">
           <b>${tcEsc(v.sample)}</b> <span style="color:var(--muted);font-size:11px;">— ${tcEsc(v.note)}</span>
@@ -6751,7 +6780,7 @@ function tcCopy(id,btn){
 function tcCopyLegend(btn){
   if(!tcLastResult||!tcLastResult.variables.length){rpCopyDone(btn);return;}
   const txt=tcLastResult.variables.map(v=>{
-    let line=`{{${v.n}}} = ${v.type}: ${v.sample}  (${v.note})`;
+    let line=`{{${v.name}}} = ${v.type}: ${v.sample}  (${v.note})`;
     if(v.replacement) line+=`\n         ↳ Replace with: ${v.replacement}`;
     return line;
   }).join('\n');
