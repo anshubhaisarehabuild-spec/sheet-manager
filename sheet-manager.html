@@ -786,6 +786,32 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .rp-2col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 .rp-count-lbl{font-size:11px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
 .rp-field{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
+
+/* ── TEMPLATE CONVERTER ── */
+#tc-input{width:100%;min-height:170px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--hover);color:var(--text);font-family:inherit;font-size:13.5px;line-height:1.55;resize:vertical;outline:none;transition:border-color .15s,box-shadow .15s;box-sizing:border-box;}
+#tc-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.15);}
+.tc-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 14px;flex-wrap:wrap;}
+.tc-char-count{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em;}
+.tc-char-count.over{color:var(--danger);}
+.tc-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none;font-weight:500;}
+.tc-toggle input{cursor:pointer;accent-color:var(--accent);}
+.tc-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
+.tc-meta{background:var(--hover);border:1px solid var(--border);border-radius:10px;padding:10px 14px;}
+.tc-meta-lbl{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.tc-meta-val{font-size:13.5px;font-weight:700;color:var(--text);font-family:'Inter',sans-serif;word-break:break-word;}
+.tc-var-list{display:flex;flex-direction:column;gap:6px;padding:10px 12px;}
+.tc-var-row{display:grid;grid-template-columns:50px 110px 1fr;gap:10px;align-items:center;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--border);}
+.tc-var-row:last-child{border-bottom:none;}
+.tc-var-key{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;color:var(--accent);}
+.tc-var-type{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--tag-text);background:var(--tag);padding:3px 8px;border-radius:5px;text-align:center;}
+.tc-var-sample{color:var(--text2);word-break:break-word;}
+.tc-warn-title{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+:root[data-theme="dark"] .tc-warn-title{color:#fb923c;}
+.tc-warn-list{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0;}
+.tc-warn-list span{background:rgba(234,88,12,.1);border:1px solid rgba(234,88,12,.3);color:#c2410c;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:5px;}
+:root[data-theme="dark"] .tc-warn-list span{background:rgba(251,146,60,.12);border-color:rgba(251,146,60,.35);color:#fdba74;}
+.tc-warn-note{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:6px;font-style:italic;}
+#tc-result-card{animation:slideLeft .35s cubic-bezier(.34,1.56,.64,1) both;}
 .rp-field:last-child{margin-bottom:0;}
 .rp-field label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
 .rp-field input{background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--text);font-size:13px;outline:none;font-family:inherit;transition:border-color .15s;width:100%;box-sizing:border-box;}
@@ -1034,6 +1060,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <div class="sb-item" id="sb-report" onclick="setView('report')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
       Report Builder
+    </div>
+    <div class="sb-item" id="sb-tmpl" onclick="setView('tmpl')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+      Template Converter
     </div>
     <div class="sb-item" id="sb-team" onclick="setView('team')" style="display:none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
@@ -1444,6 +1474,72 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
     </div>
     <!-- /REPORT BUILDER PANEL -->
+
+    <!-- TEMPLATE CONVERTER PANEL -->
+    <div id="tmpl-panel" style="display:none;max-width:920px;margin:0 auto;">
+
+      <div class="rp-card">
+        <div class="rp-card-title" style="display:flex;align-items:center;justify-content:space-between;">
+          <span><span class="rp-step">1</span> Paste Your Message</span>
+          <button onclick="tcReset()" style="font-size:11px;font-weight:700;color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;">Reset</button>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.55;">
+          Paste the message you want to send on WATI. The converter will turn it into a strict <b>Utility</b>-style template by replacing marketing phrases and dynamic details (names, dates, IDs, amounts) with <code style="background:var(--hover);padding:1px 5px;border-radius:3px;font-size:11px;">&#123;&#123;n&#125;&#125;</code> variables.
+        </div>
+        <textarea id="tc-input" placeholder="e.g.&#10;Hi Aditya, your yoga session is confirmed for tomorrow at 7 AM. Booking ID: HBD12345. Don't miss our exclusive offer — 20% off on the next 10 classes! Hurry, limited time only." spellcheck="false"></textarea>
+        <div class="tc-row">
+          <div class="tc-char-count"><span id="tc-char">0</span> / 1024 chars</div>
+          <label class="tc-toggle"><input type="checkbox" id="tc-aggressive" checked> <span>Replace marketing phrases as variables</span></label>
+        </div>
+        <button class="rp-extract-btn" id="tc-go-btn" onclick="tcConvert()">Convert to Utility Template ✦</button>
+      </div>
+
+      <div class="rp-card" id="tc-result-card" style="display:none;">
+        <div class="rp-card-title"><span class="rp-step">2</span> Generated Template</div>
+
+        <div class="tc-meta-grid">
+          <div class="tc-meta">
+            <div class="tc-meta-lbl">Category</div>
+            <div class="tc-meta-val" id="tc-cat">UTILITY</div>
+          </div>
+          <div class="tc-meta">
+            <div class="tc-meta-lbl">Language</div>
+            <div class="tc-meta-val" id="tc-lang">en</div>
+          </div>
+          <div class="tc-meta">
+            <div class="tc-meta-lbl">Suggested Name</div>
+            <div class="tc-meta-val" id="tc-name">—</div>
+          </div>
+        </div>
+
+        <div class="rp-out-card" style="margin-top:14px;">
+          <div class="rp-out-title">
+            <span>Template Body</span>
+            <button class="rp-copy-btn" onclick="tcCopy('tc-body',this)">Copy</button>
+          </div>
+          <pre class="rp-out-pre" id="tc-body"></pre>
+        </div>
+
+        <div class="rp-out-card" style="margin-top:10px;">
+          <div class="rp-out-title">
+            <span>Variables Legend <span id="tc-var-count" style="color:var(--muted);font-weight:600;"></span></span>
+            <button class="rp-copy-btn" onclick="tcCopyLegend(this)">Copy</button>
+          </div>
+          <div id="tc-vars" class="tc-var-list"></div>
+        </div>
+
+        <div id="tc-warn-wrap" style="display:none;margin-top:10px;">
+          <div class="tc-warn-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Marketing phrases detected
+          </div>
+          <div id="tc-warn-list" class="tc-warn-list"></div>
+          <div class="tc-warn-note">These phrases trip Meta's marketing classifier. They've been turned into variables — at send-time, fill them with neutral / transactional wording.</div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /TEMPLATE CONVERTER PANEL -->
 
   </div>
 </div>
@@ -3315,12 +3411,13 @@ function setView(v,fid){
   if(v==='team')document.getElementById('sb-team').classList.add('active');
   if(v==='cleaner')document.getElementById('sb-cleaner').classList.add('active');
   if(v==='report')document.getElementById('sb-report').classList.add('active');
+  if(v==='tmpl')document.getElementById('sb-tmpl').classList.add('active');
   if(v==='folder'){
     document.querySelectorAll('.folder-row').forEach(el=>{
       if(el.dataset.fid===fid)el.classList.add('active');
     });
   }
-  const titles={all:'All Sheets',pinned:'Pinned',recent:'Recently Opened',links:'Links & Media',team:'Team Activity',cleaner:'Data Cleaner',report:'Report Builder',folder:folders.find(f=>f.id===fid)?.name||'Folder'};
+  const titles={all:'All Sheets',pinned:'Pinned',recent:'Recently Opened',links:'Links & Media',team:'Team Activity',cleaner:'Data Cleaner',report:'Report Builder',tmpl:'Template Converter',folder:folders.find(f=>f.id===fid)?.name||'Folder'};
   document.getElementById('view-title').textContent=titles[v]||'All Sheets';
   // Update add button label
   const lbl=document.getElementById('main-add-label');
@@ -3328,7 +3425,7 @@ function setView(v,fid){
   // Show/hide sort and view-toggle for non-sheet views
   const sortSel=document.getElementById('sort-sel');
   const viewToggle=document.querySelector('.view-toggle');
-  const hideControls=v==='team'||v==='cleaner'||v==='report';
+  const hideControls=v==='team'||v==='cleaner'||v==='report'||v==='tmpl';
   const hideSort=v==='links'||hideControls;
   if(sortSel)sortSel.style.display=hideSort?'none':'';
   if(viewToggle)viewToggle.style.display=hideControls?'none':'';
@@ -3337,16 +3434,18 @@ function setView(v,fid){
     const bb=document.getElementById('board-back-btn');if(bb)bb.remove();
     const ab=document.getElementById('board-add-btns');if(ab)ab.remove();
   }
-  if(v!=='links')document.getElementById('main-add-btn').style.display=(v==='team'||v==='cleaner'||v==='report')?'none':'';
+  if(v!=='links')document.getElementById('main-add-btn').style.display=(v==='team'||v==='cleaner'||v==='report'||v==='tmpl')?'none':'';
   // Show/hide panels vs cards
   const cleanerPanel=document.getElementById('cleaner-panel');
   const reportPanel=document.getElementById('report-panel');
+  const tmplPanel=document.getElementById('tmpl-panel');
   const cardsEl=document.getElementById('cards');
   const emptyEl=document.getElementById('empty');
   const mainEl=document.getElementById('main');
   if(v==='cleaner'){
     if(cleanerPanel)cleanerPanel.style.display='';
     if(reportPanel)reportPanel.style.display='none';
+    if(tmplPanel)tmplPanel.style.display='none';
     if(cardsEl)cardsEl.style.display='none';
     if(emptyEl)emptyEl.style.display='none';
     if(mainEl){
@@ -3358,6 +3457,15 @@ function setView(v,fid){
     if(cleanerPanel&&cleanerPanel.style.display!=='none')clClearMemory();
     if(cleanerPanel)cleanerPanel.style.display='none';
     if(reportPanel)reportPanel.style.display='';
+    if(tmplPanel)tmplPanel.style.display='none';
+    if(cardsEl)cardsEl.style.display='none';
+    if(emptyEl)emptyEl.style.display='none';
+    if(mainEl){mainEl.classList.remove('cl-active');mainEl.style.backgroundImage='';mainEl.style.backgroundAttachment='';}
+  } else if(v==='tmpl'){
+    if(cleanerPanel&&cleanerPanel.style.display!=='none')clClearMemory();
+    if(cleanerPanel)cleanerPanel.style.display='none';
+    if(reportPanel)reportPanel.style.display='none';
+    if(tmplPanel)tmplPanel.style.display='';
     if(cardsEl)cardsEl.style.display='none';
     if(emptyEl)emptyEl.style.display='none';
     if(mainEl){mainEl.classList.remove('cl-active');mainEl.style.backgroundImage='';mainEl.style.backgroundAttachment='';}
@@ -3368,6 +3476,7 @@ function setView(v,fid){
     }
     if(cleanerPanel)cleanerPanel.style.display='none';
     if(reportPanel)reportPanel.style.display='none';
+    if(tmplPanel)tmplPanel.style.display='none';
     if(cardsEl)cardsEl.style.display='';
     if(mainEl){
       mainEl.classList.remove('cl-active');
@@ -3377,7 +3486,7 @@ function setView(v,fid){
   }
   if(v==='links'){currentLinkBoard=null;renderLinks();}
   else if(v==='team'){renderTeam();}
-  else if(v!=='cleaner'&&v!=='report'){renderCards();}
+  else if(v!=='cleaner'&&v!=='report'&&v!=='tmpl'){renderCards();}
 }
 function setViewMode(m){
   viewMode=m;
@@ -6385,6 +6494,223 @@ function rpCopyFallback(text,btn){
   document.body.appendChild(el);el.select();
   document.execCommand('copy');document.body.removeChild(el);
   rpCopyDone(btn);
+}
+
+/* ─────────────── TEMPLATE CONVERTER ─────────────── */
+let tcLastResult=null;
+
+// Live char count
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('tc-input');
+  if(inp){
+    inp.addEventListener('input',()=>{
+      const n=inp.value.length;
+      const cc=document.getElementById('tc-char');
+      if(cc){cc.textContent=n;cc.parentElement.classList.toggle('over',n>1024);}
+    });
+  }
+});
+
+function tcReset(){
+  const inp=document.getElementById('tc-input');
+  if(inp)inp.value='';
+  const cc=document.getElementById('tc-char');
+  if(cc){cc.textContent='0';cc.parentElement.classList.remove('over');}
+  document.getElementById('tc-result-card').style.display='none';
+  tcLastResult=null;
+}
+
+function tcConvert(){
+  const raw=(document.getElementById('tc-input').value||'').trim();
+  if(!raw){
+    alert('Please paste a message first.');
+    return;
+  }
+  const aggressive=document.getElementById('tc-aggressive').checked;
+  const result=tcBuildTemplate(raw,{aggressive});
+  tcLastResult=result;
+  tcRenderResult(result);
+}
+
+function tcBuildTemplate(raw,opts){
+  let text=raw;
+  const variables=[];
+  const warnings=[];
+  let n=0;
+  const nextVar=(type,sample,note)=>{
+    n++;
+    variables.push({n,type,sample,note});
+    return `{{${n}}}`;
+  };
+
+  // 1. URLs (strip trailing punctuation like . , ; ! ?)
+  text=text.replace(/https?:\/\/[^\s]+/g,m=>{
+    const trail=m.match(/[.,;!?)\]]+$/);
+    const clean=trail?m.slice(0,-trail[0].length):m;
+    return nextVar('URL',clean,'web link')+(trail?trail[0]:'');
+  });
+
+  // 2. Emails
+  text=text.replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g,m=>nextVar('Email',m,'email address'));
+
+  // 3. Phone numbers (+91…, 10–13 digits, allow spaces / dashes)
+  text=text.replace(/(?:\+?\d{1,3}[\s-]?)?\(?\d{3,5}\)?[\s-]?\d{3,5}[\s-]?\d{3,5}/g,m=>{
+    const digits=m.replace(/\D/g,'');
+    if(digits.length>=10&&digits.length<=13) return nextVar('Phone',m,'phone number');
+    return m;
+  });
+
+  // 4. Currency amounts
+  text=text.replace(/(?:₹|Rs\.?\s?|INR\s?|\$)\s?\d{1,3}(?:,\d{3})*(?:\.\d+)?/gi,m=>nextVar('Amount',m,'currency / price'));
+
+  // 5. Dates — numeric (12/03/2026, 12-03-26)
+  text=text.replace(/\b\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}\b/g,m=>nextVar('Date',m,'date'));
+
+  // 6. Dates — month name (12 March 2026, 12th Mar)
+  text=text.replace(/\b\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?:\s+\d{2,4})?\b/gi,m=>nextVar('Date',m,'date'));
+
+  // 7. Relative day words
+  text=text.replace(/\b(?:today|tomorrow|yesterday|tonight)\b/gi,m=>nextVar('Day',m,'relative day'));
+
+  // 8. Times (5 PM, 5:30 pm, 17:30)
+  text=text.replace(/\b\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)?\b/g,m=>nextVar('Time',m,'time'));
+  text=text.replace(/\b\d{1,2}\s?(?:AM|PM|am|pm)\b/g,m=>nextVar('Time',m,'time'));
+
+  // 9. OTP / verification codes (allow connecting words like "is")
+  text=text.replace(/\b(OTP|code|PIN|verification\s+code)(\s+(?:is|=)\s+|[\s:.\-]+)(\d{4,8})\b/gi,(_,kw,sep,code)=>`${kw}${sep}${nextVar('Code',code,'OTP / verification code')}`);
+
+  // 10. Order / booking / reference IDs (with keyword)
+  text=text.replace(/\b(order|booking|ref|reference|invoice|appointment|ticket|enrollment|registration)(\s+(?:id|no|number|#))?(\s*[:#.\-]?\s*)([A-Z0-9]{3,}[A-Z0-9\-]*)/gi,(m,kw,suf,sep,id)=>`${kw}${suf||''}${sep}${nextVar('ID',id,'reference / order ID')}`);
+
+  // 11. Hash-prefixed IDs (#HBD12345)
+  text=text.replace(/#\s?[A-Z0-9]{3,}/g,m=>nextVar('ID',m,'reference ID'));
+
+  // 12. Salutation names (Hi/Hello/Dear/Hey + Capitalized word(s))
+  text=text.replace(/\b(Hi|Hello|Dear|Hey|Greetings|Namaste)\s+([A-Z][a-zA-Z'\-]{1,20}(?:\s+[A-Z][a-zA-Z'\-]{1,20})?)/g,(_,sal,name)=>`${sal} ${nextVar('Name',name,'recipient name')}`);
+
+  // 13. Marketing phrases — aggressive mode wraps them in {{}} too
+  const MARKETING=[
+    {rx:/\b(?:buy|shop|order|register|sign\s?up|subscribe|claim|redeem|enroll|join)\s+now\b/gi,label:'CTA phrase'},
+    {rx:/\blimited(?:\s+time|\s+offer|\s+period|\s+slots?|\s+seats?)?\b/gi,label:'urgency phrase'},
+    {rx:/\b(?:flat|extra|upto|up\s?to)\s*\d+\s*%?\s*(?:off|discount)?\b/gi,label:'discount phrase'},
+    {rx:/\b\d+\s*%\s*(?:off|discount)\b/gi,label:'discount phrase'},
+    {rx:/\b(?:free|complimentary)\s+(?:gift|trial|sample|session|class|consultation|delivery|shipping|access|month)\b/gi,label:'freebie phrase'},
+    {rx:/\b(?:last\s+chance|ends\s+(?:today|soon|tonight)|hurry(?:\s+up)?|don'?t\s+miss|act\s+(?:now|fast)|jaldi\s+karo|abhi\s+book\s+karo)\b/gi,label:'urgency phrase'},
+    {rx:/\bexclusive\s+(?:offer|deal|access|invite|preview)\b/gi,label:'promo phrase'},
+    {rx:/\b(?:mega|huge|biggest|best|grand|massive)\s+(?:sale|offer|deal|discount|launch)\b/gi,label:'promo phrase'},
+    {rx:/\bsave\s+(?:up\s+to\s+)?(?:₹|Rs\.?|INR|\$)?\s?\d+\s?%?\b/gi,label:'savings phrase'},
+    {rx:/\b(?:promo|coupon|discount|offer)\s+code\b/gi,label:'code phrase'},
+    {rx:/\b(?:click|tap|press)\s+(?:here|now|below)\b/gi,label:'CTA phrase'},
+    {rx:/\bspecial\s+(?:offer|price|discount|deal)\b/gi,label:'promo phrase'},
+    {rx:/\b(?:only|just)\s+(?:₹|Rs\.?|\$)\s?\d+\b/gi,label:'price phrase'},
+  ];
+  if(opts&&opts.aggressive){
+    MARKETING.forEach(({rx,label})=>{
+      text=text.replace(rx,m=>{
+        warnings.push(m);
+        return nextVar('Promo',m,'⚠ '+label+' — replace with neutral wording at send-time');
+      });
+    });
+  } else {
+    // Just flag, don't replace
+    MARKETING.forEach(({rx})=>{
+      const matches=raw.match(rx);
+      if(matches)matches.forEach(m=>warnings.push(m));
+    });
+  }
+
+  // Renumber sequentially based on order of appearance in final text
+  const order=[];
+  text.replace(/\{\{(\d+)\}\}/g,(_,k)=>{order.push(parseInt(k,10));return _;});
+  const map={};
+  let seq=0;
+  order.forEach(k=>{if(!(k in map)){seq++;map[k]=seq;}});
+  text=text.replace(/\{\{(\d+)\}\}/g,(_,k)=>`{{${map[parseInt(k,10)]}}}`);
+  const finalVars=variables
+    .filter(v=>map[v.n])
+    .map(v=>({...v,n:map[v.n]}))
+    .sort((a,b)=>a.n-b.n);
+
+  return {
+    body:text,
+    variables:finalVars,
+    warnings:[...new Set(warnings)],
+    category:'UTILITY',
+    language:'en',
+    name:tcGenerateName(raw)
+  };
+}
+
+function tcGenerateName(raw){
+  // Pick intent from message content
+  const t=raw.toLowerCase();
+  let prefix='notification';
+  if(/\b(confirm|booked|booking|reserved)\b/.test(t))prefix='booking_confirmation';
+  else if(/\b(remind|reminder|upcoming)\b/.test(t))prefix='appointment_reminder';
+  else if(/\b(otp|verification|verify|code)\b/.test(t))prefix='otp_verification';
+  else if(/\b(delivered|shipped|out for delivery|dispatched)\b/.test(t))prefix='order_update';
+  else if(/\b(payment|paid|invoice|receipt)\b/.test(t))prefix='payment_update';
+  else if(/\b(welcome|onboard)\b/.test(t))prefix='welcome_message';
+  else if(/\b(class|session|yoga|workshop)\b/.test(t))prefix='class_update';
+  else if(/\b(cancel|cancelled|cancellation)\b/.test(t))prefix='cancellation_notice';
+  const stamp=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  return `${prefix}_${stamp}`;
+}
+
+function tcRenderResult(r){
+  document.getElementById('tc-result-card').style.display='';
+  document.getElementById('tc-body').textContent=r.body;
+  document.getElementById('tc-cat').textContent=r.category;
+  document.getElementById('tc-lang').textContent=r.language;
+  document.getElementById('tc-name').textContent=r.name;
+
+  // Variables
+  const vc=document.getElementById('tc-var-count');
+  vc.textContent=r.variables.length?`(${r.variables.length})`:'(none)';
+  const vl=document.getElementById('tc-vars');
+  if(!r.variables.length){
+    vl.innerHTML='<div style="font-size:12px;color:var(--muted);padding:6px 0;font-style:italic;">No variables — message is fully static.</div>';
+  } else {
+    vl.innerHTML=r.variables.map(v=>`
+      <div class="tc-var-row">
+        <span class="tc-var-key">{{${v.n}}}</span>
+        <span class="tc-var-type">${tcEsc(v.type)}</span>
+        <span class="tc-var-sample"><b>${tcEsc(v.sample)}</b> <span style="color:var(--muted);font-size:11px;">— ${tcEsc(v.note)}</span></span>
+      </div>
+    `).join('');
+  }
+
+  // Warnings
+  const ww=document.getElementById('tc-warn-wrap');
+  const wl=document.getElementById('tc-warn-list');
+  if(r.warnings.length){
+    ww.style.display='';
+    wl.innerHTML=r.warnings.map(w=>`<span>${tcEsc(w)}</span>`).join('');
+  } else {
+    ww.style.display='none';
+  }
+
+  // Scroll into view
+  document.getElementById('tc-result-card').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function tcEsc(s){
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function tcCopy(id,btn){
+  const text=document.getElementById(id).textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>rpCopyDone(btn)).catch(()=>rpCopyFallback(text,btn));
+  } else rpCopyFallback(text,btn);
+}
+
+function tcCopyLegend(btn){
+  if(!tcLastResult||!tcLastResult.variables.length){rpCopyDone(btn);return;}
+  const txt=tcLastResult.variables.map(v=>`{{${v.n}}} = ${v.type}: ${v.sample}  (${v.note})`).join('\n');
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>rpCopyDone(btn)).catch(()=>rpCopyFallback(txt,btn));
+  } else rpCopyFallback(txt,btn);
 }
 </script>
 </body>
