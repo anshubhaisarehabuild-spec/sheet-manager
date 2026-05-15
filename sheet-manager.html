@@ -6,7 +6,7 @@
 <head>
 <script>
 // Force one reload to ensure latest JS is running (clears stale browser cache)
-if(sessionStorage.getItem('smVer')!=='v11'){sessionStorage.setItem('smVer','v11');location.reload(true);}
+if(sessionStorage.getItem('smVer')!=='v12'){sessionStorage.setItem('smVer','v12');location.reload(true);}
 // Apply saved theme immediately to prevent flash
 (function(){
   var t=localStorage.getItem('sm_theme')||'light';
@@ -787,85 +787,107 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .rp-count-lbl{font-size:11px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
 .rp-field{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
 
-/* ── TEMPLATE CONVERTER ── */
-#tc-input{width:100%;min-height:170px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--hover);color:var(--text);font-family:inherit;font-size:13.5px;line-height:1.55;resize:vertical;outline:none;transition:border-color .15s,box-shadow .15s;box-sizing:border-box;}
-#tc-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.15);}
-.tc-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 14px;flex-wrap:wrap;}
-.tc-char-count{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em;}
-.tc-char-count.over{color:var(--danger);}
-.tc-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer;user-select:none;font-weight:500;}
-.tc-toggle input{cursor:pointer;accent-color:var(--accent);}
-.tc-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
-.tc-meta{background:var(--hover);border:1px solid var(--border);border-radius:10px;padding:10px 14px;}
-.tc-meta-lbl{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
-.tc-meta-val{font-size:13.5px;font-weight:700;color:var(--text);font-family:'Inter',sans-serif;word-break:break-word;}
-.tc-var-list{display:flex;flex-direction:column;gap:6px;padding:10px 12px;}
-.tc-var-row{display:grid;grid-template-columns:minmax(140px,max-content) 110px 1fr;gap:10px;align-items:center;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--border);}
-.tc-var-row:last-child{border-bottom:none;}
-.tc-var-key{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;color:var(--accent);}
-.tc-var-type{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--tag-text);background:var(--tag);padding:3px 8px;border-radius:5px;text-align:center;}
-.tc-var-sample{color:var(--text2);word-break:break-word;}
-.tc-var-suggest{margin-top:4px;padding:6px 10px;background:rgba(99,102,241,.08);border-left:2px solid var(--accent);border-radius:0 6px 6px 0;font-size:12px;color:var(--text);line-height:1.5;}
-.tc-var-suggest-arrow{color:var(--accent);font-weight:800;margin-right:4px;}
-.tc-var-suggest b{color:var(--accent);font-weight:700;}
-.tc-var-row.has-suggest{align-items:start;}
-.tc-warn-title{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
-:root[data-theme="dark"] .tc-warn-title{color:#fb923c;}
-.tc-warn-list{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0;}
-.tc-warn-list span{background:rgba(234,88,12,.1);border:1px solid rgba(234,88,12,.3);color:#c2410c;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:5px;}
-:root[data-theme="dark"] .tc-warn-list span{background:rgba(251,146,60,.12);border-color:rgba(251,146,60,.35);color:#fdba74;}
-.tc-warn-note{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:6px;font-style:italic;}
-.tc-dropped-title{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:#dc2626;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
-:root[data-theme="dark"] .tc-dropped-title{color:#f87171;}
-.tc-dropped-list{display:flex;flex-direction:column;gap:8px;}
-.tc-dropped-row{background:rgba(220,38,38,.06);border-left:3px solid #dc2626;border-radius:0 8px 8px 0;padding:10px 12px;}
-:root[data-theme="dark"] .tc-dropped-row{background:rgba(248,113,113,.08);border-left-color:#f87171;}
-.tc-dropped-text{font-size:13px;color:var(--text);line-height:1.5;text-decoration:line-through;text-decoration-color:rgba(220,38,38,.45);text-decoration-thickness:1.5px;margin-bottom:6px;}
-:root[data-theme="dark"] .tc-dropped-text{text-decoration-color:rgba(248,113,113,.5);}
-.tc-dropped-reasons{display:flex;flex-wrap:wrap;gap:5px;}
-.tc-dropped-reasons span{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.3);color:#b91c1c;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;}
-:root[data-theme="dark"] .tc-dropped-reasons span{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.35);color:#fca5a5;}
-#tc-result-card{animation:slideLeft .35s cubic-bezier(.34,1.56,.64,1) both;}
-
-/* ── TEMPLATE CONVERTER · Black & White theme (scoped) ── */
-/* Redefining accent + tag CSS vars only within #tmpl-panel automatically rethemes everything that uses them. */
-#tmpl-panel{
-  --accent:#0f172a;
-  --tag:#f1f5f9;
-  --tag-text:#0f172a;
-}
-:root[data-theme="dark"] #tmpl-panel{
-  --accent:#f1f5f9;
-  --tag:#1e293b;
-  --tag-text:#f1f5f9;
-}
-/* Fix hard-coded white text on now-near-white button in dark mode */
+/* ── TEMPLATE VALIDATOR ── */
+/* Black & white scope for the panel; vars override only within #tmpl-panel */
+#tmpl-panel{--accent:#0f172a;--tag:#f1f5f9;--tag-text:#0f172a;}
+:root[data-theme="dark"] #tmpl-panel{--accent:#f1f5f9;--tag:#1e293b;--tag-text:#f1f5f9;}
 :root[data-theme="dark"] #tmpl-panel .rp-extract-btn{color:#0f172a;}
 :root[data-theme="dark"] #tmpl-panel .rp-extract-btn:hover{background:#cbd5e1;opacity:1;}
 #tmpl-panel .rp-extract-btn:hover{opacity:.88;}
-/* Step number badge: same fix */
 :root[data-theme="dark"] #tmpl-panel .rp-step{color:#0f172a;}
-/* Textarea focus ring */
-#tmpl-panel #tc-input:focus{box-shadow:0 0 0 3px rgba(15,23,42,.10);}
-:root[data-theme="dark"] #tmpl-panel #tc-input:focus{box-shadow:0 0 0 3px rgba(241,245,249,.15);}
-/* Suggestion sub-row */
-#tmpl-panel .tc-var-suggest{background:#f1f5f9;border-left-color:#0f172a;color:#0f172a;}
-:root[data-theme="dark"] #tmpl-panel .tc-var-suggest{background:#1e293b;border-left-color:#f1f5f9;color:#f1f5f9;}
-/* Dropped sentences: monochrome (grey) instead of red */
-#tmpl-panel .tc-dropped-title{color:#0f172a;}
-:root[data-theme="dark"] #tmpl-panel .tc-dropped-title{color:#f1f5f9;}
-#tmpl-panel .tc-dropped-row{background:#f8fafc;border-left-color:#0f172a;}
-:root[data-theme="dark"] #tmpl-panel .tc-dropped-row{background:#1e293b;border-left-color:#f1f5f9;}
-#tmpl-panel .tc-dropped-text{text-decoration-color:rgba(15,23,42,.40);}
-:root[data-theme="dark"] #tmpl-panel .tc-dropped-text{text-decoration-color:rgba(241,245,249,.45);}
-#tmpl-panel .tc-dropped-reasons span{background:#e2e8f0;border-color:#cbd5e1;color:#0f172a;}
-:root[data-theme="dark"] #tmpl-panel .tc-dropped-reasons span{background:#334155;border-color:#475569;color:#f1f5f9;}
-/* Meta-info pills: cleaner grey */
-#tmpl-panel .tc-meta{background:#f8fafc;border-color:#e2e8f0;}
-:root[data-theme="dark"] #tmpl-panel .tc-meta{background:#1e293b;border-color:#334155;}
-/* Variable rows: subtler divider */
-#tmpl-panel .tc-var-row{border-bottom-color:#e2e8f0;}
-:root[data-theme="dark"] #tmpl-panel .tc-var-row{border-bottom-color:#334155;}
+
+/* Input fields */
+.tc-field{margin-bottom:14px;}
+.tc-field label{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;}
+.tc-field-hint{font-size:9.5px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;}
+.tc-field input,#tc-body-input{width:100%;padding:10px 12px;border:1px solid var(--border);background:var(--hover);color:var(--text);font-family:inherit;font-size:13.5px;line-height:1.55;outline:none;transition:border-color .15s,box-shadow .15s;box-sizing:border-box;border-radius:8px;}
+#tc-body-input{min-height:160px;resize:vertical;}
+.tc-field input:focus,#tc-body-input:focus{border-color:#0f172a;box-shadow:0 0 0 3px rgba(15,23,42,.08);}
+:root[data-theme="dark"] .tc-field input:focus,:root[data-theme="dark"] #tc-body-input:focus{border-color:#f1f5f9;box-shadow:0 0 0 3px rgba(241,245,249,.12);}
+.tc-field input + input{margin-top:6px;}
+.tc-char-count{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em;}
+.tc-char-count.over,#tc-char.over{color:#dc2626;}
+
+/* Verdict banner */
+.tc-verdict{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:12px;margin-bottom:18px;border:1px solid var(--border);}
+.tc-verdict-icon{flex-shrink:0;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;}
+.tc-verdict-main{flex:1;min-width:0;}
+.tc-verdict-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:2px;}
+.tc-verdict-sub{font-size:12.5px;color:var(--text2);line-height:1.5;}
+.tc-verdict-utility{background:#f0fdf4;border-color:#bbf7d0;}
+.tc-verdict-utility .tc-verdict-icon{background:#16a34a;}
+:root[data-theme="dark"] .tc-verdict-utility{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);}
+.tc-verdict-borderline{background:#fefce8;border-color:#fde68a;}
+.tc-verdict-borderline .tc-verdict-icon{background:#ca8a04;}
+:root[data-theme="dark"] .tc-verdict-borderline{background:rgba(202,138,4,.10);border-color:rgba(234,179,8,.30);}
+.tc-verdict-marketing{background:#fef2f2;border-color:#fecaca;}
+.tc-verdict-marketing .tc-verdict-icon{background:#dc2626;}
+:root[data-theme="dark"] .tc-verdict-marketing{background:rgba(220,38,38,.10);border-color:rgba(248,113,113,.30);}
+
+/* Score gauges */
+.tc-scores{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px;}
+.tc-score-card{background:var(--hover);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.tc-score-label{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.tc-score-bar{position:relative;height:8px;background:rgba(0,0,0,.05);border-radius:4px;overflow:hidden;margin-bottom:6px;}
+:root[data-theme="dark"] .tc-score-bar{background:rgba(255,255,255,.07);}
+.tc-score-bar-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.34,1.2,.64,1);}
+.tc-safe-fill{background:#16a34a;}
+.tc-risk-fill{background:#dc2626;}
+.tc-score-val{font-size:18px;font-weight:800;color:var(--text);font-family:'Inter',sans-serif;}
+
+/* Sections */
+.tc-section{margin-top:18px;}
+.tc-section-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+
+/* Detection rows */
+.tc-det-row{background:var(--hover);border:1px solid var(--border);border-left:3px solid #6b7280;border-radius:8px;padding:10px 12px;margin-bottom:8px;}
+.tc-det-row.tc-sev-high{border-left-color:#dc2626;}
+.tc-det-row.tc-sev-medium{border-left-color:#ca8a04;}
+.tc-det-row.tc-sev-low{border-left-color:#6b7280;}
+.tc-det-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+.tc-det-part{font-size:10px;font-weight:800;color:#0f172a;background:#f1f5f9;border:1px solid #e2e8f0;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;}
+:root[data-theme="dark"] .tc-det-part{color:#f1f5f9;background:#334155;border-color:#475569;}
+.tc-det-category{font-size:10.5px;font-weight:700;color:var(--text);}
+.tc-det-sev{margin-left:auto;font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:4px;letter-spacing:.06em;}
+.tc-det-sev.tc-sev-high{background:rgba(220,38,38,.12);color:#b91c1c;border:1px solid rgba(220,38,38,.3);}
+:root[data-theme="dark"] .tc-det-sev.tc-sev-high{background:rgba(248,113,113,.18);color:#fca5a5;border-color:rgba(248,113,113,.35);}
+.tc-det-sev.tc-sev-medium{background:rgba(202,138,4,.12);color:#854d0e;border:1px solid rgba(202,138,4,.3);}
+:root[data-theme="dark"] .tc-det-sev.tc-sev-medium{background:rgba(234,179,8,.15);color:#fde68a;border-color:rgba(234,179,8,.35);}
+.tc-det-sev.tc-sev-low{background:rgba(100,116,139,.12);color:#475569;border:1px solid rgba(100,116,139,.3);}
+:root[data-theme="dark"] .tc-det-sev.tc-sev-low{background:rgba(148,163,184,.15);color:#cbd5e1;border-color:rgba(148,163,184,.3);}
+.tc-det-line{font-size:13px;color:var(--text);margin-bottom:5px;line-height:1.5;}
+.tc-det-phrase{font-weight:800;background:rgba(220,38,38,.15);padding:1px 5px;border-radius:3px;color:#b91c1c;}
+:root[data-theme="dark"] .tc-det-phrase{background:rgba(248,113,113,.18);color:#fca5a5;}
+.tc-det-in{color:var(--muted);font-size:11px;}
+.tc-det-why{font-size:12px;color:var(--text2);margin-bottom:4px;line-height:1.5;}
+.tc-det-why b{color:var(--text);font-weight:700;}
+.tc-det-rewrite{font-size:12px;color:var(--text);line-height:1.5;padding:6px 10px;background:rgba(22,163,74,.08);border-left:2px solid #16a34a;border-radius:0 6px 6px 0;}
+.tc-det-rewrite b{color:#16a34a;font-weight:800;}
+:root[data-theme="dark"] .tc-det-rewrite{background:rgba(34,197,94,.10);}
+
+/* Variable suggestions */
+.tc-var-sug-row{background:var(--hover);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;}
+.tc-var-sug-phrase{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--text);font-weight:700;margin-bottom:4px;}
+.tc-var-sug-text{font-size:12px;color:var(--text2);line-height:1.5;}
+
+/* Empty state */
+.tc-empty{padding:16px;text-align:center;color:var(--muted);font-size:12.5px;font-style:italic;background:var(--hover);border:1px dashed var(--border);border-radius:8px;}
+
+/* Safe button grid */
+.tc-safe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
+.tc-safe-pill{background:var(--hover);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;cursor:default;transition:border-color .15s;}
+.tc-safe-pill:hover{border-color:#0f172a;}
+:root[data-theme="dark"] .tc-safe-pill:hover{border-color:#f1f5f9;}
+.tc-safe-pill-text{font-size:12.5px;font-weight:800;color:var(--text);}
+.tc-safe-pill-use{font-size:10.5px;color:var(--muted);font-weight:500;line-height:1.4;}
+
+/* Risky button list */
+.tc-risky-list{display:flex;flex-wrap:wrap;gap:6px;}
+.tc-risky-pill{font-size:11.5px;color:var(--text2);background:var(--hover);border:1px solid var(--border);padding:4px 10px;border-radius:5px;display:inline-flex;align-items:center;gap:5px;}
+.tc-risky-pill b{color:var(--text);font-weight:700;}
+.tc-risky-arrow{color:var(--muted);font-weight:800;}
+
+#tc-result-card{animation:slideLeft .35s cubic-bezier(.34,1.56,.64,1) both;}
 .rp-field:last-child{margin-bottom:0;}
 .rp-field label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
 .rp-field input{background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--text);font-size:13px;outline:none;font-family:inherit;transition:border-color .15s;width:100%;box-sizing:border-box;}
@@ -1529,71 +1551,110 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     </div>
     <!-- /REPORT BUILDER PANEL -->
 
-    <!-- TEMPLATE CONVERTER PANEL -->
-    <div id="tmpl-panel" style="display:none;max-width:920px;margin:0 auto;">
+    <!-- TEMPLATE VALIDATOR PANEL -->
+    <div id="tmpl-panel" style="display:none;max-width:960px;margin:0 auto;">
 
+      <!-- INPUT CARD -->
       <div class="rp-card">
         <div class="rp-card-title" style="display:flex;align-items:center;justify-content:space-between;">
-          <span><span class="rp-step">1</span> Paste Your Message</span>
+          <span><span class="rp-step">1</span> Template Sections</span>
           <button onclick="tcReset()" style="font-size:11px;font-weight:700;color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;">Reset</button>
         </div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.55;">
-          Paste the message you want to send on WATI. The converter runs in <b>Strict Utility Mode</b> — it <b>removes entire sentences</b> that contain marketing language (urgency, discounts, CTAs, etc.) and then replaces dynamic details (names, dates, IDs) with named variables like <code style="background:var(--hover);padding:1px 5px;border-radius:3px;font-size:11px;">&#123;&#123;customer_name&#125;&#125;</code>. Wrapping promo words as variables does <b>not</b> fool Meta's classifier — surrounding text still flags the template as Marketing. Stripping is the only reliable path to Utility approval.
+        <div style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.55;">
+          Paste each section of your WATI template. The validator analyzes every line for marketing language, scores it against Meta's <b>Utility vs Marketing</b> classification rules, and shows a utility-safe rewrite for each risky line. Also checks button labels and suggests safe alternatives.
         </div>
-        <textarea id="tc-input" placeholder="e.g.&#10;Hi Aditya, your yoga session is confirmed for tomorrow at 7 AM. Booking ID: HBD12345. Don't miss our exclusive offer — 20% off on the next 10 classes! Hurry, limited time only." spellcheck="false"></textarea>
-        <div class="tc-row">
-          <div class="tc-char-count"><span id="tc-char">0</span> / 1024 chars</div>
-          <div style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.03em;">🔒 Strict Utility Mode</div>
+
+        <div class="tc-field">
+          <label>Header <span class="tc-field-hint">optional · max 60 chars</span></label>
+          <input type="text" id="tc-header" maxlength="60" placeholder="e.g. Your appointment is confirmed">
         </div>
-        <button class="rp-extract-btn" id="tc-go-btn" onclick="tcConvert()">Convert to Utility Template ✦</button>
+
+        <div class="tc-field">
+          <label>Body <span class="tc-field-hint">main message · max 1024 chars</span></label>
+          <textarea id="tc-body-input" placeholder="e.g.&#10;Hi Aditya, your yoga session is confirmed for tomorrow at 7 AM. Booking ID: HBD12345." spellcheck="false"></textarea>
+          <div class="tc-char-count" style="text-align:right;margin-top:4px;"><span id="tc-char">0</span> / 1024 chars</div>
+        </div>
+
+        <div class="tc-field">
+          <label>Footer <span class="tc-field-hint">optional · max 60 chars</span></label>
+          <input type="text" id="tc-footer" maxlength="60" placeholder="e.g. Reply STOP to opt out">
+        </div>
+
+        <div class="tc-field">
+          <label>Buttons <span class="tc-field-hint">up to 3 · max 20 chars each</span></label>
+          <input type="text" id="tc-btn-1" maxlength="20" placeholder="Button 1 (e.g. View Details)">
+          <input type="text" id="tc-btn-2" maxlength="20" placeholder="Button 2 (optional)">
+          <input type="text" id="tc-btn-3" maxlength="20" placeholder="Button 3 (optional)">
+        </div>
+
+        <button class="rp-extract-btn" onclick="tcAnalyze()">Validate Template ✦</button>
       </div>
 
+      <!-- RESULT CARD -->
       <div class="rp-card" id="tc-result-card" style="display:none;">
-        <div class="rp-card-title"><span class="rp-step">2</span> Generated Template</div>
 
-        <div class="tc-meta-grid">
-          <div class="tc-meta">
-            <div class="tc-meta-lbl">Category</div>
-            <div class="tc-meta-val" id="tc-cat">UTILITY</div>
-          </div>
-          <div class="tc-meta">
-            <div class="tc-meta-lbl">Language</div>
-            <div class="tc-meta-val" id="tc-lang">en</div>
-          </div>
-          <div class="tc-meta">
-            <div class="tc-meta-lbl">Suggested Name</div>
-            <div class="tc-meta-val" id="tc-name">—</div>
+        <!-- VERDICT BANNER -->
+        <div id="tc-verdict" class="tc-verdict">
+          <div class="tc-verdict-icon" id="tc-verdict-icon">✓</div>
+          <div class="tc-verdict-main">
+            <div class="tc-verdict-title" id="tc-verdict-title">—</div>
+            <div class="tc-verdict-sub" id="tc-verdict-sub">—</div>
           </div>
         </div>
 
-        <div class="rp-out-card" style="margin-top:14px;">
-          <div class="rp-out-title">
-            <span>Template Body</span>
-            <button class="rp-copy-btn" onclick="tcCopy('tc-body',this)">Copy</button>
+        <!-- SCORE GAUGES -->
+        <div class="tc-scores">
+          <div class="tc-score-card">
+            <div class="tc-score-label">Utility Safe</div>
+            <div class="tc-score-bar"><div class="tc-score-bar-fill tc-safe-fill" id="tc-safe-bar"></div></div>
+            <div class="tc-score-val" id="tc-safe-val">—</div>
           </div>
-          <pre class="rp-out-pre" id="tc-body"></pre>
+          <div class="tc-score-card">
+            <div class="tc-score-label">Marketing Risk</div>
+            <div class="tc-score-bar"><div class="tc-score-bar-fill tc-risk-fill" id="tc-risk-bar"></div></div>
+            <div class="tc-score-val" id="tc-risk-val">—</div>
+          </div>
         </div>
 
-        <div class="rp-out-card" style="margin-top:10px;">
-          <div class="rp-out-title">
-            <span>Variables Legend <span id="tc-var-count" style="color:var(--muted);font-weight:600;"></span></span>
-            <button class="rp-copy-btn" onclick="tcCopyLegend(this)">Copy</button>
-          </div>
-          <div id="tc-vars" class="tc-var-list"></div>
+        <!-- DETECTION REPORT -->
+        <div class="tc-section">
+          <div class="tc-section-title">Marketing Detection Report</div>
+          <div id="tc-detections"></div>
         </div>
 
-        <div id="tc-dropped-wrap" style="display:none;margin-top:14px;">
-          <div class="tc-dropped-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 01-2 2H9a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-            Dropped Marketing Sentences <span id="tc-dropped-count" style="color:var(--muted);font-weight:600;"></span>
-          </div>
-          <div id="tc-dropped-list" class="tc-dropped-list"></div>
-          <div class="tc-warn-note">These sentences were detected as marketing and removed entirely. If any contained transactional info you need, paraphrase it neutrally and paste it back into the body manually.</div>
+        <!-- BUTTON ANALYSIS -->
+        <div class="tc-section" id="tc-button-section" style="display:none;">
+          <div class="tc-section-title">Button Analysis</div>
+          <div id="tc-button-detections"></div>
         </div>
+
+        <!-- VARIABLE SUGGESTIONS -->
+        <div class="tc-section" id="tc-var-section" style="display:none;">
+          <div class="tc-section-title">Variable Suggestions</div>
+          <div id="tc-var-suggestions"></div>
+        </div>
+
+        <!-- CLEANED-UP BODY -->
+        <div class="tc-section" id="tc-cleaned-wrap" style="display:none;">
+          <div class="tc-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Cleaned-up Body (marketing sentences removed)</span>
+            <button class="rp-copy-btn" onclick="tcCopy('tc-cleaned-body',this)">Copy</button>
+          </div>
+          <pre class="rp-out-pre" id="tc-cleaned-body" style="margin-top:8px;"></pre>
+        </div>
+
+        <!-- SAFE BUTTON LIBRARY -->
+        <div class="tc-section">
+          <div class="tc-section-title">Utility-Safe Button Library</div>
+          <div class="tc-safe-grid" id="tc-safe-btn-grid"></div>
+          <div class="tc-section-title" style="margin-top:16px;">Avoid these button labels</div>
+          <div class="tc-risky-list" id="tc-risky-btn-list"></div>
+        </div>
+
       </div>
 
     </div>
-    <!-- /TEMPLATE CONVERTER PANEL -->
+    <!-- /TEMPLATE VALIDATOR PANEL -->
 
   </div>
 </div>
@@ -6550,68 +6611,182 @@ function rpCopyFallback(text,btn){
   rpCopyDone(btn);
 }
 
-/* ─────────────── TEMPLATE CONVERTER ─────────────── */
+/* ─────────────── TEMPLATE VALIDATOR ─────────────── */
 let tcLastResult=null;
 
-// Live char count
+// Live char count for the body textarea
 document.addEventListener('DOMContentLoaded',()=>{
-  const inp=document.getElementById('tc-input');
+  const inp=document.getElementById('tc-body-input');
   if(inp){
     inp.addEventListener('input',()=>{
       const n=inp.value.length;
       const cc=document.getElementById('tc-char');
-      if(cc){cc.textContent=n;cc.parentElement.classList.toggle('over',n>1024);}
+      if(cc){cc.textContent=n;cc.classList.toggle('over',n>1024);}
     });
+  }
+  // Populate safe / risky button libraries
+  const safeGrid=document.getElementById('tc-safe-btn-grid');
+  if(safeGrid){
+    safeGrid.innerHTML=TC_SAFE_BUTTONS.map(b=>`<div class="tc-safe-pill" title="${tcEsc(b.use)}"><span class="tc-safe-pill-text">${tcEsc(b.text)}</span><span class="tc-safe-pill-use">${tcEsc(b.use)}</span></div>`).join('');
+  }
+  const riskyList=document.getElementById('tc-risky-btn-list');
+  if(riskyList){
+    riskyList.innerHTML=Object.entries(TC_RISKY_BUTTONS).map(([txt,info])=>`<div class="tc-risky-pill">"${tcEsc(txt)}" <span class="tc-risky-arrow">→</span> <b>${tcEsc(info.rewrite)}</b></div>`).join('');
   }
 });
 
 function tcReset(){
-  const inp=document.getElementById('tc-input');
-  if(inp)inp.value='';
+  ['tc-header','tc-body-input','tc-footer','tc-btn-1','tc-btn-2','tc-btn-3'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
   const cc=document.getElementById('tc-char');
-  if(cc){cc.textContent='0';cc.parentElement.classList.remove('over');}
+  if(cc){cc.textContent='0';cc.classList.remove('over');}
   document.getElementById('tc-result-card').style.display='none';
   tcLastResult=null;
 }
 
-function tcConvert(){
-  const raw=(document.getElementById('tc-input').value||'').trim();
-  if(!raw){
-    alert('Please paste a message first.');
-    return;
-  }
-  const result=tcBuildTemplate(raw,{strict:true});
-  tcLastResult=result;
-  tcRenderResult(result);
-}
+// Back-compat alias for the old onclick
+function tcConvert(){ return tcAnalyze(); }
 
-// Marketing patterns — hoisted so the strict-mode stripper and the variable-wrapper can both use them.
+// ───── Marketing pattern library: category, why, rewrite, severity (high/medium/low) ─────
 const TC_MARKETING_PATTERNS=[
-  {rx:/\b(?:buy|shop|order|register|sign\s?up|subscribe|claim|redeem|enroll|join)\s+now\b/gi,label:'sales CTA',replacement:'view details / log in to your account'},
-  {rx:/\blimited(?:\s+time|\s+offer|\s+period|\s+slots?|\s+seats?)?\b/gi,label:'urgency / scarcity',replacement:'(remove — urgency / scarcity language is non-utility)'},
-  {rx:/\b(?:flat|extra|upto|up\s?to)\s*\d+\s*%?\s*(?:off|discount)?\b/gi,label:'discount %',replacement:'(remove — replace with specific transactional info, not a discount)'},
-  {rx:/\b\d+\s*%\s*(?:off|discount)\b/gi,label:'discount %',replacement:'(remove — discounts are inherently promotional)'},
-  {rx:/\b(?:free|complimentary)\s+(?:gift|trial|sample|session|class|consultation|delivery|shipping|access|month)\b/gi,label:'freebie',replacement:'complimentary <service> (only if truly free, not a promo)'},
-  {rx:/\b(?:last\s+chance|ends\s+(?:today|soon|tonight)|hurry(?:\s+up)?|don'?t\s+miss|act\s+(?:now|fast)|jaldi\s+karo|abhi\s+book\s+karo)\b/gi,label:'urgency',replacement:'(remove — urgency language is non-utility)'},
-  {rx:/\bexclusive\s+(?:offer|deal|access|invite|preview)\b/gi,label:'exclusivity',replacement:'service update / account information'},
-  {rx:/\b(?:mega|huge|biggest|best|grand|massive)\s+(?:sale|offer|deal|discount|launch)\b/gi,label:'sale superlative',replacement:'(remove — sale language is marketing)'},
-  {rx:/\bsave\s+(?:up\s+to\s+)?(?:₹|Rs\.?|INR|\$)?\s?\d+\s?%?\b/gi,label:'savings pitch',replacement:'(remove — savings language is marketing)'},
-  {rx:/\b(?:promo|coupon|discount|offer)\s+code\b/gi,label:'promo code',replacement:'reference code (if non-promotional, otherwise remove)'},
-  {rx:/\b(?:click|tap|press)\s+(?:here|now|below)\b/gi,label:'click CTA',replacement:'view the link / open the page'},
-  {rx:/\bspecial\s+(?:offer|price|discount|deal)\b/gi,label:'special offer',replacement:'service update / order details'},
-  {rx:/\b(?:only|just)\s+(?:₹|Rs\.?|\$)\s?\d+\b/gi,label:'price pitch',replacement:'amount: <value>'},
-  {rx:/\bupgrade\s+to\b/gi,label:'upsell',replacement:'switch to (if user-initiated, not a sales pitch)'},
-  {rx:/\bpre[\s-]?approved\b/gi,label:'pre-approval pitch',replacement:'eligible (only if neutral)'},
-  {rx:/\bdon'?t\s+miss\b/gi,label:'urgency',replacement:'please note'},
-  {rx:/\bdownload\s+(?:our|the)\s+app\b/gi,label:'app promotion',replacement:'(remove — app promotion is marketing)'},
-  {rx:/\bin[\s-]?app\s+only\b/gi,label:'app exclusive',replacement:'(remove — in-app-only framing is promotional)'},
-  {rx:/\bhappy\s+(?:birthday|anniversary|diwali|new\s+year|holiday|christmas|eid)\b/gi,label:'holiday wish',replacement:'(remove — relationship-building wishes are marketing)'},
-  {rx:/\bthank\s+you\s+for\s+being\s+(?:a\s+)?(?:valued|loyal)\s+customer\b/gi,label:'loyalty wording',replacement:'(remove — loyalty messaging is marketing)'},
-  {rx:/\bdid\s+you\s+know\b/gi,label:'awareness hook',replacement:'(remove — awareness framing is marketing)'},
-  {rx:/\brenew\s+(?:today|now)\s+to\s+save\b/gi,label:'renewal pitch',replacement:'renew by <date> to continue service'},
-  {rx:/\b(?:left|saved)\s+(?:your\s+)?items?\s+in\s+your\s+cart\b/gi,label:'cart abandonment',replacement:'(remove — cart abandonment is marketing)'},
-  {rx:/\bcheckout\s+now\b/gi,label:'checkout CTA',replacement:'complete your order'},
+  // Discounts / savings (all HIGH)
+  {rx:/\b\d+\s*%\s*(?:off|discount)\b/gi, category:'Promotional discount', label:'discount %', severity:'high',
+    why:'Discount percentages are inherently promotional; Meta classifies discount language as marketing.',
+    rewrite:'(remove — discounts cannot appear in Utility templates)'},
+  {rx:/\b(?:flat|extra|upto|up\s?to)\s*\d+\s*%?\s*(?:off|discount)?\b/gi, category:'Promotional discount', label:'discount phrase', severity:'high',
+    why:'"Flat / extra / upto X% off" reads as a sales pitch.',
+    rewrite:'(remove — replace with specific transactional info)'},
+  {rx:/\bsave\s+(?:up\s+to\s+)?(?:₹|Rs\.?|INR|\$)?\s?\d+\s?%?\b/gi, category:'Savings pitch', label:'savings pitch', severity:'high',
+    why:'Savings framing signals promotional intent.',
+    rewrite:'(remove — savings language is marketing)'},
+  {rx:/\b(?:promo|coupon|discount|offer)\s+code\b/gi, category:'Promotional code', label:'promo code', severity:'high',
+    why:'Promo / coupon code language signals a marketing campaign.',
+    rewrite:'Use "reference code" only if it is genuinely non-promotional, else remove.'},
+
+  // Sales / engagement CTAs
+  {rx:/\b(?:buy|shop|order|register|sign\s?up|subscribe|claim|redeem|enroll|join)\s+now\b/gi, category:'Sales CTA', label:'sales CTA', severity:'high',
+    why:'"Buy/Shop/Order/Sign up now" are direct sales calls-to-action.',
+    rewrite:'"View details" or "log in to your account"'},
+  {rx:/\b(?:click|tap|press)\s+(?:here|now|below)\b/gi, category:'Click-CTA', label:'click CTA', severity:'medium',
+    why:'"Click here / tap now" is a vague engagement CTA.',
+    rewrite:'"View the link" or refer to a specific named action'},
+  {rx:/\bcheckout\s+now\b/gi, category:'Sales CTA', label:'checkout CTA', severity:'high',
+    why:'Drives the user to complete a purchase — promotional intent.',
+    rewrite:'"Complete your order"'},
+
+  // Urgency / scarcity
+  {rx:/\b(?:last\s+chance|ends\s+(?:today|soon|tonight)|hurry(?:\s+up)?|act\s+(?:now|fast)|jaldi\s+karo|abhi\s+book\s+karo)\b/gi, category:'Urgency / scarcity', label:'urgency', severity:'high',
+    why:'Urgency pushes a conversion — non-transactional.',
+    rewrite:'"Please note" or remove the urgency phrase'},
+  {rx:/\blimited(?:\s+time|\s+offer|\s+period|\s+slots?|\s+seats?)?\b/gi, category:'Urgency / scarcity', label:'scarcity', severity:'high',
+    why:'Scarcity framing ("limited time / limited seats") is promotional.',
+    rewrite:'(remove — scarcity language is non-utility)'},
+  {rx:/\bdon'?t\s+miss\b/gi, category:'Urgency / scarcity', label:'urgency', severity:'medium',
+    why:'"Don\'t miss" pushes engagement — non-transactional.',
+    rewrite:'"Please note"'},
+
+  // Exclusivity / sale superlatives
+  {rx:/\bexclusive\s+(?:offer|deal|access|invite|preview)\b/gi, category:'Exclusivity pitch', label:'exclusivity', severity:'high',
+    why:'"Exclusive offer / deal / access" frames the message as a promotion.',
+    rewrite:'"Service update" or "account information"'},
+  {rx:/\bspecial\s+(?:offer|price|discount|deal)\b/gi, category:'Promotional', label:'special offer', severity:'high',
+    why:'"Special offer / price / deal" is overtly promotional.',
+    rewrite:'"Service update" or "order details"'},
+  {rx:/\b(?:mega|huge|biggest|best|grand|massive)\s+(?:sale|offer|deal|discount|launch)\b/gi, category:'Sale superlative', label:'sale superlative', severity:'high',
+    why:'"Mega/huge/biggest sale" is overtly promotional language.',
+    rewrite:'(remove — sale language is marketing)'},
+  {rx:/\b(?:only|just)\s+(?:₹|Rs\.?|\$)\s?\d+\b/gi, category:'Price pitch', label:'price pitch', severity:'medium',
+    why:'"Only ₹X" frames the price as a deal — promotional.',
+    rewrite:'State the amount neutrally without "only/just"'},
+
+  // Freebies
+  {rx:/\b(?:free|complimentary)\s+(?:gift|trial|sample|session|class|consultation|delivery|shipping|access|month)\b/gi, category:'Freebie pitch', label:'freebie', severity:'medium',
+    why:'Free trial / gift / sample is promotional bait.',
+    rewrite:'"Complimentary <service>" only if genuinely free (not promo)'},
+
+  // Upsell / renewal
+  {rx:/\bupgrade\s+to\b/gi, category:'Upsell', label:'upsell', severity:'medium',
+    why:'"Upgrade to" pushes a sales upgrade.',
+    rewrite:'"Switch to" if user-initiated; otherwise remove'},
+  {rx:/\bpre[\s-]?approved\b/gi, category:'Pre-approval pitch', label:'pre-approval pitch', severity:'medium',
+    why:'"Pre-approved" is marketing for credit / financial offers.',
+    rewrite:'"Eligible" only if neutral'},
+  {rx:/\brenew\s+(?:today|now)\s+to\s+save\b/gi, category:'Renewal pitch', label:'renewal pitch', severity:'high',
+    why:'Renewal-with-savings pitch is promotional retargeting.',
+    rewrite:'"Renew by <date> to continue service"'},
+
+  // Engagement / emotional / relationship building
+  {rx:/\bdid\s+you\s+know\b/gi, category:'Awareness hook', label:'awareness hook', severity:'medium',
+    why:'Awareness-style openers signal marketing intent.',
+    rewrite:'(remove — awareness framing is marketing)'},
+  {rx:/\bthank\s+you\s+for\s+being\s+(?:a\s+)?(?:valued|loyal)\s+customer\b/gi, category:'Loyalty / relationship', label:'loyalty wording', severity:'medium',
+    why:'Loyalty messaging is relationship-building marketing.',
+    rewrite:'(remove — loyalty framing is marketing)'},
+  {rx:/\bhappy\s+(?:birthday|anniversary|diwali|new\s+year|holiday|christmas|eid)\b/gi, category:'Holiday / birthday wish', label:'holiday wish', severity:'medium',
+    why:'Holiday and birthday wishes are relationship-building (marketing).',
+    rewrite:'(remove — wishes are marketing)'},
+  {rx:/\b(?:continue|resume|start|begin)\s+your\s+(?:yoga|fitness|learning|wellness|journey|membership|adventure|story)\b/gi, category:'Engagement copy', label:'emotional engagement', severity:'medium',
+    why:'Phrases like "continue your X journey" are engagement-driven, not transactional.',
+    rewrite:'"Your session/account update is available"'},
+
+  // App promotion
+  {rx:/\bdownload\s+(?:our|the)\s+app\b/gi, category:'App promotion', label:'app promotion', severity:'high',
+    why:'App download / install CTAs are marketing.',
+    rewrite:'(remove — app promotion is marketing)'},
+  {rx:/\bin[\s-]?app\s+only\b/gi, category:'App promotion', label:'app exclusive', severity:'medium',
+    why:'"In-app only" framing is promotional.',
+    rewrite:'(remove — in-app exclusivity is promotional)'},
+
+  // Cart abandonment
+  {rx:/\b(?:left|saved)\s+(?:your\s+)?items?\s+in\s+your\s+cart\b/gi, category:'Cart abandonment', label:'cart abandonment', severity:'high',
+    why:'Cart abandonment reminders are explicitly marketing per Meta.',
+    rewrite:'(remove — cart abandonment is marketing)'},
 ];
+
+// ───── Utility-safe button library (curated) ─────
+const TC_SAFE_BUTTONS=[
+  {text:'View Details',  use:'Order, account, or appointment detail pages'},
+  {text:'Open App',      use:'Direct the user to open your app'},
+  {text:'Check Status',  use:'Order tracking, application status'},
+  {text:'View Plan',     use:'Subscription / plan details'},
+  {text:'Continue',      use:'Resume an interrupted flow'},
+  {text:'See Update',    use:'Service / account updates'},
+  {text:'Track Order',   use:'Shipment tracking'},
+  {text:'Open Account',  use:'Account-related actions'},
+  {text:'Pay Now',       use:'Genuine bill payment (non-promotional)'},
+  {text:'Confirm',       use:'Confirmation flows'},
+  {text:'Reschedule',    use:'Appointment / booking changes'},
+  {text:'View Receipt',  use:'Order / payment receipt'},
+];
+
+// ───── Risky button labels (→ utility-safe replacement) ─────
+const TC_RISKY_BUTTONS={
+  'join now':      {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Pure promotional CTA — drives sign-ups.'},
+  'buy now':       {rewrite:'View Details', category:'Sales CTA',          severity:'high',   why:'Direct purchase CTA.'},
+  'shop now':      {rewrite:'Open App',     category:'Sales CTA',          severity:'high',   why:'Direct sales CTA.'},
+  'order now':     {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Direct sales CTA.'},
+  'upgrade today': {rewrite:'View Plan',    category:'Sales CTA / Upsell', severity:'high',   why:'Upsell language.'},
+  'upgrade now':   {rewrite:'View Plan',    category:'Sales CTA / Upsell', severity:'high',   why:'Upsell language.'},
+  'start now':     {rewrite:'Continue',     category:'Engagement CTA',     severity:'high',   why:'Conversion-driven CTA.'},
+  'sign up':       {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Conversion-driven CTA.'},
+  'sign up now':   {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Conversion-driven CTA.'},
+  'limited offer': {rewrite:'See Update',   category:'Promotional',        severity:'high',   why:'Promo / urgency button label.'},
+  'special offer': {rewrite:'See Update',   category:'Promotional',        severity:'high',   why:'Promo button label.'},
+  'claim now':     {rewrite:'View Details', category:'Sales CTA',          severity:'high',   why:'Promotional claim CTA.'},
+  'redeem now':    {rewrite:'View Details', category:'Sales CTA',          severity:'high',   why:'Promotional CTA.'},
+  'subscribe now': {rewrite:'View Plan',    category:'Sales CTA',          severity:'high',   why:'Subscription CTA.'},
+  'enroll now':    {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Conversion CTA.'},
+  'register now':  {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Conversion CTA.'},
+  'get started':   {rewrite:'Continue',     category:'Engagement CTA',     severity:'medium', why:'Engagement CTA — borderline.'},
+  'try free':      {rewrite:'View Details', category:'Sales CTA',          severity:'high',   why:'Free-trial CTA.'},
+  'try now':       {rewrite:'View Details', category:'Engagement CTA',     severity:'medium', why:'Engagement CTA.'},
+  'install app':   {rewrite:'Open App',     category:'App promotion',      severity:'high',   why:'App install CTA — promotional.'},
+  'download now':  {rewrite:'Open App',     category:'App promotion',      severity:'high',   why:'App download CTA — promotional.'},
+  'book now':      {rewrite:'View Details', category:'Sales CTA',          severity:'medium', why:'"Book now" reads promotional; prefer "View Details".'},
+  'learn more':    {rewrite:'View Details', category:'Engagement CTA',     severity:'low',    why:'"Learn more" reads promotional in many contexts.'},
+  'discover':      {rewrite:'View Details', category:'Engagement CTA',     severity:'medium', why:'"Discover" reads promotional.'},
+};
 
 // Detect which marketing labels match a sentence (returns array of unique labels).
 function tcMarketingLabelsIn(sentence){
@@ -6637,188 +6812,210 @@ function tcStripMarketingSentences(text){
   return {kept:kept.join('').trim(),dropped};
 }
 
-function tcBuildTemplate(raw,opts){
-  let text=raw;
-  const variables=[];
-  const warnings=[];
+// Find every marketing phrase in a text. Returns array of {phrase, pattern}.
+function tcDetectPhrases(text){
+  const hits=[];
+  for(const p of TC_MARKETING_PATTERNS){
+    const rx=new RegExp(p.rx.source,p.rx.flags);
+    let m;
+    while((m=rx.exec(text))!==null){
+      hits.push({phrase:m[0],pattern:p});
+      if(!rx.global) break;
+      if(m.index===rx.lastIndex) rx.lastIndex++;
+    }
+  }
+  return hits;
+}
+
+function tcAnalyze(){
+  const header=(document.getElementById('tc-header').value||'').trim();
+  const body=(document.getElementById('tc-body-input').value||'').trim();
+  const footer=(document.getElementById('tc-footer').value||'').trim();
+  const buttons=[1,2,3].map(i=>(document.getElementById('tc-btn-'+i).value||'').trim()).filter(Boolean);
+
+  if(!header && !body && !footer && buttons.length===0){
+    alert('Please enter at least one template section (header, body, footer, or button).');
+    return;
+  }
+
+  // Split text into per-line units for line-level reporting
+  const lines=[];
+  if(header) lines.push({part:'Header',text:header});
+  if(body){
+    const sents=body.match(/[^.!?\n]+[.!?\n]+\s*|[^.!?\n]+$/g)||[body];
+    sents.forEach(s=>{const t=s.trim(); if(t) lines.push({part:'Body',text:t});});
+  }
+  if(footer) lines.push({part:'Footer',text:footer});
+
+  // Run detections per line. Dedupe by (category + phrase).
+  const detections=[];
+  for(const line of lines){
+    const hits=tcDetectPhrases(line.text);
+    const seen=new Set();
+    for(const h of hits){
+      const key=h.pattern.category+'|'+h.phrase.toLowerCase();
+      if(seen.has(key)) continue;
+      seen.add(key);
+      detections.push({
+        part:line.part,line:line.text,phrase:h.phrase,
+        category:h.pattern.category,label:h.pattern.label,
+        why:h.pattern.why,rewrite:h.pattern.rewrite,severity:h.pattern.severity
+      });
+    }
+  }
+
+  // Button analysis (exact match against risky-button table, then fuzzy via TC_MARKETING_PATTERNS)
+  const buttonIssues=[];
+  for(let i=0;i<buttons.length;i++){
+    const btnText=buttons[i];
+    const key=btnText.toLowerCase().trim();
+    if(TC_RISKY_BUTTONS[key]){
+      const info=TC_RISKY_BUTTONS[key];
+      buttonIssues.push({index:i+1,text:btnText,category:info.category,why:info.why,rewrite:info.rewrite,severity:info.severity});
+    } else {
+      const hits=tcDetectPhrases(btnText);
+      if(hits.length){
+        const h=hits[0];
+        buttonIssues.push({index:i+1,text:btnText,category:h.pattern.category+' (in button)',why:h.pattern.why,rewrite:'View Details',severity:h.pattern.severity});
+      }
+    }
+  }
+
+  // Variable suggestions: extract each body-line phrase that could be variabled instead of static
+  const variableSuggestions=detections.filter(d=>d.part==='Body').map(d=>({
+    phrase:d.phrase,
+    suggestion:`Move "${d.phrase}" into a variable like {{info}} or {{update}} so the static template reads neutrally. Fill the variable at send-time with neutral wording.`
+  }));
+
+  // Scoring (cap at 95 so even the worst template never reads "100% marketing")
+  const wt={high:25,medium:12,low:5};
+  let risk=0;
+  detections.forEach(d=>risk+=wt[d.severity]||10);
+  buttonIssues.forEach(b=>risk+=wt[b.severity]||15);
+  risk=Math.min(95,risk);
+  const safe=100-risk;
+
+  // Verdict
+  let verdict,verdictTitle,verdictSub,verdictIcon;
+  if(safe>=80){
+    verdict='utility'; verdictIcon='✓';
+    verdictTitle='Likely Utility Approved';
+    verdictSub='This template reads as transactional. Submit to WATI with category set to Utility.';
+  } else if(safe>=50){
+    verdict='borderline'; verdictIcon='!';
+    verdictTitle='Borderline — moderate marketing risk';
+    verdictSub='Apply the rewrites below to push above 80% Utility Safe before submitting.';
+  } else {
+    verdict='marketing'; verdictIcon='✕';
+    verdictTitle='High chance of Marketing classification';
+    verdictSub=(detections.length+buttonIssues.length)+' issues detected. Meta will likely classify this as Marketing — see rewrites below.';
+  }
+
+  // Cleaned body (strip marketing sentences entirely — high-confidence sanitization)
+  let cleanedBody='';
   let droppedSentences=[];
-  const usedNames=new Set();
-
-  // STRICT MODE: drop entire sentences containing marketing language before any variable replacement.
-  // Wrapping promo words as variables does not fool Meta — surrounding text still classifies as Marketing.
-  // The reliable path to Utility approval is to remove promo sentences entirely.
-  if(opts&&opts.strict){
-    const r=tcStripMarketingSentences(text);
-    text=r.kept;
+  if(body){
+    const r=tcStripMarketingSentences(body);
+    cleanedBody=r.kept;
     droppedSentences=r.dropped;
-    droppedSentences.forEach(d=>warnings.push(d.text));
   }
-  // Pool of neutral utility-style names for marketing/promo variables — cycled through in order.
-  const PROMO_POOL=['info','update','details','notice','note','info_update','service_update','status_update','message','content','summary'];
-  function makeName(type,sample){
-    let base;
-    if(type==='Name') base='customer_name';
-    else if(type==='Day') base='day';
-    else if(type==='Date') base='date';
-    else if(type==='Time') base='time';
-    else if(type==='Code') base='verification_code';
-    else if(type==='Phone') base='phone_number';
-    else if(type==='Email') base='email';
-    else if(type==='URL') base='link';
-    else if(type==='Amount') base='amount';
-    else if(type==='ID'){
-      const s=String(sample||'').toLowerCase();
-      if(/book|hbd|appt|sess/.test(s)) base='booking_id';
-      else if(/^(ord|inv|invoice)/.test(s)) base='order_id';
-      else if(/ticket|tkt/.test(s)) base='ticket_id';
-      else base='order_id';
-    }
-    else if(type==='Promo'){
-      for(const name of PROMO_POOL){if(!usedNames.has(name)) return name;}
-      base='info';
-    }
-    else base='var';
-    if(!usedNames.has(base)) return base;
-    let i=2;
-    while(usedNames.has(`${base}_${i}`)) i++;
-    return `${base}_${i}`;
-  }
-  const nextVar=(type,sample,note,replacement)=>{
-    const name=makeName(type,sample);
-    usedNames.add(name);
-    variables.push({name,type,sample,note,replacement:replacement||''});
-    return `{{${name}}}`;
+
+  const result={
+    input:{header,body,footer,buttons},
+    detections, buttonIssues, variableSuggestions,
+    scores:{utilitySafe:safe, marketingRisk:risk},
+    verdict, verdictTitle, verdictSub, verdictIcon,
+    cleanedBody, droppedSentences
   };
-
-  // 1. URLs (strip trailing punctuation like . , ; ! ?)
-  text=text.replace(/https?:\/\/[^\s]+/g,m=>{
-    const trail=m.match(/[.,;!?)\]]+$/);
-    const clean=trail?m.slice(0,-trail[0].length):m;
-    return nextVar('URL',clean,'web link')+(trail?trail[0]:'');
-  });
-
-  // 2. Emails
-  text=text.replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g,m=>nextVar('Email',m,'email address'));
-
-  // 3. Phone numbers (+91…, 10–13 digits, allow spaces / dashes)
-  text=text.replace(/(?:\+?\d{1,3}[\s-]?)?\(?\d{3,5}\)?[\s-]?\d{3,5}[\s-]?\d{3,5}/g,m=>{
-    const digits=m.replace(/\D/g,'');
-    if(digits.length>=10&&digits.length<=13) return nextVar('Phone',m,'phone number');
-    return m;
-  });
-
-  // 4. Currency amounts
-  text=text.replace(/(?:₹|Rs\.?\s?|INR\s?|\$)\s?\d{1,3}(?:,\d{3})*(?:\.\d+)?/gi,m=>nextVar('Amount',m,'currency / price'));
-
-  // 5. Dates — numeric (12/03/2026, 12-03-26)
-  text=text.replace(/\b\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}\b/g,m=>nextVar('Date',m,'date'));
-
-  // 6. Dates — month name (12 March 2026, 12th Mar)
-  text=text.replace(/\b\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?:\s+\d{2,4})?\b/gi,m=>nextVar('Date',m,'date'));
-
-  // 7. Relative day words
-  text=text.replace(/\b(?:today|tomorrow|yesterday|tonight)\b/gi,m=>nextVar('Day',m,'relative day'));
-
-  // 8. Times (5 PM, 5:30 pm, 17:30)
-  text=text.replace(/\b\d{1,2}:\d{2}\s?(?:AM|PM|am|pm)?\b/g,m=>nextVar('Time',m,'time'));
-  text=text.replace(/\b\d{1,2}\s?(?:AM|PM|am|pm)\b/g,m=>nextVar('Time',m,'time'));
-
-  // 9. OTP / verification codes (allow connecting words like "is")
-  text=text.replace(/\b(OTP|code|PIN|verification\s+code)(\s+(?:is|=)\s+|[\s:.\-]+)(\d{4,8})\b/gi,(_,kw,sep,code)=>`${kw}${sep}${nextVar('Code',code,'OTP / verification code')}`);
-
-  // 10. Order / booking / reference IDs (with keyword)
-  text=text.replace(/\b(order|booking|ref|reference|invoice|appointment|ticket|enrollment|registration)(\s+(?:id|no|number|#))?(\s*[:#.\-]?\s*)([A-Z0-9]{3,}[A-Z0-9\-]*)/gi,(m,kw,suf,sep,id)=>`${kw}${suf||''}${sep}${nextVar('ID',id,'reference / order ID')}`);
-
-  // 11. Hash-prefixed IDs (#HBD12345)
-  text=text.replace(/#\s?[A-Z0-9]{3,}/g,m=>nextVar('ID',m,'reference ID'));
-
-  // 12. Salutation names (Hi/Hello/Dear/Hey + Capitalized word(s))
-  text=text.replace(/\b(Hi|Hello|Dear|Hey|Greetings|Namaste)\s+([A-Z][a-zA-Z'\-]{1,20}(?:\s+[A-Z][a-zA-Z'\-]{1,20})?)/g,(_,sal,name)=>`${sal} ${nextVar('Name',name,'recipient name')}`);
-
-  // (Marketing sentences were already stripped at the top in strict mode.
-  //  No marketing-as-variable wrapping in strict mode — Meta classifies wrap-as-variable templates as Marketing anyway.)
-
-  // Filter to variables that survive in the final body, order by appearance
-  const appearOrder=[];
-  text.replace(/\{\{([a-zA-Z_][a-zA-Z0-9_]*)\}\}/g,(_,name)=>{
-    if(!appearOrder.includes(name)) appearOrder.push(name);
-    return _;
-  });
-  const finalVars=appearOrder
-    .map(name=>variables.find(v=>v.name===name))
-    .filter(Boolean);
-
-  return {
-    body:text,
-    variables:finalVars,
-    warnings:[...new Set(warnings)],
-    droppedSentences,
-    category:'UTILITY',
-    language:'en',
-    name:tcGenerateName(raw)
-  };
+  tcLastResult=result;
+  tcRenderAnalysis(result);
 }
 
-function tcGenerateName(raw){
-  // Pick intent from message content
-  const t=raw.toLowerCase();
-  let prefix='notification';
-  if(/\b(confirm|booked|booking|reserved)\b/.test(t))prefix='booking_confirmation';
-  else if(/\b(remind|reminder|upcoming)\b/.test(t))prefix='appointment_reminder';
-  else if(/\b(otp|verification|verify|code)\b/.test(t))prefix='otp_verification';
-  else if(/\b(delivered|shipped|out for delivery|dispatched)\b/.test(t))prefix='order_update';
-  else if(/\b(payment|paid|invoice|receipt)\b/.test(t))prefix='payment_update';
-  else if(/\b(welcome|onboard)\b/.test(t))prefix='welcome_message';
-  else if(/\b(class|session|yoga|workshop)\b/.test(t))prefix='class_update';
-  else if(/\b(cancel|cancelled|cancellation)\b/.test(t))prefix='cancellation_notice';
-  const stamp=new Date().toISOString().slice(0,10).replace(/-/g,'');
-  return `${prefix}_${stamp}`;
-}
-
-function tcRenderResult(r){
+function tcRenderAnalysis(r){
+  if(!r) return;
   document.getElementById('tc-result-card').style.display='';
-  document.getElementById('tc-body').textContent=r.body;
-  document.getElementById('tc-cat').textContent=r.category;
-  document.getElementById('tc-lang').textContent=r.language;
-  document.getElementById('tc-name').textContent=r.name;
 
-  // Variables
-  const vc=document.getElementById('tc-var-count');
-  vc.textContent=r.variables.length?`(${r.variables.length})`:'(none)';
-  const vl=document.getElementById('tc-vars');
-  if(!r.variables.length){
-    vl.innerHTML='<div style="font-size:12px;color:var(--muted);padding:6px 0;font-style:italic;">No variables — message is fully static.</div>';
+  // Verdict banner
+  const vBanner=document.getElementById('tc-verdict');
+  vBanner.className='tc-verdict tc-verdict-'+r.verdict;
+  document.getElementById('tc-verdict-icon').textContent=r.verdictIcon;
+  document.getElementById('tc-verdict-title').textContent=r.verdictTitle;
+  document.getElementById('tc-verdict-sub').textContent=r.verdictSub;
+
+  // Score gauges
+  document.getElementById('tc-safe-val').textContent=r.scores.utilitySafe+'%';
+  document.getElementById('tc-risk-val').textContent=r.scores.marketingRisk+'%';
+  document.getElementById('tc-safe-bar').style.width=r.scores.utilitySafe+'%';
+  document.getElementById('tc-risk-bar').style.width=r.scores.marketingRisk+'%';
+
+  // Detection report
+  const dList=document.getElementById('tc-detections');
+  if(r.detections.length===0){
+    dList.innerHTML='<div class="tc-empty">No marketing language detected in the header / body / footer. ✓</div>';
   } else {
-    vl.innerHTML=r.variables.map(v=>`
-      <div class="tc-var-row${v.replacement?' has-suggest':''}">
-        <span class="tc-var-key">{{${tcEsc(v.name)}}}</span>
-        <span class="tc-var-type">${tcEsc(v.type)}</span>
-        <span class="tc-var-sample">
-          <b>${tcEsc(v.sample)}</b> <span style="color:var(--muted);font-size:11px;">— ${tcEsc(v.note)}</span>
-          ${v.replacement?`<div class="tc-var-suggest"><span class="tc-var-suggest-arrow">↳</span> <b>Replace with:</b> ${tcEsc(v.replacement)}</div>`:''}
-        </span>
+    dList.innerHTML=r.detections.map(d=>`
+      <div class="tc-det-row tc-sev-${d.severity}">
+        <div class="tc-det-head">
+          <span class="tc-det-part">${tcEsc(d.part)}</span>
+          <span class="tc-det-category">${tcEsc(d.category)}</span>
+          <span class="tc-det-sev tc-sev-${d.severity}">${d.severity.toUpperCase()}</span>
+        </div>
+        <div class="tc-det-line"><span class="tc-det-phrase">${tcEsc(d.phrase)}</span> <span class="tc-det-in">in</span> "${tcEsc(d.line)}"</div>
+        <div class="tc-det-why"><b>Why risky:</b> ${tcEsc(d.why)}</div>
+        <div class="tc-det-rewrite"><b>Replace with:</b> ${tcEsc(d.rewrite)}</div>
       </div>
     `).join('');
   }
 
-  // Dropped marketing sentences
-  const dw=document.getElementById('tc-dropped-wrap');
-  const dl=document.getElementById('tc-dropped-list');
-  const dc=document.getElementById('tc-dropped-count');
-  if(r.droppedSentences&&r.droppedSentences.length){
-    dw.style.display='';
-    if(dc) dc.textContent=`(${r.droppedSentences.length})`;
-    dl.innerHTML=r.droppedSentences.map(d=>`
-      <div class="tc-dropped-row">
-        <div class="tc-dropped-text">${tcEsc(d.text)}</div>
-        <div class="tc-dropped-reasons">${d.reasons.map(rsn=>`<span>${tcEsc(rsn)}</span>`).join('')}</div>
-      </div>
-    `).join('');
+  // Button analysis
+  const bSection=document.getElementById('tc-button-section');
+  const bList=document.getElementById('tc-button-detections');
+  if(r.input.buttons.length===0){
+    bSection.style.display='none';
   } else {
-    dw.style.display='none';
+    bSection.style.display='';
+    if(r.buttonIssues.length===0){
+      bList.innerHTML='<div class="tc-empty">All buttons look utility-safe. ✓</div>';
+    } else {
+      bList.innerHTML=r.buttonIssues.map(b=>`
+        <div class="tc-det-row tc-sev-${b.severity}">
+          <div class="tc-det-head">
+            <span class="tc-det-part">Button ${b.index}</span>
+            <span class="tc-det-category">${tcEsc(b.category)}</span>
+            <span class="tc-det-sev tc-sev-${b.severity}">${b.severity.toUpperCase()}</span>
+          </div>
+          <div class="tc-det-line"><span class="tc-det-phrase">"${tcEsc(b.text)}"</span></div>
+          <div class="tc-det-why"><b>Why risky:</b> ${tcEsc(b.why)}</div>
+          <div class="tc-det-rewrite"><b>Replace with:</b> "${tcEsc(b.rewrite)}"</div>
+        </div>
+      `).join('');
+    }
   }
 
-  // Scroll into view
+  // Variable suggestions
+  const vSection=document.getElementById('tc-var-section');
+  const vList=document.getElementById('tc-var-suggestions');
+  if(r.variableSuggestions.length===0){
+    vSection.style.display='none';
+  } else {
+    vSection.style.display='';
+    vList.innerHTML=r.variableSuggestions.map(v=>`
+      <div class="tc-var-sug-row">
+        <div class="tc-var-sug-phrase">"${tcEsc(v.phrase)}"</div>
+        <div class="tc-var-sug-text">${tcEsc(v.suggestion)}</div>
+      </div>
+    `).join('');
+  }
+
+  // Cleaned-up template (only show if stripping actually changed the body)
+  const cleanWrap=document.getElementById('tc-cleaned-wrap');
+  if(r.droppedSentences && r.droppedSentences.length>0){
+    cleanWrap.style.display='';
+    document.getElementById('tc-cleaned-body').textContent=r.cleanedBody||'(empty — all sentences were marketing)';
+  } else {
+    cleanWrap.style.display='none';
+  }
+
   document.getElementById('tc-result-card').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
@@ -6831,18 +7028,6 @@ function tcCopy(id,btn){
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(text).then(()=>rpCopyDone(btn)).catch(()=>rpCopyFallback(text,btn));
   } else rpCopyFallback(text,btn);
-}
-
-function tcCopyLegend(btn){
-  if(!tcLastResult||!tcLastResult.variables.length){rpCopyDone(btn);return;}
-  const txt=tcLastResult.variables.map(v=>{
-    let line=`{{${v.name}}} = ${v.type}: ${v.sample}  (${v.note})`;
-    if(v.replacement) line+=`\n         ↳ Replace with: ${v.replacement}`;
-    return line;
-  }).join('\n');
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(()=>rpCopyDone(btn)).catch(()=>rpCopyFallback(txt,btn));
-  } else rpCopyFallback(txt,btn);
 }
 </script>
 </body>
