@@ -6,7 +6,7 @@
 <head>
 <script>
 // Force one reload to ensure latest JS is running (clears stale browser cache)
-if(sessionStorage.getItem('smVer')!=='v12'){sessionStorage.setItem('smVer','v12');location.reload(true);}
+if(sessionStorage.getItem('smVer')!=='v13'){sessionStorage.setItem('smVer','v13');location.reload(true);}
 // Apply saved theme immediately to prevent flash
 (function(){
   var t=localStorage.getItem('sm_theme')||'light';
@@ -6742,6 +6742,48 @@ const TC_MARKETING_PATTERNS=[
   {rx:/\b(?:left|saved)\s+(?:your\s+)?items?\s+in\s+your\s+cart\b/gi, category:'Cart abandonment', label:'cart abandonment', severity:'high',
     why:'Cart abandonment reminders are explicitly marketing per Meta.',
     rewrite:'(remove — cart abandonment is marketing)'},
+
+  // ───── Gift / bonus / incentive language (very high — pure marketing) ─────
+  {rx:/\b(?:a\s+)?(?:small\s+|special\s+|nice\s+|little\s+|free\s+|complimentary\s+|surprise\s+)?gift\b/gi, category:'Gift framing', label:'gift mention', severity:'high',
+    why:'"Gift" framing signals promotional intent — gifts and giveaways are marketing per Meta.',
+    rewrite:'(remove — gift language is marketing)'},
+  {rx:/\b(?:add(?:ing|s)?\s+)?\d*\s*(?:gift|bonus|extra|complimentary|free)\s+(?:days?|months?|weeks?|sessions?|classes?|credits?|features?|access)\b/gi, category:'Promotional bonus', label:'bonus / gift days', severity:'high',
+    why:'Promotional incentives ("X gift/bonus/extra days/sessions/credits") are engagement-driving — marketing per Meta.',
+    rewrite:'(remove — incentives are marketing)'},
+  {rx:/\bto\s+(?:get|claim|receive|earn|unlock|win|grab|avail)\s+(?:your\s+|a\s+|the\s+)?(?:gift|bonus|reward|discount|prize|offer|credit|days?|free|complimentary)\b/gi, category:'Incentive CTA', label:'reward-based CTA', severity:'high',
+    why:'"To get/claim/receive/earn your gift/bonus/reward/days" is an incentive-driven CTA — marketing.',
+    rewrite:'(remove — incentive-driven CTAs are marketing)'},
+
+  // ───── Generic engagement / check-in / feedback (high — per Meta\'s PDF: generic surveys = marketing) ─────
+  {rx:/\bwe\s+(?:just\s+)?(?:want|wanted|would\s+love|hope|wish)\s+to\s+(?:know|hear|see|ask|check|connect|wish|reach\s+out|catch\s+up)\b/gi, category:'Relationship building', label:'check-in opener', severity:'high',
+    why:'"We just want to know / wanted to check in" is a generic relationship-building opener — Meta classifies as marketing.',
+    rewrite:'Reference a specific order/account interaction, or remove the entire sentence'},
+  {rx:/\bhow\s+(?:are\s+you|(?:have\s+you|you\s+have)\s+been|you\s+doing|you\s+are|you'?ve\s+been)\b/gi, category:'Generic check-in', label:'"how are you" phrase', severity:'medium',
+    why:'"How are you / how have you been" is relationship-building, not transactional.',
+    rewrite:'(remove or anchor to a specific account/order)'},
+  {rx:/\b(?:fill|complete|submit|take|share|leave)\s+(?:this\s+|the\s+|a\s+|some\s+|out\s+|us\s+)?(?:form|survey|feedback|questionnaire|review)\b/gi, category:'Generic engagement CTA', label:'generic form / survey CTA', severity:'high',
+    why:'Per Meta\'s PDF: a generic survey or feedback request will NOT be approved as Utility — feedback must be tied to a specific prior order/visit.',
+    rewrite:'Reference the specific order/visit, e.g. "Share feedback on order {{order_id}}"'},
+  {rx:/\b(?:take|spend)\s+\d+\s+(?:minute|minutes|min|mins|second|seconds|sec)/gi, category:'Engagement bait', label:'time-investment CTA', severity:'medium',
+    why:'"Take 2 minutes to..." is engagement bait — non-transactional.',
+    rewrite:'(remove — engagement CTAs are marketing)'},
+  {rx:/\bfill\s+(?:it\s+|this\s+|the\s+(?:form|survey)\s+)?before\s+\d/gi, category:'Urgency CTA', label:'fill-by-date urgency', severity:'high',
+    why:'Time-bound "Fill before [date]" CTA tied to an incentive is promotional urgency.',
+    rewrite:'(remove — deadline-based CTAs are non-utility)'},
+  {rx:/\bbefore\s+\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/gi, category:'Deadline pitch', label:'deadline phrase', severity:'medium',
+    why:'"Before [date]" deadline framing combined with promo content is non-utility urgency.',
+    rewrite:'Only use deadline language when it relates to a real transactional deadline (e.g. payment due date)'},
+
+  // ───── Promotional / emotional / urgency emojis ─────
+  {rx:/🎁|🎉|🎊|🎀|✨|🏆|🥇|🎂|🎈|🥳|🎯/g, category:'Promotional emoji', label:'gift / celebration emoji', severity:'medium',
+    why:'Gift / celebration emojis (🎁 🎉 🎊 ✨ etc.) are predominantly used in marketing campaigns.',
+    rewrite:'(remove — these emojis signal promotional intent)'},
+  {rx:/⏳|⏰|⚡|🚨|‼️|📣|📢|🆕|🔔/g, category:'Urgency emoji', label:'urgency / alert emoji', severity:'medium',
+    why:'Urgency / alert emojis (⏳ ⏰ ⚡ 🚨) push time pressure — non-transactional.',
+    rewrite:'(remove — urgency emojis are non-utility)'},
+  {rx:/❤️|❤|💖|💕|💝|💗|💞|😍|🥰|🫶|🤗/g, category:'Emotional emoji', label:'emotional / heart emoji', severity:'medium',
+    why:'Heart / emotional emojis (❤️ 💖 😍 🥰) are relationship-building tone — marketing.',
+    rewrite:'(remove — emotional emojis signal marketing tone)'},
 ];
 
 // ───── Utility-safe button library (curated) ─────
@@ -6887,28 +6929,32 @@ function tcAnalyze(){
     suggestion:`Move "${d.phrase}" into a variable like {{info}} or {{update}} so the static template reads neutrally. Fill the variable at send-time with neutral wording.`
   }));
 
-  // Scoring (cap at 95 so even the worst template never reads "100% marketing")
-  const wt={high:25,medium:12,low:5};
+  // Scoring — tightened so even a SINGLE high-severity issue pushes the template into Marketing.
+  // Per Meta's PDF: mixed content (any marketing inside a utility template) is classified as Marketing.
+  const wt={high:50,medium:18,low:7};
   let risk=0;
   detections.forEach(d=>risk+=wt[d.severity]||10);
   buttonIssues.forEach(b=>risk+=wt[b.severity]||15);
   risk=Math.min(95,risk);
   const safe=100-risk;
 
-  // Verdict
+  // Verdict thresholds
+  //   safe >= 80  → Utility (no marketing risk)
+  //   safe >= 60  → Borderline (mediums only, cleanable)
+  //   safe <  60  → Marketing (any high, or 3+ mediums)
   let verdict,verdictTitle,verdictSub,verdictIcon;
   if(safe>=80){
     verdict='utility'; verdictIcon='✓';
     verdictTitle='Likely Utility Approved';
     verdictSub='This template reads as transactional. Submit to WATI with category set to Utility.';
-  } else if(safe>=50){
+  } else if(safe>=60){
     verdict='borderline'; verdictIcon='!';
     verdictTitle='Borderline — moderate marketing risk';
     verdictSub='Apply the rewrites below to push above 80% Utility Safe before submitting.';
   } else {
     verdict='marketing'; verdictIcon='✕';
     verdictTitle='High chance of Marketing classification';
-    verdictSub=(detections.length+buttonIssues.length)+' issues detected. Meta will likely classify this as Marketing — see rewrites below.';
+    verdictSub=(detections.length+buttonIssues.length)+' issues detected. Meta will classify this as Marketing — apply the rewrites below.';
   }
 
   // Cleaned body (strip marketing sentences entirely — high-confidence sanitization)
