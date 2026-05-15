@@ -6,7 +6,7 @@
 <head>
 <script>
 // Force one reload to ensure latest JS is running (clears stale browser cache)
-if(sessionStorage.getItem('smVer')!=='v9'){sessionStorage.setItem('smVer','v9');location.reload(true);}
+if(sessionStorage.getItem('smVer')!=='v10'){sessionStorage.setItem('smVer','v10');location.reload(true);}
 // Apply saved theme immediately to prevent flash
 (function(){
   var t=localStorage.getItem('sm_theme')||'light';
@@ -815,6 +815,16 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .tc-warn-list span{background:rgba(234,88,12,.1);border:1px solid rgba(234,88,12,.3);color:#c2410c;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:5px;}
 :root[data-theme="dark"] .tc-warn-list span{background:rgba(251,146,60,.12);border-color:rgba(251,146,60,.35);color:#fdba74;}
 .tc-warn-note{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:6px;font-style:italic;}
+.tc-dropped-title{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:#dc2626;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+:root[data-theme="dark"] .tc-dropped-title{color:#f87171;}
+.tc-dropped-list{display:flex;flex-direction:column;gap:8px;}
+.tc-dropped-row{background:rgba(220,38,38,.06);border-left:3px solid #dc2626;border-radius:0 8px 8px 0;padding:10px 12px;}
+:root[data-theme="dark"] .tc-dropped-row{background:rgba(248,113,113,.08);border-left-color:#f87171;}
+.tc-dropped-text{font-size:13px;color:var(--text);line-height:1.5;text-decoration:line-through;text-decoration-color:rgba(220,38,38,.45);text-decoration-thickness:1.5px;margin-bottom:6px;}
+:root[data-theme="dark"] .tc-dropped-text{text-decoration-color:rgba(248,113,113,.5);}
+.tc-dropped-reasons{display:flex;flex-wrap:wrap;gap:5px;}
+.tc-dropped-reasons span{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.3);color:#b91c1c;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;}
+:root[data-theme="dark"] .tc-dropped-reasons span{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.35);color:#fca5a5;}
 #tc-result-card{animation:slideLeft .35s cubic-bezier(.34,1.56,.64,1) both;}
 .rp-field:last-child{margin-bottom:0;}
 .rp-field label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
@@ -1488,12 +1498,12 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <button onclick="tcReset()" style="font-size:11px;font-weight:700;color:var(--muted);background:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;">Reset</button>
         </div>
         <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.55;">
-          Paste the message you want to send on WATI. The converter wraps marketing phrases and dynamic details (names, dates, IDs, amounts) in <b>named variables</b> like <code style="background:var(--hover);padding:1px 5px;border-radius:3px;font-size:11px;">&#123;&#123;customer_name&#125;&#125;</code> or <code style="background:var(--hover);padding:1px 5px;border-radius:3px;font-size:11px;">&#123;&#123;info&#125;&#125;</code> — and for every promo variable, it suggests a <b>neutral utility-friendly replacement</b> you can use at send-time to keep the template approved as Utility.
+          Paste the message you want to send on WATI. The converter runs in <b>Strict Utility Mode</b> — it <b>removes entire sentences</b> that contain marketing language (urgency, discounts, CTAs, etc.) and then replaces dynamic details (names, dates, IDs) with named variables like <code style="background:var(--hover);padding:1px 5px;border-radius:3px;font-size:11px;">&#123;&#123;customer_name&#125;&#125;</code>. Wrapping promo words as variables does <b>not</b> fool Meta's classifier — surrounding text still flags the template as Marketing. Stripping is the only reliable path to Utility approval.
         </div>
         <textarea id="tc-input" placeholder="e.g.&#10;Hi Aditya, your yoga session is confirmed for tomorrow at 7 AM. Booking ID: HBD12345. Don't miss our exclusive offer — 20% off on the next 10 classes! Hurry, limited time only." spellcheck="false"></textarea>
         <div class="tc-row">
           <div class="tc-char-count"><span id="tc-char">0</span> / 1024 chars</div>
-          <label class="tc-toggle"><input type="checkbox" id="tc-aggressive" checked> <span>Replace marketing phrases as variables</span></label>
+          <div style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.03em;">🔒 Strict Utility Mode</div>
         </div>
         <button class="rp-extract-btn" id="tc-go-btn" onclick="tcConvert()">Convert to Utility Template ✦</button>
       </div>
@@ -1532,13 +1542,13 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <div id="tc-vars" class="tc-var-list"></div>
         </div>
 
-        <div id="tc-warn-wrap" style="display:none;margin-top:10px;">
-          <div class="tc-warn-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            Marketing phrases detected
+        <div id="tc-dropped-wrap" style="display:none;margin-top:14px;">
+          <div class="tc-dropped-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 01-2 2H9a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            Dropped Marketing Sentences <span id="tc-dropped-count" style="color:var(--muted);font-weight:600;"></span>
           </div>
-          <div id="tc-warn-list" class="tc-warn-list"></div>
-          <div class="tc-warn-note">These phrases trip Meta's marketing classifier. They've been turned into variables — at send-time, fill them with neutral / transactional wording.</div>
+          <div id="tc-dropped-list" class="tc-dropped-list"></div>
+          <div class="tc-warn-note">These sentences were detected as marketing and removed entirely. If any contained transactional info you need, paraphrase it neutrally and paste it back into the body manually.</div>
         </div>
       </div>
 
@@ -6530,17 +6540,79 @@ function tcConvert(){
     alert('Please paste a message first.');
     return;
   }
-  const aggressive=document.getElementById('tc-aggressive').checked;
-  const result=tcBuildTemplate(raw,{aggressive});
+  const result=tcBuildTemplate(raw,{strict:true});
   tcLastResult=result;
   tcRenderResult(result);
+}
+
+// Marketing patterns — hoisted so the strict-mode stripper and the variable-wrapper can both use them.
+const TC_MARKETING_PATTERNS=[
+  {rx:/\b(?:buy|shop|order|register|sign\s?up|subscribe|claim|redeem|enroll|join)\s+now\b/gi,label:'sales CTA',replacement:'view details / log in to your account'},
+  {rx:/\blimited(?:\s+time|\s+offer|\s+period|\s+slots?|\s+seats?)?\b/gi,label:'urgency / scarcity',replacement:'(remove — urgency / scarcity language is non-utility)'},
+  {rx:/\b(?:flat|extra|upto|up\s?to)\s*\d+\s*%?\s*(?:off|discount)?\b/gi,label:'discount %',replacement:'(remove — replace with specific transactional info, not a discount)'},
+  {rx:/\b\d+\s*%\s*(?:off|discount)\b/gi,label:'discount %',replacement:'(remove — discounts are inherently promotional)'},
+  {rx:/\b(?:free|complimentary)\s+(?:gift|trial|sample|session|class|consultation|delivery|shipping|access|month)\b/gi,label:'freebie',replacement:'complimentary <service> (only if truly free, not a promo)'},
+  {rx:/\b(?:last\s+chance|ends\s+(?:today|soon|tonight)|hurry(?:\s+up)?|don'?t\s+miss|act\s+(?:now|fast)|jaldi\s+karo|abhi\s+book\s+karo)\b/gi,label:'urgency',replacement:'(remove — urgency language is non-utility)'},
+  {rx:/\bexclusive\s+(?:offer|deal|access|invite|preview)\b/gi,label:'exclusivity',replacement:'service update / account information'},
+  {rx:/\b(?:mega|huge|biggest|best|grand|massive)\s+(?:sale|offer|deal|discount|launch)\b/gi,label:'sale superlative',replacement:'(remove — sale language is marketing)'},
+  {rx:/\bsave\s+(?:up\s+to\s+)?(?:₹|Rs\.?|INR|\$)?\s?\d+\s?%?\b/gi,label:'savings pitch',replacement:'(remove — savings language is marketing)'},
+  {rx:/\b(?:promo|coupon|discount|offer)\s+code\b/gi,label:'promo code',replacement:'reference code (if non-promotional, otherwise remove)'},
+  {rx:/\b(?:click|tap|press)\s+(?:here|now|below)\b/gi,label:'click CTA',replacement:'view the link / open the page'},
+  {rx:/\bspecial\s+(?:offer|price|discount|deal)\b/gi,label:'special offer',replacement:'service update / order details'},
+  {rx:/\b(?:only|just)\s+(?:₹|Rs\.?|\$)\s?\d+\b/gi,label:'price pitch',replacement:'amount: <value>'},
+  {rx:/\bupgrade\s+to\b/gi,label:'upsell',replacement:'switch to (if user-initiated, not a sales pitch)'},
+  {rx:/\bpre[\s-]?approved\b/gi,label:'pre-approval pitch',replacement:'eligible (only if neutral)'},
+  {rx:/\bdon'?t\s+miss\b/gi,label:'urgency',replacement:'please note'},
+  {rx:/\bdownload\s+(?:our|the)\s+app\b/gi,label:'app promotion',replacement:'(remove — app promotion is marketing)'},
+  {rx:/\bin[\s-]?app\s+only\b/gi,label:'app exclusive',replacement:'(remove — in-app-only framing is promotional)'},
+  {rx:/\bhappy\s+(?:birthday|anniversary|diwali|new\s+year|holiday|christmas|eid)\b/gi,label:'holiday wish',replacement:'(remove — relationship-building wishes are marketing)'},
+  {rx:/\bthank\s+you\s+for\s+being\s+(?:a\s+)?(?:valued|loyal)\s+customer\b/gi,label:'loyalty wording',replacement:'(remove — loyalty messaging is marketing)'},
+  {rx:/\bdid\s+you\s+know\b/gi,label:'awareness hook',replacement:'(remove — awareness framing is marketing)'},
+  {rx:/\brenew\s+(?:today|now)\s+to\s+save\b/gi,label:'renewal pitch',replacement:'renew by <date> to continue service'},
+  {rx:/\b(?:left|saved)\s+(?:your\s+)?items?\s+in\s+your\s+cart\b/gi,label:'cart abandonment',replacement:'(remove — cart abandonment is marketing)'},
+  {rx:/\bcheckout\s+now\b/gi,label:'checkout CTA',replacement:'complete your order'},
+];
+
+// Detect which marketing labels match a sentence (returns array of unique labels).
+function tcMarketingLabelsIn(sentence){
+  const labels=[];
+  for(const {rx,label} of TC_MARKETING_PATTERNS){
+    const test=new RegExp(rx.source,rx.flags.replace('g',''));
+    if(test.test(sentence)) labels.push(label);
+  }
+  return [...new Set(labels)];
+}
+
+// Split text into sentences and drop any sentence containing marketing content.
+function tcStripMarketingSentences(text){
+  const sentences=text.match(/[^.!?\n]+[.!?\n]+\s*|[^.!?\n]+$/g)||[text];
+  const kept=[],dropped=[];
+  for(const s of sentences){
+    const trimmed=s.trim();
+    if(!trimmed) continue;
+    const labels=tcMarketingLabelsIn(trimmed);
+    if(labels.length) dropped.push({text:trimmed,reasons:labels});
+    else kept.push(s);
+  }
+  return {kept:kept.join('').trim(),dropped};
 }
 
 function tcBuildTemplate(raw,opts){
   let text=raw;
   const variables=[];
   const warnings=[];
+  let droppedSentences=[];
   const usedNames=new Set();
+
+  // STRICT MODE: drop entire sentences containing marketing language before any variable replacement.
+  // Wrapping promo words as variables does not fool Meta — surrounding text still classifies as Marketing.
+  // The reliable path to Utility approval is to remove promo sentences entirely.
+  if(opts&&opts.strict){
+    const r=tcStripMarketingSentences(text);
+    text=r.kept;
+    droppedSentences=r.dropped;
+    droppedSentences.forEach(d=>warnings.push(d.text));
+  }
   // Pool of neutral utility-style names for marketing/promo variables — cycled through in order.
   const PROMO_POOL=['info','update','details','notice','note','info_update','service_update','status_update','message','content','summary'];
   function makeName(type,sample){
@@ -6623,72 +6695,8 @@ function tcBuildTemplate(raw,opts){
   // 12. Salutation names (Hi/Hello/Dear/Hey + Capitalized word(s))
   text=text.replace(/\b(Hi|Hello|Dear|Hey|Greetings|Namaste)\s+([A-Z][a-zA-Z'\-]{1,20}(?:\s+[A-Z][a-zA-Z'\-]{1,20})?)/g,(_,sal,name)=>`${sal} ${nextVar('Name',name,'recipient name')}`);
 
-  // 13. Marketing phrases — wrap as {{}} AND attach a utility-friendly replacement suggestion
-  // Each pattern carries `replacement` text — the suggested neutral wording to fill the variable with at send-time.
-  const MARKETING=[
-    {rx:/\b(?:buy|shop|order|register|sign\s?up|subscribe|claim|redeem|enroll|join)\s+now\b/gi,
-      label:'sales CTA',replacement:'view details / log in to your account'},
-    {rx:/\blimited(?:\s+time|\s+offer|\s+period|\s+slots?|\s+seats?)?\b/gi,
-      label:'urgency / scarcity',replacement:'(remove — urgency / scarcity language is non-utility)'},
-    {rx:/\b(?:flat|extra|upto|up\s?to)\s*\d+\s*%?\s*(?:off|discount)?\b/gi,
-      label:'discount %',replacement:'(remove — replace with specific transactional info, not a discount)'},
-    {rx:/\b\d+\s*%\s*(?:off|discount)\b/gi,
-      label:'discount %',replacement:'(remove — discounts are inherently promotional)'},
-    {rx:/\b(?:free|complimentary)\s+(?:gift|trial|sample|session|class|consultation|delivery|shipping|access|month)\b/gi,
-      label:'freebie',replacement:'complimentary <service> (only if truly free, not a promo)'},
-    {rx:/\b(?:last\s+chance|ends\s+(?:today|soon|tonight)|hurry(?:\s+up)?|don'?t\s+miss|act\s+(?:now|fast)|jaldi\s+karo|abhi\s+book\s+karo)\b/gi,
-      label:'urgency',replacement:'(remove — urgency language is non-utility)'},
-    {rx:/\bexclusive\s+(?:offer|deal|access|invite|preview)\b/gi,
-      label:'exclusivity',replacement:'service update / account information'},
-    {rx:/\b(?:mega|huge|biggest|best|grand|massive)\s+(?:sale|offer|deal|discount|launch)\b/gi,
-      label:'sale superlative',replacement:'(remove — sale language is marketing)'},
-    {rx:/\bsave\s+(?:up\s+to\s+)?(?:₹|Rs\.?|INR|\$)?\s?\d+\s?%?\b/gi,
-      label:'savings pitch',replacement:'(remove — savings language is marketing)'},
-    {rx:/\b(?:promo|coupon|discount|offer)\s+code\b/gi,
-      label:'promo code',replacement:'reference code (if it is a non-promotional code, otherwise remove)'},
-    {rx:/\b(?:click|tap|press)\s+(?:here|now|below)\b/gi,
-      label:'click CTA',replacement:'view the link / open the page'},
-    {rx:/\bspecial\s+(?:offer|price|discount|deal)\b/gi,
-      label:'special offer',replacement:'service update / order details'},
-    {rx:/\b(?:only|just)\s+(?:₹|Rs\.?|\$)\s?\d+\b/gi,
-      label:'price pitch',replacement:'amount: <value> (state amount factually, not as a deal)'},
-    {rx:/\bupgrade\s+to\b/gi,
-      label:'upsell',replacement:'switch to (only if user-initiated, not a sales pitch)'},
-    {rx:/\bpre[\s-]?approved\b/gi,
-      label:'pre-approval pitch',replacement:'eligible (only if neutral; pre-approved offers are marketing)'},
-    {rx:/\bdon'?t\s+miss\b/gi,
-      label:'urgency',replacement:'please note'},
-    {rx:/\bdownload\s+(?:our|the)\s+app\b/gi,
-      label:'app promotion',replacement:'(remove — app promotion is marketing)'},
-    {rx:/\bin[\s-]?app\s+only\b/gi,
-      label:'app exclusive',replacement:'(remove — in-app-only framing is promotional)'},
-    {rx:/\bhappy\s+(?:birthday|anniversary|diwali|new\s+year|holiday|christmas|eid)\b/gi,
-      label:'holiday wish',replacement:'(remove — relationship-building wishes are marketing)'},
-    {rx:/\bthank\s+you\s+for\s+being\s+(?:a\s+)?(?:valued|loyal)\s+customer\b/gi,
-      label:'loyalty wording',replacement:'(remove — loyalty messaging is marketing)'},
-    {rx:/\bdid\s+you\s+know\b/gi,
-      label:'awareness hook',replacement:'(remove — awareness framing is marketing)'},
-    {rx:/\brenew\s+(?:today|now)\s+to\s+save\b/gi,
-      label:'renewal pitch',replacement:'renew by <date> to continue service'},
-    {rx:/\b(?:left|saved)\s+(?:your\s+)?items?\s+in\s+your\s+cart\b/gi,
-      label:'cart abandonment',replacement:'(remove — cart abandonment is marketing)'},
-    {rx:/\bcheckout\s+now\b/gi,
-      label:'checkout CTA',replacement:'complete your order'},
-  ];
-  if(opts&&opts.aggressive){
-    MARKETING.forEach(({rx,label,replacement})=>{
-      text=text.replace(rx,m=>{
-        warnings.push(m);
-        return nextVar('Promo',m,'⚠ '+label,replacement);
-      });
-    });
-  } else {
-    // Just flag, don't replace
-    MARKETING.forEach(({rx})=>{
-      const matches=raw.match(rx);
-      if(matches)matches.forEach(m=>warnings.push(m));
-    });
-  }
+  // (Marketing sentences were already stripped at the top in strict mode.
+  //  No marketing-as-variable wrapping in strict mode — Meta classifies wrap-as-variable templates as Marketing anyway.)
 
   // Filter to variables that survive in the final body, order by appearance
   const appearOrder=[];
@@ -6704,6 +6712,7 @@ function tcBuildTemplate(raw,opts){
     body:text,
     variables:finalVars,
     warnings:[...new Set(warnings)],
+    droppedSentences,
     category:'UTILITY',
     language:'en',
     name:tcGenerateName(raw)
@@ -6752,14 +6761,21 @@ function tcRenderResult(r){
     `).join('');
   }
 
-  // Warnings
-  const ww=document.getElementById('tc-warn-wrap');
-  const wl=document.getElementById('tc-warn-list');
-  if(r.warnings.length){
-    ww.style.display='';
-    wl.innerHTML=r.warnings.map(w=>`<span>${tcEsc(w)}</span>`).join('');
+  // Dropped marketing sentences
+  const dw=document.getElementById('tc-dropped-wrap');
+  const dl=document.getElementById('tc-dropped-list');
+  const dc=document.getElementById('tc-dropped-count');
+  if(r.droppedSentences&&r.droppedSentences.length){
+    dw.style.display='';
+    if(dc) dc.textContent=`(${r.droppedSentences.length})`;
+    dl.innerHTML=r.droppedSentences.map(d=>`
+      <div class="tc-dropped-row">
+        <div class="tc-dropped-text">${tcEsc(d.text)}</div>
+        <div class="tc-dropped-reasons">${d.reasons.map(rsn=>`<span>${tcEsc(rsn)}</span>`).join('')}</div>
+      </div>
+    `).join('');
   } else {
-    ww.style.display='none';
+    dw.style.display='none';
   }
 
   // Scroll into view
