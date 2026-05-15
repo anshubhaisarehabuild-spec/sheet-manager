@@ -6,7 +6,7 @@
 <head>
 <script>
 // Force one reload to ensure latest JS is running (clears stale browser cache)
-if(sessionStorage.getItem('smVer')!=='v10'){sessionStorage.setItem('smVer','v10');location.reload(true);}
+if(sessionStorage.getItem('smVer')!=='v11'){sessionStorage.setItem('smVer','v11');location.reload(true);}
 // Apply saved theme immediately to prevent flash
 (function(){
   var t=localStorage.getItem('sm_theme')||'light';
@@ -826,6 +826,46 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .tc-dropped-reasons span{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.3);color:#b91c1c;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;}
 :root[data-theme="dark"] .tc-dropped-reasons span{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.35);color:#fca5a5;}
 #tc-result-card{animation:slideLeft .35s cubic-bezier(.34,1.56,.64,1) both;}
+
+/* ── TEMPLATE CONVERTER · Black & White theme (scoped) ── */
+/* Redefining accent + tag CSS vars only within #tmpl-panel automatically rethemes everything that uses them. */
+#tmpl-panel{
+  --accent:#0f172a;
+  --tag:#f1f5f9;
+  --tag-text:#0f172a;
+}
+:root[data-theme="dark"] #tmpl-panel{
+  --accent:#f1f5f9;
+  --tag:#1e293b;
+  --tag-text:#f1f5f9;
+}
+/* Fix hard-coded white text on now-near-white button in dark mode */
+:root[data-theme="dark"] #tmpl-panel .rp-extract-btn{color:#0f172a;}
+:root[data-theme="dark"] #tmpl-panel .rp-extract-btn:hover{background:#cbd5e1;opacity:1;}
+#tmpl-panel .rp-extract-btn:hover{opacity:.88;}
+/* Step number badge: same fix */
+:root[data-theme="dark"] #tmpl-panel .rp-step{color:#0f172a;}
+/* Textarea focus ring */
+#tmpl-panel #tc-input:focus{box-shadow:0 0 0 3px rgba(15,23,42,.10);}
+:root[data-theme="dark"] #tmpl-panel #tc-input:focus{box-shadow:0 0 0 3px rgba(241,245,249,.15);}
+/* Suggestion sub-row */
+#tmpl-panel .tc-var-suggest{background:#f1f5f9;border-left-color:#0f172a;color:#0f172a;}
+:root[data-theme="dark"] #tmpl-panel .tc-var-suggest{background:#1e293b;border-left-color:#f1f5f9;color:#f1f5f9;}
+/* Dropped sentences: monochrome (grey) instead of red */
+#tmpl-panel .tc-dropped-title{color:#0f172a;}
+:root[data-theme="dark"] #tmpl-panel .tc-dropped-title{color:#f1f5f9;}
+#tmpl-panel .tc-dropped-row{background:#f8fafc;border-left-color:#0f172a;}
+:root[data-theme="dark"] #tmpl-panel .tc-dropped-row{background:#1e293b;border-left-color:#f1f5f9;}
+#tmpl-panel .tc-dropped-text{text-decoration-color:rgba(15,23,42,.40);}
+:root[data-theme="dark"] #tmpl-panel .tc-dropped-text{text-decoration-color:rgba(241,245,249,.45);}
+#tmpl-panel .tc-dropped-reasons span{background:#e2e8f0;border-color:#cbd5e1;color:#0f172a;}
+:root[data-theme="dark"] #tmpl-panel .tc-dropped-reasons span{background:#334155;border-color:#475569;color:#f1f5f9;}
+/* Meta-info pills: cleaner grey */
+#tmpl-panel .tc-meta{background:#f8fafc;border-color:#e2e8f0;}
+:root[data-theme="dark"] #tmpl-panel .tc-meta{background:#1e293b;border-color:#334155;}
+/* Variable rows: subtler divider */
+#tmpl-panel .tc-var-row{border-bottom-color:#e2e8f0;}
+:root[data-theme="dark"] #tmpl-panel .tc-var-row{border-bottom-color:#334155;}
 .rp-field:last-child{margin-bottom:0;}
 .rp-field label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
 .rp-field input{background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--text);font-size:13px;outline:none;font-family:inherit;transition:border-color .15s;width:100%;box-sizing:border-box;}
