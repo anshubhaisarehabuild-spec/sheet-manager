@@ -6,7 +6,7 @@
 <head>
 <script>
 // Force one reload to ensure latest JS is running (clears stale browser cache)
-if(sessionStorage.getItem('smVer')!=='v13'){sessionStorage.setItem('smVer','v13');location.reload(true);}
+if(sessionStorage.getItem('smVer')!=='v14'){sessionStorage.setItem('smVer','v14');location.reload(true);}
 // Apply saved theme immediately to prevent flash
 (function(){
   var t=localStorage.getItem('sm_theme')||'light';
@@ -6484,8 +6484,10 @@ async function rpExtract(){
       .split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
 
     if(rpNormalFile){
+      status.textContent='Preprocessing Normal Count image (3× scale + B&W threshold)…';
+      const processedNormal=await rpPreprocessImage(rpNormalFile);
       status.textContent='Reading Normal Count image…';
-      const {data:{text}}=await worker.recognize(rpNormalFile);
+      const {data:{text}}=await worker.recognize(processedNormal);
       const {a,b,c,dbg}=rpParseOptions(text,filterIds);
       debugLines.push('=== Normal Count Image — Raw OCR ===\n'+text);
       if(dbg&&dbg.length) debugLines.push('--- Rows parsed ---\n'+dbg.join('\n')+`\nTOTAL → A=${a} B=${b} C=${c}`);
@@ -6494,8 +6496,10 @@ async function rpExtract(){
       document.getElementById('rp-nc').value=c||'';
     }
     if(rpDistinctFile){
+      status.textContent='Preprocessing Distinct Count image (3× scale + B&W threshold)…';
+      const processedDistinct=await rpPreprocessImage(rpDistinctFile);
       status.textContent='Reading Distinct Count image…';
-      const {data:{text}}=await worker.recognize(rpDistinctFile);
+      const {data:{text}}=await worker.recognize(processedDistinct);
       const {a,b,c,dbg}=rpParseOptions(text,filterIds);
       debugLines.push('=== Distinct Count Image — Raw OCR ===\n'+text);
       if(dbg&&dbg.length) debugLines.push('--- Rows parsed ---\n'+dbg.join('\n')+`\nTOTAL → A=${a} B=${b} C=${c}`);
