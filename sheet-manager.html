@@ -6,7 +6,7 @@
 <head>
 <script>
 // Force one reload to ensure latest JS is running (clears stale browser cache)
-if(sessionStorage.getItem('smVer')!=='v14'){sessionStorage.setItem('smVer','v14');location.reload(true);}
+if(sessionStorage.getItem('smVer')!=='v15'){sessionStorage.setItem('smVer','v15');location.reload(true);}
 // Apply saved theme immediately to prevent flash
 (function(){
   var t=localStorage.getItem('sm_theme')||'light';
@@ -6297,32 +6297,37 @@ function rpReset(){
 // This solver tries all merge combinations of a row's numbers and picks the one
 // where optionA + optionB + optionC === total_all_options (WATI's checksum column)
 function rpSolveRow(rest){
-  // rest = all numbers after watiServerId; should resolve to [A, B, C, total]
-  // Uses string concatenation so any OCR digit-split is handled:
-  //   2-part: "20"+"718"→"20718", "44"+"1"→"441"
-  //   3-part: "20"+"6"+"96"→"20696"  (OCR sometimes splits 5-digit numbers into 3 fragments)
+  // rest = all numbers after watiServerId.
+  // Try 4-column first (A,B,C,total — validated by checksum A+B+C===total),
+  // then fall back to 3-column (A,B,C — no total, just trust the OCR).
+  // Both variants try multi-token concatenation in case OCR split a number across spaces.
   const strs=rest.map(String);
-  function solve(i,acc){
-    if(acc.length===4){
-      return(i===strs.length&&acc[0]+acc[1]+acc[2]===acc[3])?acc:null;
-    }
-    if(i>=strs.length)return null;
-    // Option 1: take this token as-is
-    let r=solve(i+1,acc.concat(parseInt(strs[i])));
-    if(r)return r;
-    // Option 2: concatenate 2 consecutive tokens
-    if(i+1<strs.length){
-      r=solve(i+2,acc.concat(parseInt(strs[i]+strs[i+1])));
+  function makeSolver(targetLen, validate){
+    return function solve(i,acc){
+      if(acc.length===targetLen){
+        return(i===strs.length && validate(acc))?acc:null;
+      }
+      if(i>=strs.length)return null;
+      let r=solve(i+1,acc.concat(parseInt(strs[i])));
       if(r)return r;
-    }
-    // Option 3: concatenate 3 consecutive tokens
-    if(i+2<strs.length){
-      r=solve(i+3,acc.concat(parseInt(strs[i]+strs[i+1]+strs[i+2])));
-      if(r)return r;
-    }
-    return null;
+      if(i+1<strs.length){
+        r=solve(i+2,acc.concat(parseInt(strs[i]+strs[i+1])));
+        if(r)return r;
+      }
+      if(i+2<strs.length){
+        r=solve(i+3,acc.concat(parseInt(strs[i]+strs[i+1]+strs[i+2])));
+        if(r)return r;
+      }
+      return null;
+    };
   }
-  return solve(0,[]);
+  const solve4=makeSolver(4,acc=>acc[0]+acc[1]+acc[2]===acc[3]);
+  const r4=solve4(0,[]);
+  if(r4) return r4;
+  const solve3=makeSolver(3,()=>true);
+  const r3=solve3(0,[]);
+  if(r3) return [r3[0],r3[1],r3[2],r3[0]+r3[1]+r3[2]]; // synthesize total for debug-log compatibility
+  return null;
 }
 
 // When the checksum solver fails, try to repair the one wrong value using the total column.
@@ -6359,7 +6364,19 @@ function rpParseOptions(text, filterIds=[]){
     if(norm.includes('optiona')&&norm.includes('optionb')){headerIdx=i;break;}
   }
 
-  if(headerIdx!==-1){
+  // Headerless fallback: WATI's styled chip-style header row often gets dropped by Tesseract.
+  // If we see 2+ rows starting with a digit in the first 5 lines, assume the data is a numeric
+  // table and parse from line 0 onwards (using each row's checksum/length to find A/B/C).
+  let useTable = headerIdx !== -1;
+  if(!useTable){
+    let numericRows=0;
+    for(let i=0;i<Math.min(lines.length,5);i++){
+      if(/^\d/.test(lines[i].trim())) numericRows++;
+    }
+    if(numericRows>=2) useTable = true; // headerIdx stays at -1; loop will start at index 0
+  }
+
+  if(useTable){
     let a=0,b=0,c=0;
     const dbg=[];
     for(let i=headerIdx+1;i<lines.length;i++){
