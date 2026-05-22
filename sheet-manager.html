@@ -6,7 +6,7 @@
 <head>
 <script>
 // Force one reload to ensure latest JS is running (clears stale browser cache)
-if(sessionStorage.getItem('smVer')!=='v15'){sessionStorage.setItem('smVer','v15');location.reload(true);}
+if(sessionStorage.getItem('smVer')!=='v16'){sessionStorage.setItem('smVer','v16');location.reload(true);}
 // Apply saved theme immediately to prevent flash
 (function(){
   var t=localStorage.getItem('sm_theme')||'light';
@@ -6324,9 +6324,15 @@ function rpSolveRow(rest){
   const solve4=makeSolver(4,acc=>acc[0]+acc[1]+acc[2]===acc[3]);
   const r4=solve4(0,[]);
   if(r4) return r4;
-  const solve3=makeSolver(3,()=>true);
-  const r3=solve3(0,[]);
-  if(r3) return [r3[0],r3[1],r3[2],r3[0]+r3[1]+r3[2]]; // synthesize total for debug-log compatibility
+  // 3-column fallback ONLY when there are exactly 3 numbers in the row (true headerless 3-col table).
+  // Never run it on 4-number rows — those are 4-col tables where the total was misread by OCR;
+  // letting solve3 concatenate would inflate C (e.g. "6"+"31"→631). Instead fall through to the
+  // checksum-failed branch in rpParseOptions which calls rpRepairRow or uses literal positional values.
+  if(rest.length===3){
+    const solve3=makeSolver(3,()=>true);
+    const r3=solve3(0,[]);
+    if(r3) return [r3[0],r3[1],r3[2],r3[0]+r3[1]+r3[2]];
+  }
   return null;
 }
 
