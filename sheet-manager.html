@@ -6379,10 +6379,19 @@ function clBQRenderCols(){
   if(!wrap)return;
   let list;
   if((clState.bq.source||'embed')==='embed'){
-    // In embed mode the CTE exposes these output names
-    list=['name','mobile_number','wati_server_id'];
+    // Embed mode: offer the admin output names + every other sheet column,
+    // so the user keeps whichever columns this particular sheet needs.
+    const {name:nc,phone:pc,serverId:sc}=clState.mapping;
+    const headers=clState.headers||[];
+    list=[];
+    if(nc)list.push('name');
+    if(pc)list.push('mobile_number');
+    list.push('wati_server_id');
     if((clState.bq.slugConst||'').trim())list.push('slug');
-    list.forEach(c=>{if(clState.bq.cols[c]===undefined)clState.bq.cols[c]=true;});
+    headers.forEach(h=>{if(h&&h!==nc&&h!==pc&&h!==sc&&!list.includes(h))list.push(h);});
+    // Default-check only the messaging essentials; extra columns start off
+    const essentials=new Set(['name','mobile_number','wati_server_id','slug']);
+    list.forEach(c=>{if(clState.bq.cols[c]===undefined)clState.bq.cols[c]=essentials.has(c);});
   }else{
     const headers=clState.headers||[];
     const lower=headers.map(h=>h.toLowerCase());
@@ -6537,6 +6546,11 @@ function clBQBuildEmbed(){
   else if(defWati)add('wati_server_id',/^-?\d+$/.test(defWati)?'INT64':'STRING',()=>defWati);
   if(slugConst)add('slug','STRING',()=>slugConst);
   if(excludeOn)add('member_id','INT64',r=>r[memberCol]);
+  // Extra output columns the user kept from this sheet (raw headers)
+  (clState.bq._colList||[]).filter(c=>clState.bq.cols[c]).forEach(c=>{
+    if(seen.has(c))return;            // name / mobile_number / wati_server_id / slug already added
+    if(headers.includes(c))add(c,clBQColType(c,rows),r=>r[c]);
+  });
   clState.bq.filters.forEach(f=>{
     if(!f.col||!headers.includes(f.col))return;
     add(aliasFor(f.col),clBQColType(f.col,rows),r=>r[f.col]);
