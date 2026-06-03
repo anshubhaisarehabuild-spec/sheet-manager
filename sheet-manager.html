@@ -667,6 +667,34 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 .cl-btn-danger:hover{background:#dc2626;}
 .cl-btn-warn{background:#f59e0b;color:#fff;}
 .cl-btn-warn:hover{background:#d97706;}
+/* ── BigQuery Query Builder ── */
+.cl-mode-toggle{display:flex;gap:8px;margin-bottom:20px;}
+.cl-mode-btn{flex:1;padding:11px 14px;border:1.5px solid var(--border);background:var(--input);border-radius:10px;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;transition:.15s;font-family:'Inter',sans-serif;}
+.cl-mode-btn:hover{border-color:var(--accent);}
+.cl-mode-btn.active{border-color:var(--accent);background:var(--accent);color:#fff;}
+.cl-bq-lbl{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:18px 0 8px;}
+.cl-bq-cols{display:flex;flex-wrap:wrap;gap:8px;}
+.cl-bq-colchk{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;background:var(--input);}
+.cl-bq-colchk.on{border-color:var(--accent);background:rgba(99,102,241,.08);color:var(--accent);}
+.cl-bq-colchk input{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;}
+.cl-bq-table-row{display:flex;align-items:stretch;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--input);}
+.cl-bq-prefix{display:flex;align-items:center;padding:9px 10px;font-family:'JetBrains Mono','Courier New',monospace;font-size:12px;color:var(--muted);background:var(--card);white-space:nowrap;border-right:1px solid var(--border);}
+.cl-bq-input{flex:1;background:var(--input);border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:'JetBrains Mono','Courier New',monospace;}
+.cl-bq-table-row .cl-bq-input{border:none;border-radius:0;}
+.cl-bq-input:focus{border-color:var(--accent);}
+.cl-bq-filter{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;}
+.cl-bq-sel{background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:13px;color:var(--text);outline:none;font-weight:600;cursor:pointer;}
+.cl-bq-op{min-width:96px;}
+.cl-bq-val{flex:1;min-width:150px;}
+.cl-bq-noval{flex:1;min-width:150px;font-size:12px;color:var(--muted);font-style:italic;padding:8px 0;}
+.cl-bq-del{background:none;border:1px solid var(--border);border-radius:7px;padding:7px 11px;cursor:pointer;font-size:13px;color:var(--danger);}
+.cl-bq-del:hover{background:#fef2f2;border-color:#fecaca;}
+.cl-bq-addfilter{margin-top:4px;padding:7px 14px;font-size:12px;font-weight:700;background:none;border:1px dashed var(--accent);color:var(--accent);border-radius:7px;cursor:pointer;}
+.cl-bq-empty{font-size:12px;color:var(--muted);padding:8px 0;}
+.cl-bq-check{display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;margin-top:6px;line-height:1.5;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--input);}
+.cl-bq-check input{accent-color:var(--accent);width:15px;height:15px;margin-top:1px;flex-shrink:0;}
+.cl-bq-check .cl-bq-check-sub{font-size:11px;font-weight:500;color:var(--muted);margin-top:2px;}
+.cl-bq-query{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:16px;font-family:'JetBrains Mono','Courier New',monospace;font-size:12.5px;line-height:1.6;white-space:pre;overflow:auto;max-height:360px;margin:0;}
 .cl-insights-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px;}
 .cl-ins-card{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-align:center;}
 .cl-ins-val{font-family:'Inter',sans-serif;font-size:26px;font-weight:800;color:var(--text);}
@@ -1371,6 +1399,14 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
       <!-- Step 3: Filter & Export -->
       <div id="cl-s3" class="cl-step-content" style="display:none">
         <div class="cl-card">
+          <!-- Output mode toggle -->
+          <div class="cl-mode-toggle">
+            <button id="cl-mode-csv" class="cl-mode-btn active" onclick="clSetOutputMode('csv')">📄 CSV Export</button>
+            <button id="cl-mode-bq" class="cl-mode-btn" onclick="clSetOutputMode('bq')">🔷 BigQuery Query</button>
+          </div>
+
+          <!-- ════ CSV MODE ════ -->
+          <div id="cl-csv-mode">
           <!-- Filter section (collapsible) -->
           <details id="cl-filter-details" style="margin-bottom:18px;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
             <summary style="padding:12px 16px;background:var(--input);cursor:pointer;font-size:13px;font-weight:800;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;">
@@ -1440,6 +1476,48 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
             <button class="cl-btn cl-btn-export" onclick="clExport()">✓ Confirm & Export CSV</button>
             <button class="cl-btn" onclick="clReset()" style="background:#f1f5f9;color:var(--muted);border:1px solid var(--border);margin-left:auto;">🔄 Clean New File</button>
           </div>
+          </div>
+          <!-- ════ /CSV MODE ════ -->
+
+          <!-- ════ BIGQUERY MODE ════ -->
+          <div id="cl-bq-mode" style="display:none;">
+            <h3 class="cl-title">BigQuery Query Builder</h3>
+            <p class="cl-sub">Filter laga ke ready-made query banao — phir admin panel me paste karo. Sheet ka data BigQuery se padha jayega.</p>
+
+            <label class="cl-bq-lbl">Output Columns — SELECT</label>
+            <div id="cl-bq-cols" class="cl-bq-cols"></div>
+
+            <label class="cl-bq-lbl">Table</label>
+            <div class="cl-bq-table-row">
+              <span class="cl-bq-prefix">default-454706.habuild_analytics.</span>
+              <input id="cl-bq-slug" class="cl-bq-input" placeholder="reactivation_campaign_21days_june2026" oninput="clBQSetSlug(this.value)" spellcheck="false"/>
+            </div>
+
+            <label class="cl-bq-lbl">Filters — WHERE</label>
+            <div id="cl-bq-filters"></div>
+            <button class="cl-bq-addfilter" onclick="clBQAddFilter()">+ Add Filter</button>
+
+            <label class="cl-bq-lbl" style="margin-bottom:8px;">Exclusions</label>
+            <label class="cl-bq-check">
+              <input type="checkbox" id="cl-bq-exclude" checked onchange="clBQGenerate()"/>
+              <span>Already-active &amp; paid members ko exclude karo
+                <span class="cl-bq-check-sub">member_id NOT IN (free_member_performance + paid_members subqueries) — aapke example wale 2 blocks</span>
+              </span>
+            </label>
+
+            <label class="cl-bq-lbl">Order By</label>
+            <input id="cl-bq-orderby" class="cl-bq-input" value="member_id" oninput="clBQSetOrder(this.value)" placeholder="member_id" spellcheck="false"/>
+
+            <label class="cl-bq-lbl">Generated Query</label>
+            <pre id="cl-bq-query" class="cl-bq-query"></pre>
+
+            <div class="cl-btn-row">
+              <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">← Back</button>
+              <button class="cl-btn cl-btn-export" onclick="clBQCopy()">📋 Copy Query</button>
+              <button class="cl-btn" onclick="clReset()" style="background:#f1f5f9;color:var(--muted);border:1px solid var(--border);margin-left:auto;">🔄 Clean New File</button>
+            </div>
+          </div>
+          <!-- ════ /BIGQUERY MODE ════ -->
         </div>
       </div>
     </div>
@@ -4498,7 +4576,9 @@ let clState={
   phoneChanges:[],autoCleanApplied:false,
   exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip',
   _undoStack:[],_autoDetected:{},_settingsLoaded:false,
-  _allData:[],batchMode:false,batchSize:100000,batchIndex:0,totalBatches:0
+  _allData:[],batchMode:false,batchSize:100000,batchIndex:0,totalBatches:0,
+  outputMode:'csv',_fileBase:'',
+  bq:{slug:'',cols:{},filters:[],orderby:'member_id',_colList:[],_lastQuery:''}
 };
 let clStep=1;
 
@@ -4548,6 +4628,9 @@ function clFinishLoad(file,data,headers){
   clState.autoCleanApplied=false;clState.filters={};clState.extraFields=[];
   clState.defaultWatiId='';clState.mapping={name:null,phone:null,serverId:null};
   clState._undoStack=[];
+  clState.outputMode='csv';
+  clState.bq={slug:'',cols:{},filters:[],orderby:'member_id',_colList:[],_lastQuery:''};
+  clState._fileBase=file.name.replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9_]+/g,'_').replace(/^_+|_+$/g,'').toLowerCase();
   document.getElementById('cl-file-name').textContent=file.name;
   document.getElementById('cl-file-rows').textContent=data.length.toLocaleString()+' rows';
   document.getElementById('cl-file-info').style.display='flex';
@@ -4770,7 +4853,7 @@ function clGoStep(n){
   if(n>=3&&!clState.raw.length){toast('Please upload a file first','e');return;}
   if(n>=3&&(!clState.mapping.name||!clState.mapping.phone)){toast('Please map Name and Phone columns first','e');clGoStep(2);return;}
   if(n===2){clBuildPreview();clBuildClean();}
-  if(n===3){clBuildFilter();clBuildExport();}
+  if(n===3){clBuildFilter();clBuildExport();clSetOutputMode(clState.outputMode||'csv');}
   clStep=n;
   for(let i=1;i<=3;i++){
     const s=document.getElementById('cl-s'+i);
@@ -6178,7 +6261,9 @@ function clReset(){
     phoneChanges:[],autoCleanApplied:false,
     exportFormat:'admin',extraFields:[],defaultWatiId:'',_problemRows:[],_problemAction:'skip',
     _undoStack:[],_autoDetected:{},_settingsLoaded:false,
-    _allData:[],batchMode:false,batchSize:100000,batchIndex:0,totalBatches:0
+    _allData:[],batchMode:false,batchSize:100000,batchIndex:0,totalBatches:0,
+    outputMode:'csv',_fileBase:'',
+    bq:{slug:'',cols:{},filters:[],orderby:'member_id',_colList:[],_lastQuery:''}
   };
   const lbb=document.getElementById('cl-large-file-banner');if(lbb)lbb.style.display='none';
   clUpdateBatchIndicator();
@@ -6188,6 +6273,186 @@ function clReset(){
   document.getElementById('cl-file-info').style.display='none';
   document.getElementById('cl-next-1').disabled=true;
   clGoStep(1);
+}
+
+// ══════════════════════════════════════════════════════
+//  BIGQUERY QUERY BUILDER
+// ══════════════════════════════════════════════════════
+const CL_BQ_TABLE_PREFIX='default-454706.habuild_analytics.';
+const CL_BQ_DEFAULT_COLS=['name','mobile_number','slug','wati_server_id'];
+const CL_BQ_OPS=['=','!=','IN','NOT IN','IS NOT NULL','IS NULL','>=','<=','>','<'];
+// Static exclusion blocks (from the reference query)
+const CL_BQ_EXCLUDE_1=`member_id NOT IN (
+    SELECT DISTINCT member_id
+    FROM \`default-454706.datalake_partitioned.public_free_member_performance\`
+    WHERE challenge_id >= 4000
+      AND updated_at >= TIMESTAMP('2024-01-01')
+  )`;
+const CL_BQ_EXCLUDE_2=`member_id NOT IN (
+    SELECT pfm.id
+    FROM \`default-454706.datalake_partitioned.public_free_members\` pfm
+    WHERE pfm.phone_number IN (
+      SELECT phone_number
+      FROM \`default-454706.datalake_partitioned.public_paid_members\`
+    )
+  )`;
+
+function clSetOutputMode(mode){
+  clState.outputMode=mode;
+  const csv=document.getElementById('cl-csv-mode');
+  const bq=document.getElementById('cl-bq-mode');
+  if(csv)csv.style.display=mode==='csv'?'':'none';
+  if(bq)bq.style.display=mode==='bq'?'':'none';
+  const bc=document.getElementById('cl-mode-csv'),bb=document.getElementById('cl-mode-bq');
+  if(bc)bc.classList.toggle('active',mode==='csv');
+  if(bb)bb.classList.toggle('active',mode==='bq');
+  if(mode==='bq')clRenderBQ();
+}
+
+function clRenderBQ(){
+  const slugInp=document.getElementById('cl-bq-slug');
+  if(slugInp&&!slugInp.value&&clState._fileBase){slugInp.value=clState._fileBase;clState.bq.slug=clState._fileBase;}
+  clBQRenderCols();
+  clBQRenderFilters();
+  clBQGenerate();
+}
+
+// Quote a literal: numbers/booleans bare, everything else single-quoted
+function clBQLit(v){
+  v=String(v).trim();
+  if(/^-?\d+(\.\d+)?$/.test(v))return v;
+  if(/^(true|false)$/i.test(v))return v.toUpperCase();
+  return `'${v.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}'`;
+}
+
+// Distinct values of a column from the cleaned sheet (for value dropdowns)
+function clBQDistinct(col){
+  if(!col)return[];
+  const set=new Set();
+  const data=clState.cleaned||[];
+  for(const r of data){
+    const v=String(r[col]??'').trim();
+    if(v)set.add(v);
+    if(set.size>=200)break;
+  }
+  return[...set].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+}
+
+function clBQRenderCols(){
+  const wrap=document.getElementById('cl-bq-cols');
+  if(!wrap)return;
+  const headers=clState.headers||[];
+  const lower=headers.map(h=>h.toLowerCase());
+  const merged=[...headers];
+  CL_BQ_DEFAULT_COLS.forEach(d=>{if(!lower.includes(d.toLowerCase()))merged.push(d);});
+  // Initialise checked state once: default columns ON, rest OFF
+  if(Object.keys(clState.bq.cols).length===0){
+    merged.forEach(c=>{clState.bq.cols[c]=CL_BQ_DEFAULT_COLS.some(d=>d.toLowerCase()===c.toLowerCase());});
+  }
+  clState.bq._colList=merged;
+  wrap.innerHTML=merged.map((c,i)=>`<label class="cl-bq-colchk ${clState.bq.cols[c]?'on':''}">
+    <input type="checkbox" ${clState.bq.cols[c]?'checked':''} onchange="clBQToggleCol(${i},this.checked)"/>${esc(c)}
+  </label>`).join('');
+}
+function clBQToggleCol(i,on){
+  const c=clState.bq._colList[i];
+  if(c===undefined)return;
+  clState.bq.cols[c]=on;
+  clBQRenderCols();
+  clBQGenerate();
+}
+
+function clBQRenderFilters(){
+  const wrap=document.getElementById('cl-bq-filters');
+  if(!wrap)return;
+  const headers=clState.headers||[];
+  const html=clState.bq.filters.map((f,i)=>{
+    const colOpts=['<option value="">— column —</option>',...headers.map(h=>`<option value="${esc(h)}" ${h===f.col?'selected':''}>${esc(h)}</option>`)].join('');
+    const opOpts=CL_BQ_OPS.map(o=>`<option value="${o}" ${o===f.op?'selected':''}>${o}</option>`).join('');
+    const noVal=(f.op==='IS NOT NULL'||f.op==='IS NULL');
+    let valField;
+    if(noVal){
+      valField=`<span class="cl-bq-noval">— no value needed —</span>`;
+    }else{
+      const listId='cl-bq-dl-'+i;
+      const isList=(f.op==='IN'||f.op==='NOT IN');
+      const distinct=clBQDistinct(f.col);
+      valField=`<input class="cl-bq-input cl-bq-val" list="${listId}" value="${esc(f.val||'')}" placeholder="${isList?'value1, value2, value3':'value'}" oninput="clBQSetVal(${i},this.value)" spellcheck="false"/>
+        <datalist id="${listId}">${distinct.map(d=>`<option value="${esc(d)}"></option>`).join('')}</datalist>`;
+    }
+    return`<div class="cl-bq-filter">
+      <select class="cl-bq-sel" onchange="clBQSetCol(${i},this.value)">${colOpts}</select>
+      <select class="cl-bq-sel cl-bq-op" onchange="clBQSetOp(${i},this.value)">${opOpts}</select>
+      ${valField}
+      <button class="cl-bq-del" onclick="clBQDelFilter(${i})" title="Remove filter">🗑</button>
+    </div>`;
+  }).join('');
+  wrap.innerHTML=html||'<div class="cl-bq-empty">Koi filter nahi. "+ Add Filter" dabao.</div>';
+}
+
+function clBQAddFilter(){
+  const headers=clState.headers||[];
+  clState.bq.filters.push({col:headers[0]||'',op:'=',val:''});
+  clBQRenderFilters();
+  clBQGenerate();
+}
+function clBQDelFilter(i){
+  clState.bq.filters.splice(i,1);
+  clBQRenderFilters();
+  clBQGenerate();
+}
+function clBQSetCol(i,v){if(clState.bq.filters[i]){clState.bq.filters[i].col=v;clBQRenderFilters();clBQGenerate();}}
+function clBQSetOp(i,v){if(clState.bq.filters[i]){clState.bq.filters[i].op=v;clBQRenderFilters();clBQGenerate();}}
+function clBQSetVal(i,v){if(clState.bq.filters[i]){clState.bq.filters[i].val=v;clBQGenerate();}} // no re-render: keep input focus
+function clBQSetSlug(v){clState.bq.slug=v.trim();clBQGenerate();}
+function clBQSetOrder(v){clState.bq.orderby=v.trim();clBQGenerate();}
+
+function clBQGenerate(){
+  const bq=clState.bq;
+  const cols=(bq._colList||[]).filter(c=>bq.cols[c]);
+  const colList=cols.length?cols.join(', '):'*';
+  const slug=bq.slug||'';
+  const table='`'+CL_BQ_TABLE_PREFIX+(slug||'<table_name>')+'`';
+  const where=[];
+  bq.filters.forEach(f=>{
+    if(!f.col)return;
+    if(f.op==='IS NOT NULL'||f.op==='IS NULL'){where.push(`${f.col} ${f.op}`);return;}
+    const val=(f.val||'').trim();
+    if(!val)return;
+    if(f.op==='IN'||f.op==='NOT IN'){
+      const items=val.split(',').map(s=>s.trim()).filter(Boolean).map(clBQLit);
+      if(items.length)where.push(`${f.col} ${f.op} (${items.join(', ')})`);
+    }else{
+      where.push(`${f.col} ${f.op} ${clBQLit(val)}`);
+    }
+  });
+  const excl=document.getElementById('cl-bq-exclude');
+  if(excl&&excl.checked){where.push(CL_BQ_EXCLUDE_1);where.push(CL_BQ_EXCLUDE_2);}
+  let q=`SELECT ${colList}\nFROM ${table}`;
+  if(where.length)q+='\nWHERE '+where.join('\n  AND ');
+  const ob=(bq.orderby||'').trim();
+  if(ob)q+=`\nORDER BY ${ob}`;
+  q+=';';
+  bq._lastQuery=q;
+  const pre=document.getElementById('cl-bq-query');
+  if(pre)pre.textContent=q;
+}
+
+function clBQCopy(){
+  const q=(clState.bq&&clState.bq._lastQuery)||'';
+  if(!q){toast('Query empty hai','e');return;}
+  if(!clState.bq.slug){toast('Table slug bharo pehle','e');return;}
+  const done=()=>{toast('Query copied! Admin panel me paste karo','s');};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(q).then(done).catch(()=>clBQCopyFallback(q,done));
+  }else{clBQCopyFallback(q,done);}
+}
+function clBQCopyFallback(q,done){
+  const ta=document.createElement('textarea');
+  ta.value=q;ta.style.position='fixed';ta.style.left='-9999px';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');done();}catch(e){toast('Copy failed — manually select karo','e');}
+  ta.remove();
 }
 
 // ── Modal helpers ──
