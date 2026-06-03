@@ -6494,7 +6494,8 @@ function clBQBuildTable(){
   if(where.length)q+='\nWHERE '+where.join('\n  AND ');
   const ob=(bq.orderby||'').trim();
   if(ob)q+=`\nORDER BY ${ob}`;
-  q+=';';
+  // No trailing ';' — the admin panel wraps the query (SELECT COUNT(*) FROM (...))
+  // for Preview/count, and a semicolon inside the parens is a syntax error.
   return q;
 }
 
@@ -6595,7 +6596,8 @@ function clBQBuildEmbed(){
   let q=`${cte}\nSELECT ${colList}\nFROM sheet`;
   if(where.length)q+='\nWHERE '+where.join('\n  AND ');
   if(obAlias)q+=`\nORDER BY ${obAlias}`;
-  q+=';';
+  // No trailing ';' — the admin panel wraps the query (SELECT COUNT(*) FROM (...))
+  // for Preview/count, and a semicolon inside the parens is a syntax error.
   return q;
 }
 
