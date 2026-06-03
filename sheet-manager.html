@@ -1482,15 +1482,31 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <!-- ════ BIGQUERY MODE ════ -->
           <div id="cl-bq-mode" style="display:none;">
             <h3 class="cl-title">BigQuery Query Builder</h3>
-            <p class="cl-sub">Filter laga ke ready-made query banao — phir admin panel me paste karo. Sheet ka data BigQuery se padha jayega.</p>
+            <p class="cl-sub">Filter laga ke ready-made query banao — phir admin panel me paste karo.</p>
+
+            <label class="cl-bq-lbl" style="margin-top:0;">Data Source</label>
+            <div class="cl-mode-toggle" style="margin-bottom:0;">
+              <button id="cl-bq-src-embed" class="cl-mode-btn active" onclick="clBQSetSource('embed')">📋 Embed sheet data</button>
+              <button id="cl-bq-src-table" class="cl-mode-btn" onclick="clBQSetSource('table')">🗄️ From BigQuery table</button>
+            </div>
+            <div id="cl-bq-src-hint" style="font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.5;"></div>
 
             <label class="cl-bq-lbl">Output Columns — SELECT</label>
             <div id="cl-bq-cols" class="cl-bq-cols"></div>
 
-            <label class="cl-bq-lbl">Table</label>
-            <div class="cl-bq-table-row">
-              <span class="cl-bq-prefix">default-454706.habuild_analytics.</span>
-              <input id="cl-bq-slug" class="cl-bq-input" placeholder="reactivation_campaign_21days_june2026" oninput="clBQSetSlug(this.value)" spellcheck="false"/>
+            <!-- Table mode: existing BQ table name -->
+            <div id="cl-bq-table-wrap">
+              <label class="cl-bq-lbl">Table</label>
+              <div class="cl-bq-table-row">
+                <span class="cl-bq-prefix">default-454706.habuild_analytics.</span>
+                <input id="cl-bq-slug" class="cl-bq-input" placeholder="reactivation_campaign_21days_june2026" oninput="clBQSetSlug(this.value)" spellcheck="false"/>
+              </div>
+            </div>
+
+            <!-- Embed mode: optional constant slug value -->
+            <div id="cl-bq-slugconst-wrap">
+              <label class="cl-bq-lbl">Slug value <span style="font-weight:500;text-transform:none;letter-spacing:0;">(optional — sabhi rows ke liye same slug)</span></label>
+              <input id="cl-bq-slugconst" class="cl-bq-input" placeholder="e.g. reactivation-june-2026" oninput="clBQSetSlugConst(this.value)" spellcheck="false"/>
             </div>
 
             <label class="cl-bq-lbl">Filters — WHERE</label>
@@ -1510,6 +1526,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
             <label class="cl-bq-lbl">Generated Query</label>
             <pre id="cl-bq-query" class="cl-bq-query"></pre>
+            <div id="cl-bq-size" style="font-size:12px;color:var(--muted);margin:8px 0 0;"></div>
 
             <div class="cl-btn-row">
               <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">← Back</button>
@@ -4578,7 +4595,7 @@ let clState={
   _undoStack:[],_autoDetected:{},_settingsLoaded:false,
   _allData:[],batchMode:false,batchSize:100000,batchIndex:0,totalBatches:0,
   outputMode:'csv',_fileBase:'',
-  bq:{slug:'',cols:{},filters:[],orderby:'member_id',_colList:[],_lastQuery:''}
+  bq:{source:'embed',slug:'',slugConst:'',cols:{},filters:[],orderby:'member_id',_colList:[],_lastQuery:''}
 };
 let clStep=1;
 
@@ -4629,7 +4646,7 @@ function clFinishLoad(file,data,headers){
   clState.defaultWatiId='';clState.mapping={name:null,phone:null,serverId:null};
   clState._undoStack=[];
   clState.outputMode='csv';
-  clState.bq={slug:'',cols:{},filters:[],orderby:'member_id',_colList:[],_lastQuery:''};
+  clState.bq={source:'embed',slug:'',slugConst:'',cols:{},filters:[],orderby:'member_id',_colList:[],_lastQuery:''};
   clState._fileBase=file.name.replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9_]+/g,'_').replace(/^_+|_+$/g,'').toLowerCase();
   document.getElementById('cl-file-name').textContent=file.name;
   document.getElementById('cl-file-rows').textContent=data.length.toLocaleString()+' rows';
@@ -6263,7 +6280,7 @@ function clReset(){
     _undoStack:[],_autoDetected:{},_settingsLoaded:false,
     _allData:[],batchMode:false,batchSize:100000,batchIndex:0,totalBatches:0,
     outputMode:'csv',_fileBase:'',
-    bq:{slug:'',cols:{},filters:[],orderby:'member_id',_colList:[],_lastQuery:''}
+    bq:{source:'embed',slug:'',slugConst:'',cols:{},filters:[],orderby:'member_id',_colList:[],_lastQuery:''}
   };
   const lbb=document.getElementById('cl-large-file-banner');if(lbb)lbb.style.display='none';
   clUpdateBatchIndicator();
@@ -6310,12 +6327,31 @@ function clSetOutputMode(mode){
 }
 
 function clRenderBQ(){
-  const slugInp=document.getElementById('cl-bq-slug');
-  if(slugInp&&!slugInp.value&&clState._fileBase){slugInp.value=clState._fileBase;clState.bq.slug=clState._fileBase;}
+  clBQApplySource();
   clBQRenderCols();
   clBQRenderFilters();
   clBQGenerate();
 }
+function clBQSetSource(src){
+  clState.bq.source=src;
+  clState.bq.cols={}; // output column set differs per source — reset
+  clBQApplySource();
+  clBQRenderCols();
+  clBQGenerate();
+}
+function clBQApplySource(){
+  const embed=(clState.bq.source||'embed')==='embed';
+  const be=document.getElementById('cl-bq-src-embed'),bt=document.getElementById('cl-bq-src-table');
+  if(be)be.classList.toggle('active',embed);
+  if(bt)bt.classList.toggle('active',!embed);
+  const tw=document.getElementById('cl-bq-table-wrap');if(tw)tw.style.display=embed?'none':'';
+  const sw=document.getElementById('cl-bq-slugconst-wrap');if(sw)sw.style.display=embed?'':'none';
+  const hint=document.getElementById('cl-bq-src-hint');
+  if(hint)hint.innerHTML=embed
+    ?'Sheet ke rows query ke <strong>andar hi</strong> aa jate hain — BigQuery me koi table pehle se nahi chahiye. Paste karo aur chal jayega.'
+    :'Query ek <strong>existing BigQuery table</strong> se data padhegi. Niche us table ka exact naam (slug) daalo.';
+}
+function clBQSetSlugConst(v){clState.bq.slugConst=v.trim();clBQRenderCols();clBQGenerate();}
 
 // Quote a literal: numbers/booleans bare, everything else single-quoted
 function clBQLit(v){
@@ -6341,16 +6377,24 @@ function clBQDistinct(col){
 function clBQRenderCols(){
   const wrap=document.getElementById('cl-bq-cols');
   if(!wrap)return;
-  const headers=clState.headers||[];
-  const lower=headers.map(h=>h.toLowerCase());
-  const merged=[...headers];
-  CL_BQ_DEFAULT_COLS.forEach(d=>{if(!lower.includes(d.toLowerCase()))merged.push(d);});
-  // Initialise checked state once: default columns ON, rest OFF
-  if(Object.keys(clState.bq.cols).length===0){
-    merged.forEach(c=>{clState.bq.cols[c]=CL_BQ_DEFAULT_COLS.some(d=>d.toLowerCase()===c.toLowerCase());});
+  let list;
+  if((clState.bq.source||'embed')==='embed'){
+    // In embed mode the CTE exposes these output names
+    list=['name','mobile_number','wati_server_id'];
+    if((clState.bq.slugConst||'').trim())list.push('slug');
+    list.forEach(c=>{if(clState.bq.cols[c]===undefined)clState.bq.cols[c]=true;});
+  }else{
+    const headers=clState.headers||[];
+    const lower=headers.map(h=>h.toLowerCase());
+    const merged=[...headers];
+    CL_BQ_DEFAULT_COLS.forEach(d=>{if(!lower.includes(d.toLowerCase()))merged.push(d);});
+    if(Object.keys(clState.bq.cols).length===0){
+      merged.forEach(c=>{clState.bq.cols[c]=CL_BQ_DEFAULT_COLS.some(d=>d.toLowerCase()===c.toLowerCase());});
+    }
+    list=merged;
   }
-  clState.bq._colList=merged;
-  wrap.innerHTML=merged.map((c,i)=>`<label class="cl-bq-colchk ${clState.bq.cols[c]?'on':''}">
+  clState.bq._colList=list;
+  wrap.innerHTML=list.map((c,i)=>`<label class="cl-bq-colchk ${clState.bq.cols[c]?'on':''}">
     <input type="checkbox" ${clState.bq.cols[c]?'checked':''} onchange="clBQToggleCol(${i},this.checked)"/>${esc(c)}
   </label>`).join('');
 }
@@ -6408,6 +6452,15 @@ function clBQSetSlug(v){clState.bq.slug=v.trim();clBQGenerate();}
 function clBQSetOrder(v){clState.bq.orderby=v.trim();clBQGenerate();}
 
 function clBQGenerate(){
+  const q=(clState.bq.source||'embed')==='embed'?clBQBuildEmbed():clBQBuildTable();
+  clState.bq._lastQuery=q;
+  const pre=document.getElementById('cl-bq-query');
+  if(pre)pre.textContent=q;
+  clBQUpdateSize();
+}
+
+// ── Table mode: SELECT from an existing BigQuery table ──
+function clBQBuildTable(){
   const bq=clState.bq;
   const cols=(bq._colList||[]).filter(c=>bq.cols[c]);
   const colList=cols.length?cols.join(', '):'*';
@@ -6433,15 +6486,129 @@ function clBQGenerate(){
   const ob=(bq.orderby||'').trim();
   if(ob)q+=`\nORDER BY ${ob}`;
   q+=';';
-  bq._lastQuery=q;
-  const pre=document.getElementById('cl-bq-query');
-  if(pre)pre.textContent=q;
+  return q;
+}
+
+// ── Embed mode: build a self-contained query with the sheet rows inline ──
+// Decide a uniform BigQuery type for a column across all rows
+function clBQColType(col,rows){
+  if(!col)return'STRING';
+  if(col.toLowerCase()==='member_id')return'INT64'; // must match datalake INT64 ids
+  let any=false;
+  for(const r of rows){
+    const v=String(r[col]??'').trim();
+    if(!v)continue;
+    any=true;
+    if(!/^-?\d+$/.test(v)||v.length>15)return'STRING';
+  }
+  return any?'INT64':'STRING';
+}
+// Typed literal for inline values; empty → NULL so UNION ALL types stay consistent
+function clBQEmbedLit(val,type){
+  const v=(val===undefined||val===null)?'':String(val).trim();
+  if(v==='')return'NULL';
+  if(type==='INT64')return /^-?\d+$/.test(v)?v:'NULL';
+  return `'${v.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/[\r\n]+/g,' ')}'`;
+}
+function clBQBuildEmbed(){
+  const {name:nc,phone:pc,serverId:sc}=clState.mapping;
+  const headers=clState.headers||[];
+  const memberCol=headers.find(h=>h.toLowerCase()==='member_id')||null;
+  const excl=document.getElementById('cl-bq-exclude');
+  const excludeOn=!!(excl&&excl.checked&&memberCol);
+  const slugConst=(clState.bq.slugConst||'').trim();
+  const defWati=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
+
+  // Smart-filtered rows, minus header-like / no-digit phone rows
+  const headerWords=new Set(['name','phone','mobile','number','phone_number','mobile_number','wati_server_id','watiserverid','member_id','id','contact','user','server','wati']);
+  const rows=clGetFiltered().filter(r=>{
+    const ph=String(r[pc]||'').trim().toLowerCase();
+    return ph&&!headerWords.has(ph)&&/\d/.test(ph);
+  });
+  if(!rows.length)return'-- Koi valid row nahi mila. Step 2 me Name aur Phone column map karo.';
+
+  // Column definitions for the inline CTE
+  const colDefs=[],seen=new Set(),aliasType={};
+  const add=(alias,type,getter)=>{if(seen.has(alias))return;seen.add(alias);aliasType[alias]=type;colDefs.push({alias,type,getter});};
+  const aliasFor=(col)=>col===nc?'name':col===pc?'mobile_number':col===sc?'wati_server_id':col;
+  if(nc)add('name','STRING',r=>r[nc]);
+  if(pc)add('mobile_number','STRING',r=>clCleanPhone(r[pc]));
+  if(sc)add('wati_server_id',clBQColType(sc,rows),r=>r[sc]);
+  else if(defWati)add('wati_server_id',/^-?\d+$/.test(defWati)?'INT64':'STRING',()=>defWati);
+  if(slugConst)add('slug','STRING',()=>slugConst);
+  if(excludeOn)add('member_id','INT64',r=>r[memberCol]);
+  clState.bq.filters.forEach(f=>{
+    if(!f.col||!headers.includes(f.col))return;
+    add(aliasFor(f.col),clBQColType(f.col,rows),r=>r[f.col]);
+  });
+  const ob=(clState.bq.orderby||'').trim();
+  let obAlias='';
+  if(ob){
+    if(headers.includes(ob)){obAlias=aliasFor(ob);if(!seen.has(obAlias))add(obAlias,clBQColType(ob,rows),r=>r[ob]);}
+    else if(seen.has(ob))obAlias=ob;
+  }
+
+  // Inline CTE — first row CASTs to lock column types, rest are bare values
+  const first=rows[0];
+  const castFirst=colDefs.map(c=>`CAST(${clBQEmbedLit(c.getter(first),c.type)} AS ${c.type}) AS ${c.alias}`).join(', ');
+  const rest=rows.slice(1).map(r=>'  UNION ALL SELECT '+colDefs.map(c=>clBQEmbedLit(c.getter(r),c.type)).join(', '));
+  const cte=`WITH sheet AS (\n  SELECT ${castFirst}${rest.length?'\n'+rest.join('\n'):''}\n)`;
+
+  // Output columns
+  const outCols=(clState.bq._colList||[]).filter(c=>clState.bq.cols[c]&&seen.has(c));
+  const colList=outCols.length?outCols.join(', '):colDefs.map(c=>c.alias).join(', ');
+
+  // WHERE — filters typed to match their column, then exclusions
+  const where=[];
+  clState.bq.filters.forEach(f=>{
+    if(!f.col)return;
+    const a=aliasFor(f.col);
+    if(!seen.has(a))return;
+    if(f.op==='IS NOT NULL'||f.op==='IS NULL'){where.push(`${a} ${f.op}`);return;}
+    const val=(f.val||'').trim();
+    if(!val)return;
+    const type=aliasType[a]||'STRING';
+    const lit=x=>type==='INT64'&&/^-?\d+$/.test(x)?x:`'${String(x).replace(/'/g,"\\'")}'`;
+    if(f.op==='IN'||f.op==='NOT IN'){
+      const items=val.split(',').map(s=>s.trim()).filter(Boolean).map(lit);
+      if(items.length)where.push(`${a} ${f.op} (${items.join(', ')})`);
+    }else{
+      where.push(`${a} ${f.op} ${lit(val)}`);
+    }
+  });
+  if(excludeOn){where.push(CL_BQ_EXCLUDE_1);where.push(CL_BQ_EXCLUDE_2);}
+
+  let q=`${cte}\nSELECT ${colList}\nFROM sheet`;
+  if(where.length)q+='\nWHERE '+where.join('\n  AND ');
+  if(obAlias)q+=`\nORDER BY ${obAlias}`;
+  q+=';';
+  return q;
+}
+
+function clBQUpdateSize(){
+  const el=document.getElementById('cl-bq-size');
+  if(!el)return;
+  if((clState.bq.source||'embed')!=='embed'){el.textContent='';return;}
+  const q=clState.bq._lastQuery||'';
+  const bytes=q.length;
+  const kb=bytes/1024;
+  const rowsCount=q.indexOf('WITH sheet AS')===0?(q.match(/UNION ALL SELECT/g)||[]).length+1:0;
+  const sizeStr=kb<1024?kb.toFixed(1)+' KB':(kb/1024).toFixed(2)+' MB';
+  let warn='';
+  if(bytes>1000000)warn=' ⚠️ 1 MB se bada — BigQuery reject kar sakta hai. Smart Filter se rows kam karo ya kam columns rakho.';
+  else if(bytes>800000)warn=' ⚠️ Bada query — reject ho to rows/columns kam karo.';
+  const excl=document.getElementById('cl-bq-exclude');
+  const hasMember=(clState.headers||[]).some(h=>h.toLowerCase()==='member_id');
+  const note=(excl&&excl.checked&&!hasMember)?' · ℹ️ Sheet me member_id column nahi — exclusion subqueries skip ho gaye.':'';
+  el.innerHTML=`Query size: ~${sizeStr} · ${rowsCount.toLocaleString()} rows embedded`
+    +(warn?`<span style="color:#d97706;font-weight:600;">${warn}</span>`:'')
+    +(note?`<span style="color:var(--muted);">${note}</span>`:'');
 }
 
 function clBQCopy(){
   const q=(clState.bq&&clState.bq._lastQuery)||'';
-  if(!q){toast('Query empty hai','e');return;}
-  if(!clState.bq.slug){toast('Table slug bharo pehle','e');return;}
+  if(!q||q.startsWith('-- ')){toast('Query empty hai — pehle data/mapping check karo','e');return;}
+  if((clState.bq.source||'embed')==='table'&&!clState.bq.slug){toast('Table slug bharo pehle','e');return;}
   const done=()=>{toast('Query copied! Admin panel me paste karo','s');};
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(q).then(done).catch(()=>clBQCopyFallback(q,done));
