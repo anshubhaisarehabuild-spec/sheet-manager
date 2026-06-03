@@ -6525,7 +6525,6 @@ function clBQBuildEmbed(){
   const headers=clState.headers||[];
   const memberCol=headers.find(h=>h.toLowerCase()==='member_id')||null;
   const excl=document.getElementById('cl-bq-exclude');
-  const excludeOn=!!(excl&&excl.checked&&memberCol);
   const slugConst=(clState.bq.slugConst||'').trim();
   const defWati=document.getElementById('cl-wati-default')?.value||clState.defaultWatiId||'';
 
@@ -6537,41 +6536,64 @@ function clBQBuildEmbed(){
   });
   if(!rows.length)return'-- Koi valid row nahi mila. Step 2 me Name aur Phone column map karo.';
 
-  // Column definitions for the inline CTE
-  const colDefs=[],seen=new Set(),aliasType={};
-  const add=(alias,type,getter)=>{if(seen.has(alias))return;seen.add(alias);aliasType[alias]=type;colDefs.push({alias,type,getter});};
-  const aliasFor=(col)=>col===nc?'name':col===pc?'mobile_number':col===sc?'wati_server_id':col;
-  if(nc)add('name','STRING',r=>r[nc]);
-  if(pc)add('mobile_number','STRING',r=>clCleanPhone(r[pc]));
-  if(sc)add('wati_server_id',clBQColType(sc,rows),r=>r[sc]);
-  else if(defWati)add('wati_server_id',/^-?\d+$/.test(defWati)?'INT64':'STRING',()=>defWati);
-  if(slugConst)add('slug','STRING',()=>slugConst);
-  if(excludeOn)add('member_id','INT64',r=>r[memberCol]);
-  // Extra output columns the user kept from this sheet (raw headers)
+  // Exclusions only make sense if member_id actually has values; all-NULL member_id
+  // with NOT IN would filter out every row (NULL NOT IN (...) is NULL → excluded).
+  const memberHasVals=!!memberCol&&rows.some(r=>String(r[memberCol]??'').trim()!=='');
+  const excludeOn=!!(excl&&excl.checked&&memberHasVals);
+  clState.bq._exclNote=(excl&&excl.checked&&!excludeOn)
+    ?(memberCol?'member_id column khaali hai — exclusion subqueries skip ho gaye.':'Sheet me member_id column nahi — exclusion subqueries skip ho gaye.')
+    :'';
+
+  // Valid BigQuery identifier for a struct field name
+  const sanitize=n=>{let s=String(n).replace(/[^A-Za-z0-9_]/g,'_');if(/^[0-9]/.test(s))s='_'+s;return s||'col';};
+  const aliasFor=col=>col===nc?'name':col===pc?'mobile_number':col===sc?'wati_server_id':sanitize(col);
+
+  // Constant columns (same for every row) — emitted once in SELECT, not per-row
+  const consts={};
+  if(slugConst)consts['slug']=`'${slugConst.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}'`;
+  if(!sc&&defWati)consts['wati_server_id']=/^-?\d+$/.test(defWati)?defWati:`'${defWati.replace(/'/g,"\\'")}'`;
+
+  // Per-row struct columns
+  const structCols=[],seen=new Set(),aliasType={};
+  const addS=(field,type,getter)=>{if(seen.has(field)||consts[field]!==undefined)return;seen.add(field);aliasType[field]=type;structCols.push({field,type,getter});};
+  if(nc)addS('name','STRING',r=>r[nc]);
+  if(pc)addS('mobile_number','STRING',r=>clCleanPhone(r[pc]));
+  if(sc)addS('wati_server_id',clBQColType(sc,rows),r=>r[sc]);
+  if(excludeOn)addS('member_id','INT64',r=>r[memberCol]);
+  // Extra output columns the user kept
   (clState.bq._colList||[]).filter(c=>clState.bq.cols[c]).forEach(c=>{
-    if(seen.has(c))return;            // name / mobile_number / wati_server_id / slug already added
-    if(headers.includes(c))add(c,clBQColType(c,rows),r=>r[c]);
+    if(consts[c]!==undefined||!headers.includes(c))return;
+    addS(aliasFor(c),clBQColType(c,rows),r=>r[c]);
   });
+  // Filter columns
   clState.bq.filters.forEach(f=>{
     if(!f.col||!headers.includes(f.col))return;
-    add(aliasFor(f.col),clBQColType(f.col,rows),r=>r[f.col]);
+    addS(aliasFor(f.col),clBQColType(f.col,rows),r=>r[f.col]);
   });
+  // Order-by column
   const ob=(clState.bq.orderby||'').trim();
   let obAlias='';
   if(ob){
-    if(headers.includes(ob)){obAlias=aliasFor(ob);if(!seen.has(obAlias))add(obAlias,clBQColType(ob,rows),r=>r[ob]);}
-    else if(seen.has(ob))obAlias=ob;
+    if(headers.includes(ob)){obAlias=aliasFor(ob);addS(obAlias,clBQColType(ob,rows),r=>r[ob]);}
+    else if(seen.has(ob)||consts[ob]!==undefined)obAlias=ob;
   }
 
-  // Inline CTE — first row CASTs to lock column types, rest are bare values
-  const first=rows[0];
-  const castFirst=colDefs.map(c=>`CAST(${clBQEmbedLit(c.getter(first),c.type)} AS ${c.type}) AS ${c.alias}`).join(', ');
-  const rest=rows.slice(1).map(r=>'  UNION ALL SELECT '+colDefs.map(c=>clBQEmbedLit(c.getter(r),c.type)).join(', '));
-  const cte=`WITH sheet AS (\n  SELECT ${castFirst}${rest.length?'\n'+rest.join('\n'):''}\n)`;
+  // Compact inline data: UNNEST([STRUCT<...>(...), (...), ...]) — no per-row boilerplate
+  const typeHeader=structCols.map(c=>`${c.field} ${c.type}`).join(',');
+  const tuple=r=>'('+structCols.map(c=>clBQEmbedLit(c.getter(r),c.type)).join(',')+')';
+  const tuples=rows.map(tuple);
+  tuples[0]=`STRUCT<${typeHeader}>${tuples[0]}`;
+  const arr='[\n  '+tuples.join(',\n  ')+'\n]';
 
-  // Output columns
-  const outCols=(clState.bq._colList||[]).filter(c=>clState.bq.cols[c]&&seen.has(c));
-  const colList=outCols.length?outCols.join(', '):colDefs.map(c=>c.alias).join(', ');
+  // Output columns (constants inlined, struct fields by name)
+  const checked=(clState.bq._colList||[]).filter(c=>clState.bq.cols[c]);
+  let selectParts=[];
+  checked.forEach(c=>{
+    if(consts[c]!==undefined){selectParts.push(`${consts[c]} AS ${c}`);return;}
+    const a=aliasFor(c);
+    if(seen.has(a))selectParts.push(a);
+  });
+  if(!selectParts.length)selectParts=structCols.map(c=>c.field).concat(Object.keys(consts).map(k=>`${consts[k]} AS ${k}`));
 
   // WHERE — filters typed to match their column, then exclusions
   const where=[];
@@ -6593,7 +6615,8 @@ function clBQBuildEmbed(){
   });
   if(excludeOn){where.push(CL_BQ_EXCLUDE_1);where.push(CL_BQ_EXCLUDE_2);}
 
-  let q=`${cte}\nSELECT ${colList}\nFROM sheet`;
+  clState.bq._rowCount=rows.length;
+  let q=`SELECT ${selectParts.join(', ')}\nFROM UNNEST(${arr})`;
   if(where.length)q+='\nWHERE '+where.join('\n  AND ');
   if(obAlias)q+=`\nORDER BY ${obAlias}`;
   // No trailing ';' — the admin panel wraps the query (SELECT COUNT(*) FROM (...))
@@ -6608,14 +6631,12 @@ function clBQUpdateSize(){
   const q=clState.bq._lastQuery||'';
   const bytes=q.length;
   const kb=bytes/1024;
-  const rowsCount=q.indexOf('WITH sheet AS')===0?(q.match(/UNION ALL SELECT/g)||[]).length+1:0;
+  const rowsCount=clState.bq._rowCount||0;
   const sizeStr=kb<1024?kb.toFixed(1)+' KB':(kb/1024).toFixed(2)+' MB';
   let warn='';
   if(bytes>1000000)warn=' ⚠️ 1 MB se bada — BigQuery reject kar sakta hai. Smart Filter se rows kam karo ya kam columns rakho.';
   else if(bytes>800000)warn=' ⚠️ Bada query — reject ho to rows/columns kam karo.';
-  const excl=document.getElementById('cl-bq-exclude');
-  const hasMember=(clState.headers||[]).some(h=>h.toLowerCase()==='member_id');
-  const note=(excl&&excl.checked&&!hasMember)?' · ℹ️ Sheet me member_id column nahi — exclusion subqueries skip ho gaye.':'';
+  const note=clState.bq._exclNote?(' · ℹ️ '+clState.bq._exclNote):'';
   el.innerHTML=`Query size: ~${sizeStr} · ${rowsCount.toLocaleString()} rows embedded`
     +(warn?`<span style="color:#d97706;font-weight:600;">${warn}</span>`:'')
     +(note?`<span style="color:var(--muted);">${note}</span>`:'');
