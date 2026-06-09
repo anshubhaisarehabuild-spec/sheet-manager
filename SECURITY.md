@@ -6,12 +6,12 @@ backend server.
 
 ## Where the app runs
 
-- **Live URL:** https://anshubhaisarehabuild-spec.github.io/sheet-manager/sheet-manager.html
+- **Live URL:** https://anshubhaisarehabuild-spec.github.io/sheet-manager/
 - Hosted on **GitHub Pages** from the `main` branch of this repo.
 
 ## The Client ID is public — and that's fine
 
-The Google OAuth **Client ID** in `sheet-manager.html` is *meant* to be public.
+The Google OAuth **Client ID** in `index.html` is *meant* to be public.
 Every browser-based Google app ships its Client ID in plain JavaScript. Hiding
 or obfuscating it adds no security.
 
@@ -50,7 +50,7 @@ cannot be abused remotely.
 ## Rules — DO NOT break these
 
 1. **Never** commit a `client_secret` to this repo or paste it into
-   `sheet-manager.html`. This app does **not** need one. (A secret exists in the
+   `index.html`. This app does **not** need one. (A secret exists in the
    Cloud Console but is unused and must stay only there.)
 2. **Never** add an API key or any other credential to the HTML.
 3. Keep the Authorized JavaScript origins list tight — only real domains you
