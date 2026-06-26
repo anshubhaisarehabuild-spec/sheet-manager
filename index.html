@@ -443,7 +443,7 @@ h1,h2,h3,.logo span,.sb-section,.card-name,.bc-name,.qb-name{font-family:'Inter'
 .filter-icon{font-size:9px;color:#80868b;cursor:pointer;padding:1px 3px;border-radius:2px;flex-shrink:0;}
 .filter-icon:hover,.filter-icon.on{background:#6366f1;color:#fff;border-radius:3px;}
 
-/* Data rows � single clean rule */
+/* Data rows — single clean rule */
 #data-table tbody tr{height:auto;}
 #data-table tbody td{padding:0;border:1px solid #e0e0e0;width:150px;max-width:150px;height:auto;position:relative;background:#fff;vertical-align:top;}
 :root[data-theme="dark"] #data-table tbody td{border-color:#334155;background:#0f172a;}
@@ -1031,7 +1031,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     }
   </style>
 
-  <!-- Left panel � indigo gradient -->
+  <!-- Left panel — indigo gradient -->
   <div style="flex:1;background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4338ca 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;position:relative;overflow:hidden;min-width:0;">
     <!-- Orbs -->
     <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(165,180,252,0.18) 0%,transparent 70%);top:-150px;left:-100px;animation:lsOrb1 14s ease-in-out infinite;pointer-events:none;"></div>
@@ -1041,16 +1041,16 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
       <span style="font-family:'Inter',sans-serif;font-weight:800;font-size:20px;color:#6366f1;">MS</span>
     </div>
     <h1 id="ls-title-main" style="font-family:'Inter',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:800;color:#fff;line-height:1.05;margin-bottom:12px;text-align:center;letter-spacing:-.5px;">My Sheets</h1>
-    <p id="ls-subtitle-main" style="font-family:'Inter',sans-serif;font-size:13px;color:rgba(165,180,252,0.75);line-height:1.6;text-align:center;max-width:260px;font-weight:400;letter-spacing:.01em;">Sheets � Folders � Links<br>Everything in one place.</p>
+    <p id="ls-subtitle-main" style="font-family:'Inter',sans-serif;font-size:13px;color:rgba(165,180,252,0.75);line-height:1.6;text-align:center;max-width:260px;font-weight:400;letter-spacing:.01em;">Sheets · Folders · Links<br>Everything in one place.</p>
     <!-- Feature pills -->
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:32px;justify-content:center;">
-      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:5px 14px;font-size:12px;color:#e0e7ff;font-weight:500;">?? All Sheets</div>
-      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:5px 14px;font-size:12px;color:#e0e7ff;font-weight:500;">?? Folders</div>
-      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:5px 14px;font-size:12px;color:#e0e7ff;font-weight:500;">?? Link Boards</div>
+      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:5px 14px;font-size:12px;color:#e0e7ff;font-weight:500;">📄 All Sheets</div>
+      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:5px 14px;font-size:12px;color:#e0e7ff;font-weight:500;">📁 Folders</div>
+      <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:5px 14px;font-size:12px;color:#e0e7ff;font-weight:500;">🔗 Link Boards</div>
     </div>
   </div>
 
-  <!-- Right panel � white -->
+  <!-- Right panel — white -->
   <div style="width:440px;min-width:320px;flex-shrink:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;gap:0;">
     <div style="width:100%;max-width:320px;">
       <h2 style="font-family:'Inter',sans-serif;font-size:24px;font-weight:800;color:#1e293b;margin-bottom:6px;">Welcome back</h2>
@@ -1063,7 +1063,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <div id="api-dot-2" style="width:6px;height:6px;border-radius:50%;background:#6366f1;animation:lsDotPulse 1.4s ease-in-out .2s infinite;"></div>
           <div id="api-dot-3" style="width:6px;height:6px;border-radius:50%;background:#6366f1;animation:lsDotPulse 1.4s ease-in-out .4s infinite;"></div>
         </div>
-        <p id="api-loading-text" style="font-size:11px;color:#94a3b8;margin:0;letter-spacing:.06em;text-transform:uppercase;">Connecting to Google�</p>
+        <p id="api-loading-text" style="font-size:11px;color:#94a3b8;margin:0;letter-spacing:.06em;text-transform:uppercase;">Connecting to Google…</p>
       </div>
 
       <!-- Actions -->
@@ -1093,12 +1093,12 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
   </div>
   <div id="search-box">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" id="search-inp" placeholder="Search sheets�" oninput="renderCards()">
+    <input type="text" id="search-inp" placeholder="Search sheets…" oninput="renderCards()">
   </div>
   <div style="flex:1;"></div>
   <div id="auth-area">
     <button id="login-btn" onclick="handleLogin()" disabled style="opacity:.6">
-      Loading�
+      Loading…
     </button>
     <div id="user-badge">
       <div id="avatar-wrap" onclick="toggleAvatarPopup()" style="width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--accent);display:flex;align-items:center;justify-content:center;">
@@ -1275,7 +1275,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <!-- Parse / Processing Loader -->
     <div id="cl-loader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9998;align-items:center;justify-content:center;">
       <div style="background:var(--card);border-radius:16px;padding:32px 36px;text-align:center;min-width:300px;box-shadow:0 24px 64px rgba(0,0,0,0.4);">
-        <div style="font-size:36px;margin-bottom:12px;" id="cl-loader-icon">??</div>
+        <div style="font-size:36px;margin-bottom:12px;" id="cl-loader-icon">⚙️</div>
         <div id="cl-loader-text" style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px;">Processing...</div>
         <div id="cl-loader-sub" style="font-size:12px;color:var(--muted);margin-bottom:16px;"></div>
         <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
@@ -1286,7 +1286,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
       <!-- Safety Banner -->
       <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;margin-bottom:20px;">
-        <span style="font-size:20px;flex-shrink:0;">??</span>
+        <span style="font-size:20px;flex-shrink:0;">🔒</span>
         <div>
           <div style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:2px;">Your data is 100% private & local</div>
           <div style="font-size:12px;color:#166534;line-height:1.6;">
@@ -1299,7 +1299,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
       <!-- Export History -->
       <div id="cl-history-wrap" style="display:none;margin-bottom:20px;position:relative;z-index:1;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <div style="font-family:'Inter',sans-serif;font-size:15px;font-weight:800;color:var(--text);">?? Export History</div>
+          <div style="font-family:'Inter',sans-serif;font-size:15px;font-weight:800;color:var(--text);">📋 Export History</div>
           <button onclick="clClearHistory()" style="font-size:11px;color:var(--danger);background:none;border:none;cursor:pointer;font-weight:600;">Clear All</button>
         </div>
         <div id="cl-history-list"></div>
@@ -1315,25 +1315,25 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         </div>
       </div>
 
-      <!-- Batch mode indicator � visible across all steps when batch mode is on -->
+      <!-- Batch mode indicator — visible across all steps when batch mode is on -->
       <div id="cl-batch-indicator" style="display:none;margin-bottom:14px;padding:11px 16px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
         <div>
-          <span style="font-size:13px;font-weight:700;color:#1d4ed8;">?? Batch Mode ON � </span>
+          <span style="font-size:13px;font-weight:700;color:#1d4ed8;">📦 Batch Mode ON — </span>
           <span id="cl-batch-ind-text" style="font-size:13px;color:#1e40af;"></span>
         </div>
-        <button id="cl-next-batch-btn" style="display:none;background:#2563eb;color:#fff;border:none;border-radius:7px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;" onclick="clNextBatch()">Next Batch ?</button>
+        <button id="cl-next-batch-btn" style="display:none;background:#2563eb;color:#fff;border:none;border-radius:7px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;" onclick="clNextBatch()">Next Batch →</button>
       </div>
 
       <!-- Step 1: Upload -->
       <div id="cl-s1" class="cl-step-content">
         <div class="cl-card">
           <h3 class="cl-title">Upload Your File</h3>
-          <p class="cl-sub">Supports .csv and .xlsx � drag & drop or click to browse</p>
+          <p class="cl-sub">Supports .csv and .xlsx — drag & drop or click to browse</p>
           <div class="cl-drop-zone" id="cl-drop" onclick="document.getElementById('cl-file-inp').click()">
-            <div class="cl-drop-icon">??</div>
+            <div class="cl-drop-icon">📂</div>
             <div class="cl-drop-title">Drag & drop your file here</div>
             <div class="cl-drop-sub">or click to browse</div>
-            <div class="cl-drop-formats">.csv &nbsp;�&nbsp; .xlsx</div>
+            <div class="cl-drop-formats">.csv &nbsp;·&nbsp; .xlsx</div>
           </div>
           <input type="file" id="cl-file-inp" accept=".csv,.xlsx" style="display:none" onchange="clHandleFile(this.files[0])"/>
           <div id="cl-file-info" style="display:none" class="cl-file-info">
@@ -1342,10 +1342,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
             <span id="cl-file-rows" class="cl-badge"></span>
           </div>
 
-          <!-- Large file warning � only shown when > 2 lakh rows -->
+          <!-- Large file warning — only shown when > 2 lakh rows -->
           <div id="cl-large-file-banner" style="display:none;margin-top:14px;padding:14px 16px;border-radius:10px;">
             <div style="display:flex;align-items:flex-start;gap:10px;">
-              <span id="cl-lf-icon" style="font-size:20px;flex-shrink:0;">??</span>
+              <span id="cl-lf-icon" style="font-size:20px;flex-shrink:0;">⚠️</span>
               <div style="flex:1;">
                 <div id="cl-lf-title" style="font-size:14px;font-weight:700;margin-bottom:4px;"></div>
                 <div id="cl-lf-desc" style="font-size:13px;line-height:1.6;margin-bottom:12px;"></div>
@@ -1359,13 +1359,13 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
                   <button class="cl-btn" style="background:#f59e0b;color:#fff;border:none;padding:7px 18px;font-size:13px;font-weight:700;" onclick="clEnableBatchMode()">Enable Batch Mode</button>
                   <button id="cl-lf-continue-btn" class="cl-btn cl-btn-ghost" style="font-size:13px;" onclick="clDismissLargeFileBanner()">Continue with full file</button>
                 </div>
-                <div id="cl-lf-continue-warn" style="display:none;margin-top:8px;font-size:12px;color:#dc2626;font-weight:600;">? "Continue with full file" is not recommended for this file size � browser crash ho sakta hai. Batch Mode use karo.</div>
+                <div id="cl-lf-continue-warn" style="display:none;margin-top:8px;font-size:12px;color:#dc2626;font-weight:600;">❌ "Continue with full file" is not recommended for this file size — browser crash ho sakta hai. Batch Mode use karo.</div>
               </div>
             </div>
           </div>
 
           <div class="cl-btn-row" style="justify-content:flex-end;margin-top:20px;">
-            <button class="cl-btn cl-btn-primary" id="cl-next-1" onclick="clGoStep(2)" disabled>Next: Map & Clean ?</button>
+            <button class="cl-btn cl-btn-primary" id="cl-next-1" onclick="clGoStep(2)" disabled>Next: Map & Clean →</button>
           </div>
         </div>
       </div>
@@ -1378,12 +1378,12 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <h3 class="cl-title" style="margin-top:4px;">Column Mapping</h3>
           <p class="cl-sub">Map your columns to required fields</p>
           <div id="cl-map-warn" class="cl-warning" style="display:none">
-            <span>??</span><span>Column mapping not clear. Please assign required fields below.</span>
+            <span>⚠️</span><span>Column mapping not clear. Please assign required fields below.</span>
           </div>
           <div class="cl-map-grid" id="cl-map-grid"></div>
           <h3 class="cl-title" style="margin-top:4px;">Data Preview</h3>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <input type="text" id="cl-preview-search" placeholder="??  Search name, phone, or any value..." style="flex:1;background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;" oninput="clSearchPreview(this.value)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+            <input type="text" id="cl-preview-search" placeholder="🔍  Search name, phone, or any value..." style="flex:1;background:var(--input);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;" oninput="clSearchPreview(this.value)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
             <span id="cl-preview-count" style="font-size:12px;color:var(--muted);white-space:nowrap;"></span>
           </div>
           <div class="cl-table-wrap" id="cl-table-wrap" style="max-height:260px;overflow:auto;"></div>
@@ -1394,9 +1394,9 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <p class="cl-sub">Review issues and apply fixes before export</p>
           <div id="cl-clean-sections"></div>
           <div class="cl-btn-row">
-            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(1)">? Back</button>
-            <button class="cl-btn cl-btn-ghost" id="cl-undo-btn" onclick="clUndo()" style="display:none;border-color:#f59e0b;color:#f59e0b;">? Undo Last Action</button>
-            <button class="cl-btn cl-btn-primary" onclick="clGoStep(3)">Next: Export ?</button>
+            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(1)">← Back</button>
+            <button class="cl-btn cl-btn-ghost" id="cl-undo-btn" onclick="clUndo()" style="display:none;border-color:#f59e0b;color:#f59e0b;">↩ Undo Last Action</button>
+            <button class="cl-btn cl-btn-primary" onclick="clGoStep(3)">Next: Export →</button>
           </div>
         </div>
       </div>
@@ -1406,8 +1406,8 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         <div class="cl-card">
           <!-- Output mode toggle -->
           <div class="cl-mode-toggle">
-            <button id="cl-mode-csv" class="cl-mode-btn active" onclick="clSetOutputMode('csv')">?? CSV Export</button>
-            <button id="cl-mode-bq" class="cl-mode-btn" onclick="clSetOutputMode('bq')">?? BigQuery Query</button>
+            <button id="cl-mode-csv" class="cl-mode-btn active" onclick="clSetOutputMode('csv')">📄 CSV Export</button>
+            <button id="cl-mode-bq" class="cl-mode-btn" onclick="clSetOutputMode('bq')">🔷 BigQuery Query</button>
           </div>
 
           <!-- ---- CSV MODE ---- -->
@@ -1415,8 +1415,8 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <!-- Filter section (collapsible) -->
           <details id="cl-filter-details" style="margin-bottom:18px;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
             <summary style="padding:12px 16px;background:var(--input);cursor:pointer;font-size:13px;font-weight:800;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;">
-              <span>?? Smart Filter <span style="font-size:11px;font-weight:500;color:var(--muted);margin-left:6px;">optional � filter rows before export</span></span>
-              <span style="font-size:11px;color:var(--muted);">?</span>
+              <span>🔍 Smart Filter <span style="font-size:11px;font-weight:500;color:var(--muted);margin-left:6px;">optional — filter rows before export</span></span>
+              <span style="font-size:11px;color:var(--muted);">▼</span>
             </summary>
             <div style="padding:14px 16px;">
               <p class="cl-sub" style="margin-top:0;">Select which values to include. Uncheck to exclude rows.</p>
@@ -1429,11 +1429,11 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <div class="cl-format-grid">
             <div class="cl-format-card active" id="clf-admin" onclick="clSelectFormat('admin')">
               <div class="cl-format-title">Admin Panel</div>
-              <div class="cl-format-fields">name � mobile_number � wati_server_id</div>
+              <div class="cl-format-fields">name · mobile_number · wati_server_id</div>
             </div>
             <div class="cl-format-card" id="clf-vscode" onclick="clSelectFormat('vscode')">
               <div class="cl-format-title">VS Code</div>
-              <div class="cl-format-fields">name � phone � watiserverid</div>
+              <div class="cl-format-fields">name · phone · watiserverid</div>
             </div>
           </div>
 
@@ -1477,9 +1477,9 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
             </div>
           </div>
           <div class="cl-btn-row">
-            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">? Back</button>
-            <button class="cl-btn cl-btn-export" onclick="clExport()">? Confirm & Export CSV</button>
-            <button class="cl-btn" onclick="clReset()" style="background:#f1f5f9;color:var(--muted);border:1px solid var(--border);margin-left:auto;">?? Clean New File</button>
+            <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">← Back</button>
+            <button class="cl-btn cl-btn-export" onclick="clExport()">✓ Confirm & Export CSV</button>
+            <button class="cl-btn" onclick="clReset()" style="background:#f1f5f9;color:var(--muted);border:1px solid var(--border);margin-left:auto;">🔄 Clean New File</button>
           </div>
           </div>
           <!-- ---- /CSV MODE ---- -->
@@ -1487,18 +1487,18 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <!-- ---- BIGQUERY MODE ---- -->
           <div id="cl-bq-mode" style="display:none;">
             <h3 class="cl-title">BigQuery Query Builder</h3>
-            <p class="cl-sub">Filter laga ke ready-made query banao � phir admin panel me paste karo.</p>
+            <p class="cl-sub">Filter laga ke ready-made query banao — phir admin panel me paste karo.</p>
 
-            <label class="cl-bq-lbl" style="margin-top:0;">Output Columns � SELECT</label>
+            <label class="cl-bq-lbl" style="margin-top:0;">Output Columns — SELECT</label>
             <div id="cl-bq-cols" class="cl-bq-cols"></div>
 
             <!-- Optional constant slug value for all rows -->
             <div id="cl-bq-slugconst-wrap">
-              <label class="cl-bq-lbl">Slug value <span style="font-weight:500;text-transform:none;letter-spacing:0;">(optional � sabhi rows ke liye same slug)</span></label>
+              <label class="cl-bq-lbl">Slug value <span style="font-weight:500;text-transform:none;letter-spacing:0;">(optional — sabhi rows ke liye same slug)</span></label>
               <input id="cl-bq-slugconst" class="cl-bq-input" placeholder="e.g. reactivation-june-2026" oninput="clBQSetSlugConst(this.value)" spellcheck="false"/>
             </div>
 
-            <label class="cl-bq-lbl">Filters � WHERE</label>
+            <label class="cl-bq-lbl">Filters — WHERE</label>
             <div id="cl-bq-filters"></div>
             <button class="cl-bq-addfilter" onclick="clBQAddFilter()">+ Add Filter</button>
 
@@ -1507,15 +1507,15 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
             <label class="cl-bq-lbl">Generated Query</label>
             <div class="cl-bq-query-wrap">
-              <button class="cl-bq-copy-btn" onclick="clBQCopy()" title="Copy query">?? Copy</button>
+              <button class="cl-bq-copy-btn" onclick="clBQCopy()" title="Copy query">📋 Copy</button>
               <pre id="cl-bq-query" class="cl-bq-query"></pre>
             </div>
             <div id="cl-bq-size" style="font-size:12px;color:var(--muted);margin:8px 0 0;"></div>
 
             <div class="cl-btn-row">
-              <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">? Back</button>
-              <button class="cl-btn cl-btn-export" onclick="clBQCopy()">?? Copy Query</button>
-              <button class="cl-btn" onclick="clReset()" style="background:#f1f5f9;color:var(--muted);border:1px solid var(--border);margin-left:auto;">?? Clean New File</button>
+              <button class="cl-btn cl-btn-ghost" onclick="clGoStep(2)">← Back</button>
+              <button class="cl-btn cl-btn-export" onclick="clBQCopy()">📋 Copy Query</button>
+              <button class="cl-btn" onclick="clReset()" style="background:#f1f5f9;color:var(--muted);border:1px solid var(--border);margin-left:auto;">🔄 Clean New File</button>
             </div>
           </div>
           <!-- ---- /BIGQUERY MODE ---- -->
@@ -1554,10 +1554,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           </div>
         </div>
         <div class="rp-field" style="margin-bottom:10px;">
-          <label style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px;display:block;">Include only these watiServerId rows <span style="font-weight:400;color:var(--muted)">(comma-separated � leave blank for all)</span></label>
+          <label style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px;display:block;">Include only these watiServerId rows <span style="font-weight:400;color:var(--muted)">(comma-separated — leave blank for all)</span></label>
           <input type="text" id="rp-filter-ids" placeholder="e.g. 8, 10, 26, 27, 28, 29" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--hover);color:var(--text);font-size:13px;box-sizing:border-box;">
         </div>
-        <button class="rp-extract-btn" id="rp-ext-btn" onclick="rpExtract()">Extract Counts from Images ?</button>
+        <button class="rp-extract-btn" id="rp-ext-btn" onclick="rpExtract()">Extract Counts from Images ✦</button>
         <div class="rp-status" id="rp-status"></div>
         <div id="rp-debug" style="display:none;margin-top:8px;">
           <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;cursor:pointer;user-select:none;" onclick="const p=document.getElementById('rp-raw-text');p.style.display=p.style.display==='none'?'block':'none'">&#9658; Raw OCR text (tap to view)</div>
@@ -1589,19 +1589,19 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         <div class="rp-card-title"><span class="rp-step">3</span> Attendance &amp; Keyword Count</div>
         <div class="rp-2col">
           <div>
-            <div class="rp-field"><label>Batch 1 � 6:30 am</label><input type="number" id="rp-b1" placeholder="0" min="0" oninput="rpLive()"></div>
-            <div class="rp-field"><label>Batch 2 � 7:30 am</label><input type="number" id="rp-b2" placeholder="0" min="0" oninput="rpLive()"></div>
-            <div class="rp-field"><label>Batch 3 � 8:30 am</label><input type="number" id="rp-b3" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Batch 1 — 6:30 am</label><input type="number" id="rp-b1" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Batch 2 — 7:30 am</label><input type="number" id="rp-b2" placeholder="0" min="0" oninput="rpLive()"></div>
+            <div class="rp-field"><label>Batch 3 — 8:30 am</label><input type="number" id="rp-b3" placeholder="0" min="0" oninput="rpLive()"></div>
             <div class="rp-field"><label>Today Keyword Trigger Count</label><input type="number" id="rp-kw" placeholder="0" min="0" oninput="rpLive()"></div>
           </div>
           <div>
             <div class="rp-stat-box">
               <div class="rp-stat-lbl">Total Morning Attendance</div>
-              <div class="rp-stat-val" id="rp-s-att">�</div>
+              <div class="rp-stat-val" id="rp-s-att">—</div>
               <div class="rp-stat-lbl">Total Users Clicked</div>
-              <div class="rp-stat-val" id="rp-s-clk" style="color:#34a853;">�</div>
+              <div class="rp-stat-val" id="rp-s-clk" style="color:#34a853;">—</div>
               <div class="rp-stat-lbl">Click Percentage</div>
-              <div class="rp-stat-val" id="rp-s-pct" style="color:#6366f1;">�</div>
+              <div class="rp-stat-val" id="rp-s-pct" style="color:#6366f1;">—</div>
             </div>
           </div>
         </div>
@@ -1644,29 +1644,29 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
         </div>
 
         <div class="tc-field">
-          <label>Header <span class="tc-field-hint">optional � max 60 chars</span></label>
+          <label>Header <span class="tc-field-hint">optional · max 60 chars</span></label>
           <input type="text" id="tc-header" maxlength="60" placeholder="e.g. Your appointment is confirmed">
         </div>
 
         <div class="tc-field">
-          <label>Body <span class="tc-field-hint">main message � max 1024 chars</span></label>
+          <label>Body <span class="tc-field-hint">main message · max 1024 chars</span></label>
           <textarea id="tc-body-input" placeholder="e.g.&#10;Hi Aditya, your yoga session is confirmed for tomorrow at 7 AM. Booking ID: HBD12345." spellcheck="false"></textarea>
           <div class="tc-char-count" style="text-align:right;margin-top:4px;"><span id="tc-char">0</span> / 1024 chars</div>
         </div>
 
         <div class="tc-field">
-          <label>Footer <span class="tc-field-hint">optional � max 60 chars</span></label>
+          <label>Footer <span class="tc-field-hint">optional · max 60 chars</span></label>
           <input type="text" id="tc-footer" maxlength="60" placeholder="e.g. Reply STOP to opt out">
         </div>
 
         <div class="tc-field">
-          <label>Buttons <span class="tc-field-hint">up to 3 � max 20 chars each</span></label>
+          <label>Buttons <span class="tc-field-hint">up to 3 · max 20 chars each</span></label>
           <input type="text" id="tc-btn-1" maxlength="20" placeholder="Button 1 (e.g. View Details)">
           <input type="text" id="tc-btn-2" maxlength="20" placeholder="Button 2 (optional)">
           <input type="text" id="tc-btn-3" maxlength="20" placeholder="Button 3 (optional)">
         </div>
 
-        <button class="rp-extract-btn" onclick="tcAnalyze()">Validate Template ?</button>
+        <button class="rp-extract-btn" onclick="tcAnalyze()">Validate Template ✦</button>
       </div>
 
       <!-- RESULT CARD -->
@@ -1674,10 +1674,10 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
         <!-- VERDICT BANNER -->
         <div id="tc-verdict" class="tc-verdict">
-          <div class="tc-verdict-icon" id="tc-verdict-icon">?</div>
+          <div class="tc-verdict-icon" id="tc-verdict-icon">✓</div>
           <div class="tc-verdict-main">
-            <div class="tc-verdict-title" id="tc-verdict-title">�</div>
-            <div class="tc-verdict-sub" id="tc-verdict-sub">�</div>
+            <div class="tc-verdict-title" id="tc-verdict-title">—</div>
+            <div class="tc-verdict-sub" id="tc-verdict-sub">—</div>
           </div>
         </div>
 
@@ -1686,12 +1686,12 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
           <div class="tc-score-card">
             <div class="tc-score-label">Utility Safe</div>
             <div class="tc-score-bar"><div class="tc-score-bar-fill tc-safe-fill" id="tc-safe-bar"></div></div>
-            <div class="tc-score-val" id="tc-safe-val">�</div>
+            <div class="tc-score-val" id="tc-safe-val">—</div>
           </div>
           <div class="tc-score-card">
             <div class="tc-score-label">Marketing Risk</div>
             <div class="tc-score-bar"><div class="tc-score-bar-fill tc-risk-fill" id="tc-risk-bar"></div></div>
-            <div class="tc-score-val" id="tc-risk-val">�</div>
+            <div class="tc-score-val" id="tc-risk-val">—</div>
           </div>
         </div>
 
@@ -1741,7 +1741,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 <!-- Cleaner Warning Modal -->
 <div id="cl-modal" class="cl-modal-overlay" style="display:none" onclick="if(event.target===this)this.style.display='none'">
   <div class="cl-modal-box">
-    <div id="cl-modal-icon" class="cl-modal-icon">??</div>
+    <div id="cl-modal-icon" class="cl-modal-icon">⚠️</div>
     <h3 id="cl-modal-title" class="cl-modal-title"></h3>
     <p id="cl-modal-body" class="cl-modal-body"></p>
     <div id="cl-modal-preview" class="cl-modal-preview" style="display:none"></div>
@@ -1812,8 +1812,8 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <button class="tb-btn" onclick="deleteCol()" title="Delete column" style="color:#d93025;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <div class="tb-sep"></div>
     <!-- Sort & Filter -->
-    <button class="tb-btn" onclick="sortBySelected('asc')" title="Sort A ? Z"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="13" y2="6"/><line x1="3" y1="12" x2="11" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/><polyline points="17 3 17 21"/><polyline points="14 18 17 21 20 18"/></svg></button>
-    <button class="tb-btn" onclick="sortBySelected('desc')" title="Sort Z ? A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="13" y2="6"/><line x1="3" y1="12" x2="11" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/><polyline points="17 3 17 21"/><polyline points="14 6 17 3 20 6"/></svg></button>
+    <button class="tb-btn" onclick="sortBySelected('asc')" title="Sort A → Z"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="13" y2="6"/><line x1="3" y1="12" x2="11" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/><polyline points="17 3 17 21"/><polyline points="14 18 17 21 20 18"/></svg></button>
+    <button class="tb-btn" onclick="sortBySelected('desc')" title="Sort Z → A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="13" y2="6"/><line x1="3" y1="12" x2="11" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/><polyline points="17 3 17 21"/><polyline points="14 6 17 3 20 6"/></svg></button>
     <button class="tb-btn" id="tb-filter" onclick="toggleFilter()" title="Toggle filters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
     <div class="tb-sep"></div>
     <!-- Find -->
@@ -1826,7 +1826,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
   <!-- Formula bar -->
   <div id="formula-bar">
     <div id="cell-ref">A1</div>
-    <input id="formula-input" placeholder="Enter value�" oninput="formulaBarInput(this.value)" onkeydown="formulaBarKey(event)">
+    <input id="formula-input" placeholder="Enter value…" oninput="formulaBarInput(this.value)" onkeydown="formulaBarKey(event)">
   </div>
 
   <!-- Tab bar -->
@@ -1835,15 +1835,15 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
   <!-- Editor body -->
   <div id="editor-body">
     <div id="find-bar">
-      <input id="find-inp" placeholder="Find�" oninput="doFind(this.value)" onkeydown="findKeyNav(event)">
+      <input id="find-inp" placeholder="Find…" oninput="doFind(this.value)" onkeydown="findKeyNav(event)">
       <span id="find-count"></span>
-      <button class="find-nav" onclick="findNav(-1)">?</button>
-      <button class="find-nav" onclick="findNav(1)">?</button>
-      <button id="find-close" onclick="toggleFind()">?</button>
+      <button class="find-nav" onclick="findNav(-1)">▲</button>
+      <button class="find-nav" onclick="findNav(1)">▼</button>
+      <button id="find-close" onclick="toggleFind()">✕</button>
     </div>
     <div id="editor-loading">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>
-      Loading sheet data�
+      Loading sheet data…
     </div>
     <div id="data-wrap" style="display:none;">
       <table id="data-table"></table>
@@ -1865,13 +1865,13 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
   <div class="ctx-sep"></div>
   <div class="ctx-item" onclick="ctxAction('clear')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 5H9l-7 7 7 7h11a2 2 0 002-2V7a2 2 0 00-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>Clear cell</div>
   <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="ctxAction('sort-asc')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="13" y2="6"/><line x1="3" y1="12" x2="11" y2="12"/><polyline points="17 3 17 21"/><polyline points="14 18 17 21 20 18"/></svg>Sort A ? Z</div>
-  <div class="ctx-item" onclick="ctxAction('sort-desc')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="13" y2="6"/><line x1="3" y1="12" x2="11" y2="12"/><polyline points="17 3 17 21"/><polyline points="14 6 17 3 20 6"/></svg>Sort Z ? A</div>
+  <div class="ctx-item" onclick="ctxAction('sort-asc')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="13" y2="6"/><line x1="3" y1="12" x2="11" y2="12"/><polyline points="17 3 17 21"/><polyline points="14 18 17 21 20 18"/></svg>Sort A → Z</div>
+  <div class="ctx-item" onclick="ctxAction('sort-desc')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="13" y2="6"/><line x1="3" y1="12" x2="11" y2="12"/><polyline points="17 3 17 21"/><polyline points="14 6 17 3 20 6"/></svg>Sort Z → A</div>
 </div>
 
 <!-- Filter dropdown -->
 <div id="filter-dropdown">
-  <div class="fd-search"><input id="fd-search-inp" placeholder="Search�" oninput="fdSearch(this.value)"></div>
+  <div class="fd-search"><input id="fd-search-inp" placeholder="Search…" oninput="fdSearch(this.value)"></div>
   <div id="fd-items"></div>
   <div class="fd-btns">
     <button onclick="clearFilter()">Clear</button>
@@ -1934,7 +1934,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <h2 style="font-size:20px;font-weight:800;color:var(--danger);margin-bottom:6px;">Remove from Dashboard?</h2>
     <p style="color:var(--text2);font-size:13px;margin-bottom:6px;line-height:1.6;">Are you sure you want to remove this sheet from your dashboard?</p>
     <p style="font-size:14px;font-weight:700;color:var(--text);background:var(--hover);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="del-name"></p>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:24px;">?? The actual Google Sheet will not be deleted.</p>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:24px;">⚠️ The actual Google Sheet will not be deleted.</p>
     <div style="display:flex;gap:10px;">
       <button class="btn-s" onclick="closeModal('del-md')" style="flex:1;padding:10px;font-size:14px;font-weight:700;border-radius:10px;">No, Keep it</button>
       <button class="btn-d" onclick="confirmDelete()" style="flex:1;padding:10px;font-size:14px;font-weight:700;border-radius:10px;">Yes, Delete</button>
@@ -1951,7 +1951,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <h2 style="font-size:20px;font-weight:800;color:var(--danger);margin-bottom:6px;">Delete Folder?</h2>
     <p style="color:var(--text2);font-size:13px;margin-bottom:6px;line-height:1.6;">Are you sure you want to delete this folder?</p>
     <p style="font-size:14px;font-weight:700;color:var(--text);background:var(--hover);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="del-folder-name"></p>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:24px;" id="del-folder-msg">?? Sheets inside will be moved out of the folder.</p>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:24px;" id="del-folder-msg">⚠️ Sheets inside will be moved out of the folder.</p>
     <div style="display:flex;gap:10px;">
       <button class="btn-s" onclick="closeModal('del-folder-md')" style="flex:1;padding:10px;font-size:14px;font-weight:700;border-radius:10px;">No, Keep it</button>
       <button class="btn-d" onclick="confirmDeleteFolder()" style="flex:1;padding:10px;font-size:14px;font-weight:700;border-radius:10px;">Yes, Delete</button>
@@ -1968,18 +1968,18 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     </h2>
     <label>Emoji Icon</label>
     <div id="board-emoji-row" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('???')">???</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('?')">?</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
-      <span class="emoji-pick" onclick="pickBoardEmoji('??')">??</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('🔗')">🔗</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('🖼️')">🖼️</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('💬')">💬</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('📌')">📌</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('🎯')">🎯</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('📝')">📝</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('⭐')">⭐</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('🚀')">🚀</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('💡')">💡</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('🎨')">🎨</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('📊')">📊</span>
+      <span class="emoji-pick" onclick="pickBoardEmoji('📊')">📊</span>
     </div>
     <label>Collection Name *</label>
     <input type="text" id="board-inp-name" placeholder="e.g. 2pm Response, Images, Work Links" onkeydown="if(event.key==='Enter')saveBoard()">
@@ -2028,7 +2028,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
     <!-- Message fields -->
     <div id="item-msg-fields" style="display:none;">
       <label>Message / Note *</label>
-      <textarea id="link-inp-text" placeholder="Type your message or note here�" rows="4" style="resize:vertical;"></textarea>
+      <textarea id="link-inp-text" placeholder="Type your message or note here…" rows="4" style="resize:vertical;"></textarea>
       <label>Title <small style="color:var(--text2);font-weight:400;">(optional)</small></label>
       <input type="text" id="link-inp-msgtitle" placeholder="Optional label for this note">
     </div>
@@ -2061,10 +2061,10 @@ window.googleApiError=function(){
   const lsBtn=document.getElementById('login-screen-btn');
   if(btn){btn.disabled=false;btn.textContent='Retry';}
   setLoadingDot(1,false);setLoadingDot(2,false);setLoadingDot(3,false);
-  setLoadingText('Connection failed � check your internet');
+  setLoadingText('Connection failed — check your internet');
   if(lsBtn){
     lsBtn.disabled=false;lsBtn.style.opacity='1';
-    lsBtn.innerHTML='Connection error � tap to retry';
+    lsBtn.innerHTML='Connection error — tap to retry';
     lsBtn.onclick=function(){location.reload();};
   }
 };
@@ -2075,10 +2075,10 @@ setTimeout(function(){
 
 // Define callbacks BEFORE external scripts load so they can call them
 window.gapiLoaded=function(){
-  setLoadingDot(1,true);setLoadingText('Google API loaded�');
+  setLoadingDot(1,true);setLoadingText('Google API loaded…');
   gapi.load('client',{
     callback:function(){
-      setLoadingDot(2,true);setLoadingText('Initializing client�');
+      setLoadingDot(2,true);setLoadingText('Initializing client…');
       gapiReady=true;
       checkBothReady();
     },
@@ -2094,7 +2094,7 @@ window.gisLoaded=function(){
       scope:SCOPES,
       callback:''
     });
-    setLoadingDot(3,true);setLoadingText('Ready � sign in to continue');
+    setLoadingDot(3,true);setLoadingText('Ready — sign in to continue');
     gisReady=true;
     checkBothReady();
   }catch(e){
@@ -2213,7 +2213,7 @@ function checkBothReady(){
             }
           })();
         } else {
-          // Token expired � try silent refresh
+          // Token expired — try silent refresh
           localStorage.removeItem('gapi_token');
           tokenClient.callback=async(resp)=>{
             if(resp.error)return;
@@ -2245,7 +2245,7 @@ function handleLogin(){
   const btn=document.getElementById('login-btn');
   if(!gapiReady||!gisReady){
     btn.disabled=true;
-    btn.textContent='Loading APIs�';
+    btn.textContent='Loading APIs…';
     // wait and retry automatically
     const wait=setInterval(()=>{
       if(gapiReady&&gisReady){
@@ -2296,11 +2296,11 @@ async function checkAccessDenied(email){
   if(!email)return false;
   try{
     await ensureDiscovery();
-    // Admin bypass: if user has edit access to the team sheet, they are the admin � never deny them
+    // Admin bypass: if user has edit access to the team sheet, they are the admin — never deny them
     try{
       const fileInfo=await gapi.client.drive.files.get({fileId:TEAM_SHEET_ID,fields:'capabilities'});
       if(fileInfo.result.capabilities && fileInfo.result.capabilities.canEdit){
-        return false; // admin/owner � always allowed
+        return false; // admin/owner — always allowed
       }
     }catch(e){}
     const res=await gapi.client.sheets.spreadsheets.values.get({
@@ -2609,7 +2609,7 @@ function signOutAccount(email){
       load();updateAuthUI();renderAll();
       toast('Switched to '+next.name,'s');
     }else{
-      // No more accounts � show login screen
+      // No more accounts — show login screen
       gapi.client.setToken('');
       localStorage.removeItem('gapi_token');
       localStorage.removeItem('user_profile');
@@ -2618,7 +2618,7 @@ function signOutAccount(email){
       toast('Signed out','s');
     }
   }else{
-    // Signing out a non-active account � just remove, no session change
+    // Signing out a non-active account — just remove, no session change
     renderAccountPopup();
     toast('Signed out of '+email,'s');
   }
@@ -2655,7 +2655,7 @@ function updateAuthUI(){
 // ----------------------------------
 async function importFromDrive(){
   if(!isLoggedIn){toast('Please sign in first','e');return;}
-  toast('Fetching your sheets from Drive�','s');
+  toast('Fetching your sheets from Drive…','s');
   try{
     await ensureDiscovery();
     let pageToken=null, allFiles=[];
@@ -2736,7 +2736,7 @@ async function ensureToken(){
 
 async function openEditor(sheetObj){
   if(!isLoggedIn){window.open(sheetObj.url,'_blank');return;}
-  document.title='My Sheets ?v6';
+  document.title='My Sheets ✓v6';
   const sid=sheetObj.driveId||extractSheetId(sheetObj.url);
   if(!sid){window.open(sheetObj.url,'_blank');return;}
   editorSheetId=sid;editorSheetUrl=sheetObj.url;
@@ -2771,9 +2771,9 @@ async function openEditor(sheetObj){
     const code=e?.result?.error?.code||e?.status;
     const msg=e?.result?.error?.message||e?.message||'Unknown error';
     if(code===401){
-      toast('Session expired � please sign in again and retry','e');
+      toast('Session expired — please sign in again and retry','e');
     } else if(code===403){
-      toast('Access denied � check your account has permission to this sheet','e');
+      toast('Access denied — check your account has permission to this sheet','e');
     } else {
       toast('Could not load sheet: '+msg,'e');
     }
@@ -2832,8 +2832,8 @@ function fitText(text,maxPx){
   if(!text)return'';
   if(measureText(text)<=maxPx)return text;
   let s=text;
-  while(s.length>1&&measureText(s+'�')>maxPx)s=s.slice(0,-1);
-  return s+'�';
+  while(s.length>1&&measureText(s+'…')>maxPx)s=s.slice(0,-1);
+  return s+'…';
 }
 
 function renderDataTable(){
@@ -2861,7 +2861,7 @@ function renderDataTable(){
   for(let c=0;c<maxCols;c++){
     const fActive=filterActive&&filterState[c]&&filterState[c].size>0;
     html+=`<th id="ch-${c}" style="width:${colW[c]}px;max-width:${colW[c]}px;" class="${selectedCol===c?'col-selected':''}" onclick="selectColumn(${c})" oncontextmenu="colCtxMenu(event,${c})">
-      <div class="filter-th">${colLetter(c)}${filterActive?`<span class="filter-icon ${fActive?'on':''}" onclick="event.stopPropagation();showFilterDropdown(event,${c})">?</span>`:''}</div>
+      <div class="filter-th">${colLetter(c)}${filterActive?`<span class="filter-icon ${fActive?'on':''}" onclick="event.stopPropagation();showFilterDropdown(event,${c})">▼</span>`:''}</div>
     </th>`;
   }
   html+='</tr></thead><tbody>';
@@ -3140,7 +3140,7 @@ function sortByCol(c,asc){
     return asc?cmp:-cmp;
   });
   editorData=[header,...body];
-  markAllModified();renderDataTable();toast(`Sorted ${asc?'A?Z':'Z?A'}`,'s');
+  markAllModified();renderDataTable();toast(`Sorted ${asc?'A→Z':'Z→A'}`,'s');
 }
 
 // -- FILTER --
@@ -3261,7 +3261,7 @@ async function refreshSheetData(){
 async function saveChanges(){
   if(!editorModified.size)return;
   const btn=document.getElementById('save-btn');
-  btn.disabled=true;btn.textContent='Saving�';
+  btn.disabled=true;btn.textContent='Saving…';
   try{
     await gapi.client.sheets.spreadsheets.values.update({
       spreadsheetId:editorSheetId,range:editorActiveTab.title,
@@ -3544,14 +3544,14 @@ function shareOnWhatsApp(){
   const folderCount=folders.length;
   const today=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
 
-  let msg=`?? *My Sheets Dashboard Stats*\n`;
-  msg+=`?? Date: ${today}\n\n`;
-  msg+=`?? *Total Sheets:* ${total}\n`;
-  msg+=`? *Pinned:* ${pinned}\n`;
-  msg+=`?? *Folders:* ${folderCount}\n\n`;
+  let msg=`📊 *My Sheets Dashboard Stats*\n`;
+  msg+=`📅 Date: ${today}\n\n`;
+  msg+=`📁 *Total Sheets:* ${total}\n`;
+  msg+=`⭐ *Pinned:* ${pinned}\n`;
+  msg+=`📂 *Folders:* ${folderCount}\n\n`;
 
   if(recent.length){
-    msg+=`?? *Recently Opened:*\n`;
+    msg+=`🕒 *Recently Opened:*\n`;
     recent.forEach((s,i)=>{
       const t=s.lastOpened?new Date(s.lastOpened).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}):'';
       msg+=`  ${i+1}. ${s.name}${t?' ('+t+')':''}\n`;
@@ -3561,12 +3561,12 @@ function shareOnWhatsApp(){
 
   if(pinned>0){
     const pinnedSheets=sheets.filter(s=>s.pinned).slice(0,5);
-    msg+=`? *Pinned Sheets:*\n`;
+    msg+=`⭐ *Pinned Sheets:*\n`;
     pinnedSheets.forEach((s,i)=>{msg+=`  ${i+1}. ${s.name}\n`;});
     msg+='\n';
   }
 
-  msg+=`_Shared from My Sheets Dashboard_ ??`;
+  msg+=`_Shared from My Sheets Dashboard_ 🚀`;
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
 function toggleTheme(){
@@ -3759,10 +3759,10 @@ function renderExecView(){
   if(pb){
     let b='';
     b+=`<button class="exec-page-btn txt" onclick="execGoPage(1)" ${execPage===1?'disabled':''}>First</button>`;
-    b+=`<button class="exec-page-btn" onclick="execGoPage(${execPage-1})" ${execPage===1?'disabled':''}>�</button>`;
+    b+=`<button class="exec-page-btn" onclick="execGoPage(${execPage-1})" ${execPage===1?'disabled':''}>‹</button>`;
     for(let p=Math.max(1,execPage-1);p<=Math.min(totalPages,execPage+1);p++)
       b+=`<button class="exec-page-btn${p===execPage?' active':''}" onclick="execGoPage(${p})">${p}</button>`;
-    b+=`<button class="exec-page-btn" onclick="execGoPage(${execPage+1})" ${execPage>=totalPages?'disabled':''}>�</button>`;
+    b+=`<button class="exec-page-btn" onclick="execGoPage(${execPage+1})" ${execPage>=totalPages?'disabled':''}>›</button>`;
     b+=`<button class="exec-page-btn txt" onclick="execGoPage(${totalPages})" ${execPage>=totalPages?'disabled':''}>Last</button>`;
     pb.innerHTML=b;
   }
@@ -3798,10 +3798,10 @@ function renderExecView(){
 function execItemHTML(s){
   const tags=s.tags||[];
   const firstTag=tags[0]||(folders.find(f=>f.id===s.folderId)?.name)||'Sheet';
-  const dateStr=s.lastOpened?new Date(s.lastOpened).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):(s.createdAt?new Date(s.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'�');
-  const timeStr=s.lastOpened?new Date(s.lastOpened).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'�';
-  const shortId=(s.id||'').substring(0,8)||'�';
-  const urlFrag=s.url?(s.url.match(/\/d\/([^/]+)/)?.[1]||s.url).substring(0,20)+'�':'�';
+  const dateStr=s.lastOpened?new Date(s.lastOpened).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):(s.createdAt?new Date(s.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'–');
+  const timeStr=s.lastOpened?new Date(s.lastOpened).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'–';
+  const shortId=(s.id||'').substring(0,8)||'–';
+  const urlFrag=s.url?(s.url.match(/\/d\/([^/]+)/)?.[1]||s.url).substring(0,20)+'…':'–';
   return`<div class="exec-item">
     <div class="exec-item-header">
       <span class="exec-item-tag">${esc(firstTag)}</span>
@@ -3895,7 +3895,7 @@ function deleteFolder(id){
   pendingDelFolderId=id;
   const count=sheets.filter(s=>s.folderId===id).length;
   document.getElementById('del-folder-name').textContent=f.name;
-  document.getElementById('del-folder-msg').textContent=count>0?`?? ${count} sheet(s) inside will be moved out of the folder.`:'This folder is empty.';
+  document.getElementById('del-folder-msg').textContent=count>0?`⚠️ ${count} sheet(s) inside will be moved out of the folder.`:'This folder is empty.';
   openModal('del-folder-md');
 }
 function confirmDeleteFolder(){
@@ -3947,13 +3947,13 @@ function cardHTML(s){
   </button>`;
   return`<div class="sheet-card" onclick="openSheet('${s.id}')">
     <div class="card-color-bar" style="background:${barColor};"></div>
-    ${s.pinned?'<div class="pin-star">?</div>':''}
+    ${s.pinned?'<div class="pin-star">★</div>':''}
     <div class="card-body">
       <div class="card-icon">
         <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="2" fill="#6366f120"/><line x1="2" y1="8" x2="22" y2="8" stroke="#6366f1" stroke-width="1.5"/><line x1="2" y1="13" x2="22" y2="13" stroke="#6366f1" stroke-width="1.5"/><line x1="8" y1="3" x2="8" y2="21" stroke="#6366f1" stroke-width="1.5"/><line x1="15" y1="3" x2="15" y2="21" stroke="#6366f1" stroke-width="1.5"/></svg>
       </div>
       <div class="card-name" title="${esc(s.name)}">${esc(s.name)}</div>
-      <div class="card-note">${s.note?esc(s.note):folder?'?? '+esc(folder.name):'&nbsp;'}</div>
+      <div class="card-note">${s.note?esc(s.note):folder?'📁 '+esc(folder.name):'&nbsp;'}</div>
       ${tags.length?`<div class="card-tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>`:''}
     </div>
     <div class="card-actions" onclick="event.stopPropagation()">
@@ -4064,7 +4064,7 @@ function togglePin(id){
   const s=sheets.find(x=>x.id===id);
   s.pinned=!s.pinned;
   save();renderAll();
-  toast(s.pinned?'Pinned ?':'Unpinned','s');
+  toast(s.pinned?'Pinned ★':'Unpinned','s');
 }
 
 function askDelete(id){
@@ -4090,9 +4090,9 @@ function mainAddClick(){
 }
 
 // ----------------------------------
-//  LINKS & MEDIA � COLLECTIONS
+//  LINKS & MEDIA — COLLECTIONS
 // ----------------------------------
-let currentLinkBoard=null, currentBoardColor=null, currentBoardEmoji='??';
+let currentLinkBoard=null, currentBoardColor=null, currentBoardEmoji='📁';
 
 function isImageUrl(url){
   return /\.(png|jpg|jpeg|gif|webp|svg|bmp|ico)(\?.*)?$/i.test(url)||
@@ -4110,7 +4110,7 @@ function mkId(){return Date.now().toString(36)+Math.random().toString(36).slice(
 // Board color picker
 let editingBoardId=null;
 function openCreateBoard(){
-  editingBoardId=null; currentBoardColor=COLORS[5]; currentBoardEmoji='??';
+  editingBoardId=null; currentBoardColor=COLORS[5]; currentBoardEmoji='📁';
   document.getElementById('board-modal-title').textContent='Create Collection';
   document.getElementById('board-inp-name').value='';
   document.getElementById('board-inp-desc').value='';
@@ -4120,7 +4120,7 @@ function openCreateBoard(){
 }
 function editBoard(id){
   const b=linkBoards.find(x=>x.id===id);if(!b)return;
-  editingBoardId=id; currentBoardColor=b.color||COLORS[5]; currentBoardEmoji=b.emoji||'??';
+  editingBoardId=id; currentBoardColor=b.color||COLORS[5]; currentBoardEmoji=b.emoji||'📁';
   document.getElementById('board-modal-title').textContent='Edit Collection';
   document.getElementById('board-inp-name').value=b.name;
   document.getElementById('board-inp-desc').value=b.desc||'';
@@ -4324,7 +4324,7 @@ function boardCardHTML(b){
   return`<div class="board-card" onclick="openBoard('${b.id}')">
     <div class="bc-color-bar" style="background:${color}"></div>
     <div class="bc-top">
-      <div class="bc-emoji">${b.emoji||'??'}</div>
+      <div class="bc-emoji">${b.emoji||'📁'}</div>
       <div class="bc-info">
         <div class="bc-name">${esc(b.name)}</div>
         ${b.desc?`<div class="bc-desc">${esc(b.desc)}</div>`:'<div class="bc-desc" style="opacity:.4">No description</div>'}
@@ -4441,7 +4441,7 @@ function addTag(){
 function removeTag(t){currentTags=currentTags.filter(x=>x!==t);renderTagsPreview();}
 function renderTagsPreview(){
   document.getElementById('tags-preview').innerHTML=currentTags.map(t=>
-    `<span class="tp-tag" onclick="removeTag('${t}')" title="Click to remove">${esc(t)} ?</span>`
+    `<span class="tp-tag" onclick="removeTag('${t}')" title="Click to remove">${esc(t)} ✕</span>`
   ).join('');
 }
 
@@ -4609,7 +4609,7 @@ function clShowLoader(text,sub,icon){
   if(el){el.style.display='flex';}
   const t=document.getElementById('cl-loader-text');if(t)t.textContent=text||'Processing...';
   const s=document.getElementById('cl-loader-sub');if(s)s.textContent=sub||'';
-  const ic=document.getElementById('cl-loader-icon');if(ic)ic.textContent=icon||'??';
+  const ic=document.getElementById('cl-loader-icon');if(ic)ic.textContent=icon||'⚙️';
   const bar=document.getElementById('cl-loader-bar');if(bar)bar.style.width='5%';
 }
 function clHideLoader(){
@@ -4646,18 +4646,18 @@ function clFinishLoad(file,data,headers){
     lbb.style.border=`1.5px solid ${veryLarge?'#fecaca':'#fde68a'}`;
     lbb.style.display='';
     const icon=document.getElementById('cl-lf-icon');
-    if(icon)icon.textContent=veryLarge?'?':'??';
+    if(icon)icon.textContent=veryLarge?'❌':'⚠️';
     const title=document.getElementById('cl-lf-title');
     if(title){
       title.style.color=veryLarge?'#991b1b':'#92400e';
-      title.textContent=(veryLarge?'Bahut badi file � ':'Badi file � ')+data.length.toLocaleString()+' rows';
+      title.textContent=(veryLarge?'Bahut badi file — ':'Badi file — ')+data.length.toLocaleString()+' rows';
     }
     const desc=document.getElementById('cl-lf-desc');
     if(desc){
       desc.style.color=veryLarge?'#7f1d1d':'#78350f';
       desc.innerHTML=veryLarge
         ?'<strong>Browser crash ho jayega</strong> agar full file load ki. Sirf <strong>Batch Mode</strong> hi kaam karega is size ke liye. Neeche batch size select karo aur "Enable Batch Mode" click karo.'
-        :'Browser slow ho sakta hai. <strong>Batch Mode</strong> enable karo � ek time par ek batch clean hogi, baad mein next batch load kar sakte ho.';
+        :'Browser slow ho sakta hai. <strong>Batch Mode</strong> enable karo — ek time par ek batch clean hogi, baad mein next batch load kar sakte ho.';
     }
     const sizeLabel=document.getElementById('cl-lf-size-label');
     if(sizeLabel)sizeLabel.style.color=veryLarge?'#991b1b':'#92400e';
@@ -4667,7 +4667,7 @@ function clFinishLoad(file,data,headers){
       continueBtn.disabled=true;
       continueBtn.style.opacity='0.4';
       continueBtn.style.cursor='not-allowed';
-      continueBtn.title='5 lakh+ rows ke liye recommended nahi � crash ho sakta hai';
+      continueBtn.title='5 lakh+ rows ke liye recommended nahi — crash ho sakta hai';
     }else if(continueBtn){
       continueBtn.disabled=false;
       continueBtn.style.opacity='';
@@ -4677,7 +4677,7 @@ function clFinishLoad(file,data,headers){
   }else if(lbb){
     lbb.style.display='none';
   }
-  if(data.length>100000&&data.length<=200000)toast(`Loaded ${data.length.toLocaleString()} rows � use Batch Export to split into smaller files`,'s');
+  if(data.length>100000&&data.length<=200000)toast(`Loaded ${data.length.toLocaleString()} rows — use Batch Export to split into smaller files`,'s');
 }
 
 // -- Batch Mode --
@@ -4690,7 +4690,7 @@ function clEnableBatchMode(){
   clState.batchIndex=0;
   document.getElementById('cl-large-file-banner').style.display='none';
   clLoadBatch(0);
-  toast(`Batch Mode on � Batch 1 of ${clState.totalBatches} ready (${batchSize.toLocaleString()} rows)`,'s');
+  toast(`Batch Mode on — Batch 1 of ${clState.totalBatches} ready (${batchSize.toLocaleString()} rows)`,'s');
 }
 
 function clDismissLargeFileBanner(){
@@ -4708,7 +4708,7 @@ function clLoadBatch(index){
   clState.removedDups=0;clState.removedInvalid=0;
   clState.phoneChanges=[];clState.autoCleanApplied=false;
   clState.filters={};clState._undoStack=[];
-  document.getElementById('cl-file-rows').textContent=`Batch ${index+1}/${clState.totalBatches} � ${batch.length.toLocaleString()} rows`;
+  document.getElementById('cl-file-rows').textContent=`Batch ${index+1}/${clState.totalBatches} — ${batch.length.toLocaleString()} rows`;
   clUpdateBatchIndicator();
 }
 
@@ -4720,7 +4720,7 @@ function clUpdateBatchIndicator(){
   const rowFrom=(clState.batchIndex*clState.batchSize+1).toLocaleString();
   const rowTo=Math.min((clState.batchIndex+1)*clState.batchSize,clState._allData.length).toLocaleString();
   const text=document.getElementById('cl-batch-ind-text');
-  if(text)text.textContent=`Batch ${clState.batchIndex+1} of ${clState.totalBatches} (rows ${rowFrom} � ${rowTo})`;
+  if(text)text.textContent=`Batch ${clState.batchIndex+1} of ${clState.totalBatches} (rows ${rowFrom} – ${rowTo})`;
   const nextBtn=document.getElementById('cl-next-batch-btn');
   if(nextBtn)nextBtn.style.display=(clState.batchIndex+1<clState.totalBatches)?'':'none';
 }
@@ -4736,11 +4736,11 @@ function clHandleFile(file){
   if(!file)return;
   const ext=file.name.split('.').pop().toLowerCase();
   if(!['csv','xlsx'].includes(ext)){toast('Only .csv and .xlsx files are supported','e');return;}
-  clShowLoader('Reading file�','Hang on, loading your data','??');
+  clShowLoader('Reading file…','Hang on, loading your data','📂');
   const reader=new FileReader();
   reader.onload=e=>{
     const buffer=e.target.result;
-    clLoaderProgress(20,'Parsing rows�');
+    clLoaderProgress(20,'Parsing rows…');
     // Try Web Worker (keeps UI responsive for large files)
     const xlsxSrc=document.querySelector('script[src*="xlsx"]')?.src;
     if(xlsxSrc&&typeof Worker!=='undefined'){
@@ -4788,7 +4788,7 @@ self.onmessage=function(msg){
         workerUrl=URL.createObjectURL(blob);
         const worker=new Worker(workerUrl);
         worker.onmessage=function(m){
-          if(m.data.progress!==undefined){clLoaderProgress(m.data.progress,'Parsing rows�');return;}
+          if(m.data.progress!==undefined){clLoaderProgress(m.data.progress,'Parsing rows…');return;}
           worker.terminate();URL.revokeObjectURL(workerUrl);
           if(m.data.error){clHideLoader();toast('Parse error: '+m.data.error,'e');return;}
           clLoaderProgress(100,'Done!');
@@ -4809,7 +4809,7 @@ self.onmessage=function(msg){
 
 function clParseFallback(buffer,ext,file){
   // Main-thread parse (fallback)
-  clLoaderProgress(30,'Parsing on main thread�');
+  clLoaderProgress(30,'Parsing on main thread…');
   setTimeout(()=>{
     try{
       let data=[],allHeaders=[];
@@ -4871,7 +4871,7 @@ function clGoStep(n){
 // -- Step 2: Preview & Mapping --
 function clBuildPreview(){
   const h=clState.headers;
-  // Auto-detect columns � by header name first, then by data pattern
+  // Auto-detect columns — by header name first, then by data pattern
   const sample=clState.raw.slice(0,20);
   const guessByName=(keywords)=>{
     const k=keywords.map(x=>x.toLowerCase());
@@ -4895,7 +4895,7 @@ function clBuildPreview(){
     clState.mapping.phone=guessByName(['phone','mobile','mob','tel','telephone','number','whatsapp','cell','ph','phone_no','mobile_no','contact_no','mob_no','phno','ph_number','whatsapp_no','mo_no'])||guessByData(isPhone);
     if(clState.mapping.phone)clState._autoDetected.phone=true;
   }
-  // WATI Server ID: only map if column name clearly says "wati" or "server" � never guess by data pattern
+  // WATI Server ID: only map if column name clearly says "wati" or "server" — never guess by data pattern
   if(!clState.mapping.serverId){
     clState.mapping.serverId=guessByName(['wati','wati_server','serverid','wati_id','server_id','wati_serverid'])||null;
     if(clState.mapping.serverId)clState._autoDetected.serverId=true;
@@ -4923,7 +4923,7 @@ function clBuildPreview(){
     <div class="cl-map-item"><label>Phone Number * ${ad.phone?autoBadge:''}</label><select onchange="clState.mapping.phone=this.value==='(none)'?null:this.value;if(clState._autoDetected)clState._autoDetected.phone=false;clBuildPreview()">${opts(clState.mapping.phone||'(none)')}</select></div>
     <div class="cl-map-item"><label>WATI Server ID ${ad.serverId?autoBadge:''}</label><select onchange="clState.mapping.serverId=this.value==='(none)'?null:this.value;if(clState._autoDetected)clState._autoDetected.serverId=false;clBuildPreview()">${opts(clState.mapping.serverId||'(none)')}</select></div>
   `;
-  // Preview table � reset search and render
+  // Preview table — reset search and render
   const searchEl=document.getElementById('cl-preview-search');
   if(searchEl)searchEl.value='';
   clRenderPreviewTable(clState.raw.slice(0,50));
@@ -4991,7 +4991,7 @@ function clBuildClean(){
     .map(([phone,allIdxs])=>({
       phone,
       count:allIdxs.length,
-      names:allIdxs.slice(0,3).map(idx=>nc?String(data[idx][nc]||'').trim()||'�':'�')
+      names:allIdxs.slice(0,3).map(idx=>nc?String(data[idx][nc]||'').trim()||'—':'—')
     }));
   const dupUniquePhones=Object.values(phoneMap).filter(v=>Array.isArray(v)).length;
   const dupPreviewHTML=dupSample.length?`
@@ -5009,7 +5009,7 @@ function clBuildClean(){
           <td style="padding:5px 10px;color:var(--text);">${d.names.map(n=>esc(n)).join(', ')}</td>
         </tr>`).join('')}</tbody>
       </table>
-      ${dupUniquePhones>3?`<div style="padding:5px 10px;font-size:11px;color:var(--muted);background:#fffbeb;">�and ${dupUniquePhones-3} more duplicate numbers. Click "See All" to view the full list.</div>`:''}
+      ${dupUniquePhones>3?`<div style="padding:5px 10px;font-size:11px;color:var(--muted);background:#fffbeb;">…and ${dupUniquePhones-3} more duplicate numbers. Click "See All" to view the full list.</div>`:''}
     </div>`:'';
 
   // Invalid rows sample: first 3 rows missing name or phone
@@ -5034,7 +5034,7 @@ function clBuildClean(){
           <td style="padding:5px 10px;color:#991b1b;">${[s.missingName?'No name':null,s.missingPhone?'No phone':null].filter(Boolean).join(' + ')}</td>
         </tr>`).join('')}</tbody>
       </table>
-      ${invalidIdxs.length>3?`<div style="padding:5px 10px;font-size:11px;color:var(--muted);background:#fef2f2;">�and ${invalidIdxs.length-3} more rows. Click "See All" to view the full list.</div>`:''}
+      ${invalidIdxs.length>3?`<div style="padding:5px 10px;font-size:11px;color:var(--muted);background:#fef2f2;">…and ${invalidIdxs.length-3} more rows. Click "See All" to view the full list.</div>`:''}
     </div>`:'';
 
   // Phone issues sample: first 3 invalid numbers
@@ -5048,26 +5048,26 @@ function clBuildClean(){
           <th style="padding:5px 10px;text-align:left;color:#991b1b;">Problem</th>
         </tr></thead>
         <tbody>${phoneIssues.slice(0,3).map(a=>{
-          const issue=a.hasInvalidChars?'Contains letters � not a valid number':a.tooShort?`Too short (only ${a.digits.length} digits)`:`Too long (${a.digits.length} digits)`;
+          const issue=a.hasInvalidChars?'Contains letters — not a valid number':a.tooShort?`Too short (only ${a.digits.length} digits)`:`Too long (${a.digits.length} digits)`;
           return`<tr style="border-top:1px solid #fecaca;">
-            <td style="padding:5px 10px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(a.name||'�')}</td>
+            <td style="padding:5px 10px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(a.name||'—')}</td>
             <td style="padding:5px 10px;font-family:monospace;color:#dc2626;white-space:nowrap;">${esc(a.raw)}</td>
             <td style="padding:5px 10px;color:#991b1b;">${esc(issue)}</td>
           </tr>`;
         }).join('')}</tbody>
       </table>
-      ${phoneIssues.length>3?`<div style="padding:5px 10px;font-size:11px;color:var(--muted);background:#fef2f2;">�and ${phoneIssues.length-3} more. Click "Review & Fix" to see all.</div>`:''}
+      ${phoneIssues.length>3?`<div style="padding:5px 10px;font-size:11px;color:var(--muted);background:#fef2f2;">…and ${phoneIssues.length-3} more. Click "Review & Fix" to see all.</div>`:''}
     </div>`:'';
 
   // Build sections HTML
   sections.push(`<div class="cl-clean-section">
     <div class="cl-clean-header">
-      <div class="cl-clean-title">?? Duplicate Phone Numbers <span class="cl-clean-badge ${dupCount?'cl-badge-warn':'cl-badge-ok'}">${dupCount} found</span></div>
+      <div class="cl-clean-title">🔁 Duplicate Phone Numbers <span class="cl-clean-badge ${dupCount?'cl-badge-warn':'cl-badge-ok'}">${dupCount} found</span></div>
       ${dupCount?`<div style="display:flex;gap:8px;">
         <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="clPreviewDups()">See All</button>
         <button class="cl-btn cl-btn-danger" style="padding:6px 12px;font-size:12px;" onclick="clRemoveDups()">Remove Duplicates</button>
         <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="toast('Duplicates kept','s')">Keep All</button>
-      </div>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">? No duplicates</span>`}
+      </div>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ No duplicates</span>`}
     </div>
     ${dupCount?`<div class="cl-clean-body">
       <p style="font-size:13px;color:var(--muted);margin-bottom:0;">The same phone number appears more than once across ${dupCount} extra rows. Only the first row for each number will be kept.</p>
@@ -5077,32 +5077,32 @@ function clBuildClean(){
 
   sections.push(`<div class="cl-clean-section">
     <div class="cl-clean-header">
-      <div class="cl-clean-title">?? Missing Required Data <span class="cl-clean-badge ${invalidIdxs.length?'cl-badge-warn':'cl-badge-ok'}">${invalidIdxs.length} rows</span></div>
+      <div class="cl-clean-title">🧹 Missing Required Data <span class="cl-clean-badge ${invalidIdxs.length?'cl-badge-warn':'cl-badge-ok'}">${invalidIdxs.length} rows</span></div>
       ${invalidIdxs.length?`<div style="display:flex;gap:8px;">
         <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="clPreviewInvalid()">See All</button>
         <button class="cl-btn cl-btn-danger" style="padding:6px 12px;font-size:12px;" onclick="clRemoveInvalid()">Remove Invalid Rows</button>
-      </div>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">? All rows have required data</span>`}
+      </div>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ All rows have required data</span>`}
     </div>
     ${invalidIdxs.length?`<div class="cl-clean-body">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:0;">These rows are missing a name or phone number � without both, a message cannot be sent. The red cells below show exactly what's missing.</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:0;">These rows are missing a name or phone number — without both, a message cannot be sent. The red cells below show exactly what's missing.</p>
       ${invalidPreviewHTML}
     </div>`:''}
   </div>`);
 
   sections.push(`<div class="cl-clean-section">
     <div class="cl-clean-header">
-      <div class="cl-clean-title">?? Phone Number Issues <span class="cl-clean-badge ${phoneIssues.length?'cl-badge-warn':'cl-badge-ok'}">${phoneIssues.length} issues</span></div>
-      ${phoneIssues.length?`<button class="cl-btn cl-btn-warn" style="padding:6px 12px;font-size:12px;" onclick="clShowPhoneModal()">Review & Fix</button>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">? All phones look valid</span>`}
+      <div class="cl-clean-title">📱 Phone Number Issues <span class="cl-clean-badge ${phoneIssues.length?'cl-badge-warn':'cl-badge-ok'}">${phoneIssues.length} issues</span></div>
+      ${phoneIssues.length?`<button class="cl-btn cl-btn-warn" style="padding:6px 12px;font-size:12px;" onclick="clShowPhoneModal()">Review & Fix</button>`:`<span style="font-size:12px;color:#22c55e;font-weight:600;">✓ All phones look valid</span>`}
     </div>
     ${phoneIssues.length?`<div class="cl-clean-body">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:0;">These phone numbers look incorrect � too short, too long, or contain letters. They may fail to deliver or reach the wrong person.</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:0;">These phone numbers look incorrect — too short, too long, or contain letters. They may fail to deliver or reach the wrong person.</p>
       ${phonePreviewHTML}
     </div>`:''}
   </div>`);
 
   sections.push(`<div class="cl-clean-section">
     <div class="cl-clean-header">
-      <div class="cl-clean-title">?? Auto Clean <span class="cl-clean-badge cl-badge-ok">${clState.autoCleanApplied?'Applied':'Ready'}</span></div>
+      <div class="cl-clean-title">🧼 Auto Clean <span class="cl-clean-badge cl-badge-ok">${clState.autoCleanApplied?'Applied':'Ready'}</span></div>
       <button class="cl-btn cl-btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="clApplyAutoClean(true)">${clState.autoCleanApplied?'Re-apply':'Apply'}</button>
     </div>
     <div class="cl-clean-body"><p style="font-size:13px;color:var(--muted);">Trims whitespace, removes hidden characters, and fixes text encoding. Safe to apply automatically.</p></div>
@@ -5131,7 +5131,7 @@ function clPreviewDups(){
     if(p){if(seen[p])dups.push(r);else seen[p]=true;}
   });
   const h=clState.headers.slice(0,4);
-  clShowModal('??','Duplicate Rows',`${dups.length} duplicate entries found (showing first 20):`,
+  clShowModal('🔁','Duplicate Rows',`${dups.length} duplicate entries found (showing first 20):`,
     `<table><thead><tr>${h.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${dups.slice(0,20).map(r=>`<tr>${h.map(c=>`<td>${esc(String(r[c]||''))}</td>`).join('')}</tr>`).join('')}</tbody></table>`,
     [{label:'Remove Duplicates',cls:'cl-btn-danger',fn:'clRemoveDups'},{label:'Keep All',cls:'cl-btn-ghost',fn:'clClosModal'}]
   );
@@ -5154,8 +5154,8 @@ function clPreviewInvalid(){
       return`<td style="padding:5px 10px;${isBad?'background:#fef2f2;color:#dc2626;font-weight:600;':''}">${isBad&&!val?'<em>MISSING</em>':esc(val)}</td>`;
     }).join('')}</tr>`;
   }).join('');
-  clShowModal('??','Missing Required Data',
-    `${invalid.length} rows are missing name or phone number � these cannot be exported. Highlighted cells show what is missing.`,
+  clShowModal('🧹','Missing Required Data',
+    `${invalid.length} rows are missing name or phone number — these cannot be exported. Highlighted cells show what is missing.`,
     `<div style="overflow:auto;max-height:280px;border:1px solid #fecaca;border-radius:6px;"><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr style="background:#fef2f2;position:sticky;top:0;">${h.map(c=>`<th style="padding:5px 10px;text-align:left;color:#991b1b;white-space:nowrap;">${esc(c)}</th>`).join('')}</tr></thead><tbody>${rowsHTML}</tbody></table></div>${invalid.length>30?`<p style="font-size:11px;color:var(--muted);margin-top:6px;">Showing first 30 of ${invalid.length} rows.</p>`:''}`,
     [{label:'Remove Invalid Rows',cls:'cl-btn-danger',fn:'clRemoveInvalid'},{label:'Keep',cls:'cl-btn-ghost',fn:'clClosModal'}]
   );
@@ -5165,7 +5165,7 @@ function clPushUndo(label){
   clState._undoStack.push({label,cleaned:[...clState.cleaned],removedDups:clState.removedDups,removedInvalid:clState.removedInvalid});
   if(clState._undoStack.length>10)clState._undoStack.shift();
   const btn=document.getElementById('cl-undo-btn');
-  if(btn){btn.style.display='';btn.textContent='? Undo: '+label;}
+  if(btn){btn.style.display='';btn.textContent='↩ Undo: '+label;}
 }
 function clUndo(){
   if(!clState._undoStack.length){toast('Nothing to undo','e');return;}
@@ -5175,7 +5175,7 @@ function clUndo(){
   clState.removedInvalid=snap.removedInvalid;
   const btn=document.getElementById('cl-undo-btn');
   if(btn){
-    if(clState._undoStack.length){const prev=clState._undoStack[clState._undoStack.length-1];btn.textContent='? Undo: '+prev.label;}
+    if(clState._undoStack.length){const prev=clState._undoStack[clState._undoStack.length-1];btn.textContent='↩ Undo: '+prev.label;}
     else{btn.style.display='none';}
   }
   toast('Undone: '+snap.label,'s');clBuildClean();
@@ -5183,7 +5183,7 @@ function clUndo(){
 
 function clRemoveDups(){
   clPushUndo('Remove Duplicates');
-  clShowLoader('Removing duplicates�','','??');
+  clShowLoader('Removing duplicates…','','🔁');
   const pc=clState.mapping.phone;const seen=new Set();const before=clState.cleaned.length;
   const CHUNK=20000;let i=0;const result=[];
   function step(){
@@ -5198,7 +5198,7 @@ function clRemoveDups(){
 
 function clRemoveInvalid(){
   clPushUndo('Remove Invalid');
-  clShowLoader('Removing invalid rows�','','??');
+  clShowLoader('Removing invalid rows…','','🧹');
   const {name:nc,phone:pc}=clState.mapping;const before=clState.cleaned.length;
   const CHUNK=20000;let i=0;const result=[];
   function step(){
@@ -5213,58 +5213,58 @@ function clRemoveInvalid(){
 
 // Comprehensive country code list
 const CL_COUNTRIES=[
-  {cc:'+91',flag:'????',name:'India'},
-  {cc:'+1',flag:'????',name:'USA / Canada'},
-  {cc:'+44',flag:'????',name:'United Kingdom'},
-  {cc:'+971',flag:'????',name:'UAE'},
-  {cc:'+65',flag:'????',name:'Singapore'},
-  {cc:'+61',flag:'????',name:'Australia'},
-  {cc:'+92',flag:'????',name:'Pakistan'},
-  {cc:'+880',flag:'????',name:'Bangladesh'},
-  {cc:'+60',flag:'????',name:'Malaysia'},
-  {cc:'+66',flag:'????',name:'Thailand'},
-  {cc:'+62',flag:'????',name:'Indonesia'},
-  {cc:'+63',flag:'????',name:'Philippines'},
-  {cc:'+84',flag:'????',name:'Vietnam'},
-  {cc:'+82',flag:'????',name:'South Korea'},
-  {cc:'+81',flag:'????',name:'Japan'},
-  {cc:'+86',flag:'????',name:'China'},
-  {cc:'+94',flag:'????',name:'Sri Lanka'},
-  {cc:'+977',flag:'????',name:'Nepal'},
-  {cc:'+95',flag:'????',name:'Myanmar'},
-  {cc:'+855',flag:'????',name:'Cambodia'},
-  {cc:'+966',flag:'????',name:'Saudi Arabia'},
-  {cc:'+974',flag:'????',name:'Qatar'},
-  {cc:'+973',flag:'????',name:'Bahrain'},
-  {cc:'+968',flag:'????',name:'Oman'},
-  {cc:'+965',flag:'????',name:'Kuwait'},
-  {cc:'+962',flag:'????',name:'Jordan'},
-  {cc:'+961',flag:'????',name:'Lebanon'},
-  {cc:'+20',flag:'????',name:'Egypt'},
-  {cc:'+27',flag:'????',name:'South Africa'},
-  {cc:'+234',flag:'????',name:'Nigeria'},
-  {cc:'+254',flag:'????',name:'Kenya'},
-  {cc:'+255',flag:'????',name:'Tanzania'},
-  {cc:'+256',flag:'????',name:'Uganda'},
-  {cc:'+233',flag:'????',name:'Ghana'},
-  {cc:'+49',flag:'????',name:'Germany'},
-  {cc:'+33',flag:'????',name:'France'},
-  {cc:'+34',flag:'????',name:'Spain'},
-  {cc:'+39',flag:'????',name:'Italy'},
-  {cc:'+31',flag:'????',name:'Netherlands'},
-  {cc:'+46',flag:'????',name:'Sweden'},
-  {cc:'+47',flag:'????',name:'Norway'},
-  {cc:'+45',flag:'????',name:'Denmark'},
-  {cc:'+41',flag:'????',name:'Switzerland'},
-  {cc:'+43',flag:'????',name:'Austria'},
-  {cc:'+48',flag:'????',name:'Poland'},
-  {cc:'+7',flag:'????',name:'Russia'},
-  {cc:'+55',flag:'????',name:'Brazil'},
-  {cc:'+52',flag:'????',name:'Mexico'},
-  {cc:'+54',flag:'????',name:'Argentina'},
-  {cc:'+57',flag:'????',name:'Colombia'},
-  {cc:'+56',flag:'????',name:'Chile'},
-  {cc:'+64',flag:'????',name:'New Zealand'},
+  {cc:'+91',flag:'🇮🇳',name:'India'},
+  {cc:'+1',flag:'🇺🇸',name:'USA / Canada'},
+  {cc:'+44',flag:'🇬🇧',name:'United Kingdom'},
+  {cc:'+971',flag:'🇦🇪',name:'UAE'},
+  {cc:'+65',flag:'🇸🇬',name:'Singapore'},
+  {cc:'+61',flag:'🇦🇺',name:'Australia'},
+  {cc:'+92',flag:'🇵🇰',name:'Pakistan'},
+  {cc:'+880',flag:'🇧🇩',name:'Bangladesh'},
+  {cc:'+60',flag:'🇲🇾',name:'Malaysia'},
+  {cc:'+66',flag:'🇹🇭',name:'Thailand'},
+  {cc:'+62',flag:'🇮🇩',name:'Indonesia'},
+  {cc:'+63',flag:'🇵🇭',name:'Philippines'},
+  {cc:'+84',flag:'🇻🇳',name:'Vietnam'},
+  {cc:'+82',flag:'🇰🇷',name:'South Korea'},
+  {cc:'+81',flag:'🇯🇵',name:'Japan'},
+  {cc:'+86',flag:'🇨🇳',name:'China'},
+  {cc:'+94',flag:'🇱🇰',name:'Sri Lanka'},
+  {cc:'+977',flag:'🇳🇵',name:'Nepal'},
+  {cc:'+95',flag:'🇲🇲',name:'Myanmar'},
+  {cc:'+855',flag:'🇰🇭',name:'Cambodia'},
+  {cc:'+966',flag:'🇸🇦',name:'Saudi Arabia'},
+  {cc:'+974',flag:'🇶🇦',name:'Qatar'},
+  {cc:'+973',flag:'🇧🇭',name:'Bahrain'},
+  {cc:'+968',flag:'🇴🇲',name:'Oman'},
+  {cc:'+965',flag:'🇰🇼',name:'Kuwait'},
+  {cc:'+962',flag:'🇯🇴',name:'Jordan'},
+  {cc:'+961',flag:'🇱🇧',name:'Lebanon'},
+  {cc:'+20',flag:'🇪🇬',name:'Egypt'},
+  {cc:'+27',flag:'🇿🇦',name:'South Africa'},
+  {cc:'+234',flag:'🇳🇬',name:'Nigeria'},
+  {cc:'+254',flag:'🇰🇪',name:'Kenya'},
+  {cc:'+255',flag:'🇹🇿',name:'Tanzania'},
+  {cc:'+256',flag:'🇺🇬',name:'Uganda'},
+  {cc:'+233',flag:'🇬🇭',name:'Ghana'},
+  {cc:'+49',flag:'🇩🇪',name:'Germany'},
+  {cc:'+33',flag:'🇫🇷',name:'France'},
+  {cc:'+34',flag:'🇪🇸',name:'Spain'},
+  {cc:'+39',flag:'🇮🇹',name:'Italy'},
+  {cc:'+31',flag:'🇳🇱',name:'Netherlands'},
+  {cc:'+46',flag:'🇸🇪',name:'Sweden'},
+  {cc:'+47',flag:'🇳🇴',name:'Norway'},
+  {cc:'+45',flag:'🇩🇰',name:'Denmark'},
+  {cc:'+41',flag:'🇨🇭',name:'Switzerland'},
+  {cc:'+43',flag:'🇦🇹',name:'Austria'},
+  {cc:'+48',flag:'🇵🇱',name:'Poland'},
+  {cc:'+7',flag:'🇷🇺',name:'Russia'},
+  {cc:'+55',flag:'🇧🇷',name:'Brazil'},
+  {cc:'+52',flag:'🇲🇽',name:'Mexico'},
+  {cc:'+54',flag:'🇦🇷',name:'Argentina'},
+  {cc:'+57',flag:'🇨🇴',name:'Colombia'},
+  {cc:'+56',flag:'🇨🇱',name:'Chile'},
+  {cc:'+64',flag:'🇳🇿',name:'New Zealand'},
 ];
 
 // Detect country from digits
@@ -5301,7 +5301,7 @@ function clShowPhoneModal(){
   // Country breakdown
   const countryCount={};
   analysis.forEach(a=>{
-    const key=a.country?`${a.country.flag} ${a.country.name} (${a.country.cc})`:'? Unknown';
+    const key=a.country?`${a.country.flag} ${a.country.name} (${a.country.cc})`:'❓ Unknown';
     countryCount[key]=(countryCount[key]||0)+1;
   });
   const breakdown=Object.entries(countryCount).sort((a,b)=>b[1]-a[1]);
@@ -5319,7 +5319,7 @@ function clShowPhoneModal(){
   </div>
   ${realIssues.length?`
     <div style="margin-bottom:10px;">
-      <div style="font-size:12px;font-weight:700;color:#991b1b;margin-bottom:6px;padding:7px 10px;background:#fef2f2;border-radius:6px;">?? ${realIssues.length} number${realIssues.length>1?'s':''} with actual issues (too short/long or invalid chars)</div>
+      <div style="font-size:12px;font-weight:700;color:#991b1b;margin-bottom:6px;padding:7px 10px;background:#fef2f2;border-radius:6px;">⚠️ ${realIssues.length} number${realIssues.length>1?'s':''} with actual issues (too short/long or invalid chars)</div>
       <div style="max-height:140px;overflow:auto;border:1px solid #fecaca;border-radius:6px;">
         <table style="width:100%;border-collapse:collapse;font-size:12px;">
           <thead><tr style="background:#fef2f2;position:sticky;top:0;">
@@ -5330,7 +5330,7 @@ function clShowPhoneModal(){
           <tbody>${realIssues.map(a=>{
             const issue=a.hasInvalidChars?'Has letters':a.tooShort?'Too short ('+a.digits.length+' digits)':'Too long ('+a.digits.length+' digits)';
             return`<tr style="border-top:1px solid #fecaca;">
-              <td style="padding:5px 10px;color:var(--text);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(a.name||'�')}</td>
+              <td style="padding:5px 10px;color:var(--text);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(a.name||'—')}</td>
               <td style="padding:5px 10px;color:#dc2626;font-family:monospace;white-space:nowrap;">${esc(a.raw)}</td>
               <td style="padding:5px 10px;color:#991b1b;white-space:nowrap;">${esc(issue)}</td>
             </tr>`;
@@ -5338,7 +5338,7 @@ function clShowPhoneModal(){
         </table>
       </div>
     </div>`:''}
-  ${missingPlus.length?`<div style="font-size:12px;color:#78350f;margin-bottom:8px;padding:8px 10px;background:#fffbeb;border-radius:6px;">?? ${missingPlus.length} numbers are missing the + prefix but appear to have country code</div>`:''}
+  ${missingPlus.length?`<div style="font-size:12px;color:#78350f;margin-bottom:8px;padding:8px 10px;background:#fffbeb;border-radius:6px;">ℹ️ ${missingPlus.length} numbers are missing the + prefix but appear to have country code</div>`:''}
   <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:8px 0 5px;">Add + prefix to numbers missing it</div>
   <select class="cl-cc-select" id="cl-cc-action" onchange="clToggleCCInput()" style="margin:4px 0 0;">
     <option value="add_plus">Add + prefix to numbers without it</option>
@@ -5351,7 +5351,7 @@ function clShowPhoneModal(){
     </select>
   </div>`;
 
-  clShowModal('??','Phone Number Analysis',
+  clShowModal('📱','Phone Number Analysis',
     `Your data contains numbers from ${breakdown.length} different ${breakdown.length===1?'country':'countries'}.`,
     breakdownHTML,
     [
@@ -5426,7 +5426,7 @@ function clBuildFilter(){
     return;
   }
 
-  // Init filter state � always recompute available values; preserve selection only if value still exists
+  // Init filter state — always recompute available values; preserve selection only if value still exists
   filterCols.forEach(col=>{
     const vals=[...new Set(data.map(r=>String(r[col]||'').trim()).filter(Boolean))].sort();
     const available=new Set(vals);
@@ -5456,10 +5456,10 @@ function clBuildFilter(){
         <span style="font-size:11px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%;" title="${esc(col)}">${esc(col)}</span>
         <span style="font-size:11px;font-weight:700;background:${badgeColor};color:${badgeText};border-radius:10px;padding:2px 9px;">${selCount}/${allVals.length}</span>
       </div>
-      <input class="cl-filter-search" placeholder="?? Search..." oninput="clFilterSearch(this,'${colId}')"/>
+      <input class="cl-filter-search" placeholder="🔍 Search..." oninput="clFilterSearch(this,'${colId}')"/>
       <div style="display:flex;gap:6px;margin-bottom:8px;">
-        <button onclick="clSelectAllFilter('${esc(col)}',JSON.parse(this.dataset.vals))" data-vals="${valsJson}" style="flex:1;font-size:11px;font-weight:700;padding:5px 8px;border-radius:6px;border:1.5px solid #22c55e;background:#f0fdf4;cursor:pointer;color:#15803d;transition:opacity .15s;" onmouseenter="this.style.opacity='.75'" onmouseleave="this.style.opacity='1'">? All</button>
-        <button onclick="clClearFilter('${esc(col)}')" style="flex:1;font-size:11px;font-weight:700;padding:5px 8px;border-radius:6px;border:1.5px solid #f87171;background:#fff1f2;cursor:pointer;color:#dc2626;transition:opacity .15s;" onmouseenter="this.style.opacity='.75'" onmouseleave="this.style.opacity='1'">? None</button>
+        <button onclick="clSelectAllFilter('${esc(col)}',JSON.parse(this.dataset.vals))" data-vals="${valsJson}" style="flex:1;font-size:11px;font-weight:700;padding:5px 8px;border-radius:6px;border:1.5px solid #22c55e;background:#f0fdf4;cursor:pointer;color:#15803d;transition:opacity .15s;" onmouseenter="this.style.opacity='.75'" onmouseleave="this.style.opacity='1'">✓ All</button>
+        <button onclick="clClearFilter('${esc(col)}')" style="flex:1;font-size:11px;font-weight:700;padding:5px 8px;border-radius:6px;border:1.5px solid #f87171;background:#fff1f2;cursor:pointer;color:#dc2626;transition:opacity .15s;" onmouseenter="this.style.opacity='.75'" onmouseleave="this.style.opacity='1'">✕ None</button>
       </div>
       <div class="cl-filter-opts" id="${colId}">
         ${allVals.map(v=>`<label class="cl-filter-item ${clState.filters[col]?.has(v)?'cl-filter-item-on':''}"><input type="checkbox" ${clState.filters[col]?.has(v)?'checked':''} onchange="clToggleFilter('${esc(col)}','${esc(v)}',this.checked)"/> ${esc(v)}</label>`).join('')}
@@ -5541,7 +5541,7 @@ function clBuildExport(){
     if(!phoneVal||headerWordsCheck.has(phoneVal.toLowerCase()))reasons.push('Empty phone');
     else if(/[a-zA-Z]/.test(phoneVal))reasons.push('Phone has letters: '+phoneVal);
     else if(digits.length<8)reasons.push('Phone too short ('+digits.length+' digits): '+phoneVal);
-    // Spaces/dashes are NOT an error � clCleanPhone handles them at export
+    // Spaces/dashes are NOT an error — clCleanPhone handles them at export
     return reasons.length?{name:String(r[ncCheck]||'Row '+(i+1)),phone:phoneVal,cleaned,reason:reasons[0]}:null;
   }).filter(Boolean);
   clState._problemRows=problemRows;
@@ -5556,7 +5556,7 @@ function clBuildExport(){
   // Show problem rows breakdown if any
   const problemSection=problemRows.length?`
     <div class="cl-warning cl-warning-red" style="flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:16px;">
-      <div style="font-weight:700;font-size:13px;">?? ${problemRows.length} rows have invalid phone numbers</div>
+      <div style="font-weight:700;font-size:13px;">⚠️ ${problemRows.length} rows have invalid phone numbers</div>
       <div style="width:100%;max-height:160px;overflow:auto;border:1px solid #fecaca;border-radius:6px;">
         <table style="width:100%;border-collapse:collapse;font-size:12px;">
           <thead><tr style="background:#fef2f2;">
@@ -5566,7 +5566,7 @@ function clBuildExport(){
           </tr></thead>
           <tbody>${problemRows.slice(0,20).map(r=>`<tr style="border-top:1px solid #fecaca;">
             <td style="padding:5px 10px;color:var(--text);">${esc(r.name)}</td>
-            <td style="padding:5px 10px;color:var(--text);">${esc(r.phone)||'�'}</td>
+            <td style="padding:5px 10px;color:var(--text);">${esc(r.phone)||'—'}</td>
             <td style="padding:5px 10px;color:#dc2626;">${esc(r.reason)}</td>
           </tr>`).join('')}</tbody>
         </table>
@@ -5591,7 +5591,7 @@ function clBuildExport(){
   const watiSection=watiMissing||!watiHasValues?`
     <div class="cl-warning cl-warning-red" style="margin-bottom:16px;flex-direction:column;align-items:flex-start;gap:8px;">
       <div style="display:flex;align-items:center;gap:8px;font-weight:700;">
-        ?? WATI Server ID is not mentioned in the sheet
+        ⚠️ WATI Server ID is not mentioned in the sheet
       </div>
       <div style="font-size:12px;">Enter a WATI Server ID number to apply to all ${filtered.length} rows:</div>
       <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
@@ -5604,7 +5604,7 @@ function clBuildExport(){
     </div>`
   :`<div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:13px;font-weight:600;color:#15803d;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>
-      WATI Server ID column found � existing values will be used as is
+      WATI Server ID column found — existing values will be used as is
     </div>`;
 
   document.getElementById('cl-extra-fields-wrap').innerHTML=watiSection+(extras.length?`
@@ -5616,12 +5616,12 @@ function clBuildExport(){
       </div>
       ${clState.extraFields.map((f,i)=>{
         if(!f.field)return'';
-        const sample=clState.cleaned.map(r=>String(r[f.field]||'').trim()).find(v=>v)||'�';
+        const sample=clState.cleaned.map(r=>String(r[f.field]||'').trim()).find(v=>v)||'—';
         return`<div style="display:grid;grid-template-columns:32px 1fr 1fr 1fr;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);background:${f.include?'#eef2ff':'var(--card)'};" id="ef-row-${i}">
           <input type="checkbox" id="ef-${i}" ${f.include?'checked':''} style="accent-color:var(--accent);width:15px;height:15px;"
             onchange="clState.extraFields[${i}].include=this.checked;document.getElementById('ef-row-${i}').style.background=this.checked?'#eef2ff':'var(--card)';const ni=document.getElementById('ef-name-${i}');if(ni)ni.disabled=!this.checked;clRefreshSelfRows();"/>
           <label for="ef-${i}" style="font-size:13px;color:var(--text);cursor:pointer;font-weight:600;">${esc(f.field)}</label>
-          <span style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(sample)}">${esc(sample.length>25?sample.slice(0,25)+'�':sample)}</span>
+          <span style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(sample)}">${esc(sample.length>25?sample.slice(0,25)+'…':sample)}</span>
           <input type="text" placeholder="same as original" value="${esc(f.exportName||'')}"
             style="background:var(--input);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text);outline:none;width:100%;"
             onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"
@@ -5643,19 +5643,19 @@ function clUpdateFinalReview(){
   const defaultWati=document.getElementById('cl-wati-default')?.value||'';
   if(watiMissing)clState.defaultWatiId=defaultWati;
   const fmt=clState.exportFormat==='admin';
-  const watiSrc=watiMissing?(defaultWati?`Fixed value: <strong style="color:#d97706;">"${esc(defaultWati)}"</strong> (same for all rows)`:'<strong style="color:#dc2626;">?? Not entered yet</strong>'):`Sheet column: <strong style="color:#15803d;">"${esc(sc)}"</strong> (per row)`;
+  const watiSrc=watiMissing?(defaultWati?`Fixed value: <strong style="color:#d97706;">"${esc(defaultWati)}"</strong> (same for all rows)`:'<strong style="color:#dc2626;">⚠️ Not entered yet</strong>'):`Sheet column: <strong style="color:#15803d;">"${esc(sc)}"</strong> (per row)`;
   document.getElementById('cl-final-review').innerHTML=`
-    <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">?? Final Review � Verify before export</div>
+    <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">📋 Final Review — Verify before export</div>
     <div style="display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:13px;margin-bottom:12px;">
       <span style="color:var(--muted);font-weight:600;">${fmt?'name':'name'}</span>
-      <span>? Sheet column: <strong style="color:#6366f1;">"${esc(nc||'not mapped')}"</strong></span>
+      <span>← Sheet column: <strong style="color:#6366f1;">"${esc(nc||'not mapped')}"</strong></span>
       <span style="color:var(--muted);font-weight:600;">${fmt?'mobile_number':'phone'}</span>
-      <span>? Sheet column: <strong style="color:#6366f1;">"${esc(pc||'not mapped')}"</strong> <span style="font-size:11px;color:var(--muted);">(non-digits stripped)</span></span>
+      <span>← Sheet column: <strong style="color:#6366f1;">"${esc(pc||'not mapped')}"</strong> <span style="font-size:11px;color:var(--muted);">(non-digits stripped)</span></span>
       <span style="color:var(--muted);font-weight:600;">${fmt?'wati_server_id':'watiserverid'}</span>
-      <span>? ${watiSrc}</span>
+      <span>← ${watiSrc}</span>
     </div>
     <div style="font-size:12px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;">
-      ${filtered.length} rows � ${clState.removedDups} dups removed � ${clState.removedInvalid} invalid removed � ${fmt?'Admin Panel':'VS Code'} format
+      ${filtered.length} rows · ${clState.removedDups} dups removed · ${clState.removedInvalid} invalid removed · ${fmt?'Admin Panel':'VS Code'} format
     </div>
   `;
 }
@@ -5722,7 +5722,7 @@ function clAddSelfRow(){
   const removeCell=document.createElement('div');
   removeCell.style.cssText='display:flex;align-items:flex-end;padding-bottom:2px;';
   const removeBtn=document.createElement('button');
-  removeBtn.textContent='�';
+  removeBtn.textContent='×';
   removeBtn.style.cssText='background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:16px;width:30px;height:32px;cursor:pointer;line-height:1;';
   removeBtn.onclick=function(){row.remove();};
   removeCell.appendChild(removeBtn);
@@ -5746,7 +5746,7 @@ function clExport(){
     overlay.className='cl-sheet-overlay';
     overlay.innerHTML=`
       <div class="cl-summary-modal" style="max-width:420px;">
-        <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px;">?? Confirm Before Export</div>
+        <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px;">⚠️ Confirm Before Export</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Messages will be sent using these exact values. Please verify:</div>
         <div style="background:#fef9ee;border:1px solid #fcd34d;border-radius:8px;padding:14px 16px;margin-bottom:16px;">
           <div style="display:grid;grid-template-columns:130px 1fr;gap:8px;font-size:13px;">
@@ -5761,11 +5761,11 @@ function clExport(){
           </div>
         </div>
         <div style="font-size:12px;color:#dc2626;font-weight:600;margin-bottom:16px;">
-          ?? Wrong column = messages to wrong people. Verify above carefully.
+          ⚠️ Wrong column = messages to wrong people. Verify above carefully.
         </div>
         <div style="display:flex;gap:8px;">
-          <button onclick="this.closest('.cl-sheet-overlay').remove()" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">? Go Back & Check</button>
-          <button onclick="this.closest('.cl-sheet-overlay').remove();clState._exportConfirmed=true;clExport();" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;">? Yes, Export Now</button>
+          <button onclick="this.closest('.cl-sheet-overlay').remove()" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">← Go Back & Check</button>
+          <button onclick="this.closest('.cl-sheet-overlay').remove();clState._exportConfirmed=true;clExport();" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;">✓ Yes, Export Now</button>
         </div>
       </div>`;
     overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
@@ -5793,7 +5793,7 @@ function clExport(){
       const phoneVal=String(r[pc]||'').trim().toLowerCase();
       // Always skip header-like rows
       if(!phoneVal||headerWords.has(phoneVal)||!/\d/.test(phoneVal))return false;
-      // If user chose skip ? remove invalid phones
+      // If user chose skip → remove invalid phones
       if(skipProblems){
         const digits=phoneVal.replace(/\D/g,'');
         if(digits.length<8||/[a-zA-Z]/.test(phoneVal))return false;
@@ -5868,7 +5868,7 @@ function clExport(){
   }
   clRenderHistory();
 
-  clShowExportSummary({filename,rowCount:rows.length,format:fmt==='admin'?'Admin Panel':'VS Code',wati:watiMissing?(defaultWati||'�'):'From sheet column',dups:clState.removedDups,invalid:clState.removedInvalid,date:new Date()});
+  clShowExportSummary({filename,rowCount:rows.length,format:fmt==='admin'?'Admin Panel':'VS Code',wati:watiMissing?(defaultWati||'—'):'From sheet column',dups:clState.removedDups,invalid:clState.removedInvalid,date:new Date()});
 }
 
 function clUpdateBatchInfo(){
@@ -5878,12 +5878,12 @@ function clUpdateBatchInfo(){
   const total=clGetFiltered().length;
   if(!size||size<=0){el.textContent='';return;}
   const batches=Math.ceil(total/size);
-  // Fix 1: batch size >= total rows � warn user
+  // Fix 1: batch size >= total rows — warn user
   if(size>=total){
-    el.innerHTML=`<span style="color:#d97706;font-weight:700;">?? Batch size is larger than total rows (${total.toLocaleString()}) � only 1 file will be created. No need for batch export.</span>`;
+    el.innerHTML=`<span style="color:#d97706;font-weight:700;">⚠️ Batch size is larger than total rows (${total.toLocaleString()}) — only 1 file will be created. No need for batch export.</span>`;
     return;
   }
-  el.innerHTML=`<strong style="color:var(--accent);">${batches} files</strong> will be downloaded &nbsp;�&nbsp; ${total.toLocaleString()} rows � ${size.toLocaleString()} per batch &nbsp;�&nbsp; ~${Math.round(total/batches).toLocaleString()} rows each`;
+  el.innerHTML=`<strong style="color:var(--accent);">${batches} files</strong> will be downloaded &nbsp;·&nbsp; ${total.toLocaleString()} rows ÷ ${size.toLocaleString()} per batch &nbsp;·&nbsp; ~${Math.round(total/batches).toLocaleString()} rows each`;
   clSaveSettings();
 }
 
@@ -5969,7 +5969,7 @@ function clDoBatchExport(rows,batchSize,baseName,fmt,watiMissing,defaultWati){
     const start=(i*batchSize+1).toLocaleString();
     const end=Math.min((i+1)*batchSize,rows.length).toLocaleString();
     namesHtml+=`<div style="display:grid;grid-template-columns:90px 1fr;align-items:center;gap:8px;margin-bottom:8px;">
-      <span style="font-size:12px;color:var(--muted);font-weight:600;">Batch ${i+1}<br><span style="font-weight:400;">(rows ${start}�${end})</span></span>
+      <span style="font-size:12px;color:var(--muted);font-weight:600;">Batch ${i+1}<br><span style="font-weight:400;">(rows ${start}–${end})</span></span>
       <input data-batch="${i}" value="${esc(base)}_batch${i+1}" placeholder="File name"
         style="background:var(--input);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--text);outline:none;width:100%;box-sizing:border-box;"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
@@ -5978,23 +5978,23 @@ function clDoBatchExport(rows,batchSize,baseName,fmt,watiMissing,defaultWati){
 
   // Fix 3: browser download warning for many files
   const browserWarn=totalBatches>5?`<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:#92400e;">
-    ?? <strong>Browser tip:</strong> Your browser may ask "Allow multiple downloads?" � click <strong>Allow</strong> to download all ${totalBatches} files. Do not close this tab during download.
+    ⚠️ <strong>Browser tip:</strong> Your browser may ask "Allow multiple downloads?" — click <strong>Allow</strong> to download all ${totalBatches} files. Do not close this tab during download.
   </div>`:'';
 
   overlay.innerHTML=`
     <div class="cl-summary-modal" style="max-width:480px;max-height:80vh;overflow-y:auto;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:sticky;top:0;background:var(--card);padding-bottom:10px;border-bottom:1px solid var(--border);">
-        <div style="font-family:'Inter',sans-serif;font-size:15px;font-weight:800;color:var(--text);">?? Name Your Batches</div>
-        <button onclick="this.closest('.cl-sheet-overlay').remove()" style="background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;">�</button>
+        <div style="font-family:'Inter',sans-serif;font-size:15px;font-weight:800;color:var(--text);">📦 Name Your Batches</div>
+        <button onclick="this.closest('.cl-sheet-overlay').remove()" style="background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;">×</button>
       </div>
       ${browserWarn}
-      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">${totalBatches} files � ${rows.length.toLocaleString()} total rows � ${batchSize.toLocaleString()} rows each &nbsp;�&nbsp; <span style="color:var(--muted);">.csv added automatically</span></div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">${totalBatches} files · ${rows.length.toLocaleString()} total rows · ${batchSize.toLocaleString()} rows each &nbsp;·&nbsp; <span style="color:var(--muted);">.csv added automatically</span></div>
       <div id="cl-batch-names">${namesHtml}</div>
       <div style="display:flex;gap:8px;margin-top:16px;position:sticky;bottom:0;background:var(--card);padding-top:12px;border-top:1px solid var(--border);">
         <button onclick="this.closest('.cl-sheet-overlay').remove()" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">Cancel</button>
         <button id="cl-batch-download-btn"
           style="flex:2;padding:10px;font-size:13px;font-weight:700;background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;">
-          ? Download All ${totalBatches} Files
+          ✓ Download All ${totalBatches} Files
         </button>
       </div>
     </div>`;
@@ -6031,16 +6031,16 @@ function clRunBatchDownload(rows,batchSize,totalBatches,names,fmt,watiMissing,de
     });
   }
 
-  clShowLoader(`Downloading 1 of ${totalBatches}�`,`${rows.length.toLocaleString()} rows ? ${totalBatches} files`,'??');
+  clShowLoader(`Downloading 1 of ${totalBatches}…`,`${rows.length.toLocaleString()} rows → ${totalBatches} files`,'📦');
 
   function downloadNext(){
     if(done>=totalBatches){
       clHideLoader();
       clShowExportSummary({
-        filename:names[0]+' � '+names[totalBatches-1],
+        filename:names[0]+' … '+names[totalBatches-1],
         rowCount:rows.length,
         format:fmt==='admin'?'Admin Panel':'VS Code',
-        wati:watiMissing?(document.getElementById('cl-wati-default')?.value||'�'):'From sheet column',
+        wati:watiMissing?(document.getElementById('cl-wati-default')?.value||'—'):'From sheet column',
         dups:clState.removedDups,
         invalid:clState.removedInvalid,
         date:new Date(),
@@ -6067,7 +6067,7 @@ function clRunBatchDownload(rows,batchSize,totalBatches,names,fmt,watiMissing,de
     const pct=Math.round(done/totalBatches*100);
     const remaining=totalBatches-done;
     clLoaderProgress(pct, done<totalBatches
-      ? `? Batch ${done} done &nbsp;�&nbsp; Downloading ${done+1} of ${totalBatches}� (${remaining} remaining)`
+      ? `✓ Batch ${done} done &nbsp;·&nbsp; Downloading ${done+1} of ${totalBatches}… (${remaining} remaining)`
       : `All ${totalBatches} files downloaded!`);
     setTimeout(downloadNext,400);
   }
@@ -6082,10 +6082,10 @@ function clShowExportSummary(info){
   overlay.innerHTML=`
     <div class="cl-summary-modal">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-        <div style="font-family:'Inter',sans-serif;font-size:16px;font-weight:800;color:var(--text);">? Export Successful</div>
-        <button onclick="this.closest('.cl-sheet-overlay').remove()" style="background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;">�</button>
+        <div style="font-family:'Inter',sans-serif;font-size:16px;font-weight:800;color:var(--text);">✅ Export Successful</div>
+        <button onclick="this.closest('.cl-sheet-overlay').remove()" style="background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;">×</button>
       </div>
-      ${info.batches?`<div class="cl-summary-row"><span class="cl-summary-label">Files Downloaded</span><span class="cl-summary-val" style="color:#6366f1;">?? ${info.batches} batches</span></div>`:''}
+      ${info.batches?`<div class="cl-summary-row"><span class="cl-summary-label">Files Downloaded</span><span class="cl-summary-val" style="color:#6366f1;">📦 ${info.batches} batches</span></div>`:''}
       <div class="cl-summary-row"><span class="cl-summary-label">File Name</span><span class="cl-summary-val" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(info.filename)}">${esc(info.filename)}</span></div>
       <div class="cl-summary-row"><span class="cl-summary-label">Rows Exported</span><span class="cl-summary-val" style="color:#22c55e;">${info.rowCount.toLocaleString()}</span></div>
       <div class="cl-summary-row"><span class="cl-summary-label">Format</span><span class="cl-summary-val">${esc(info.format)}</span></div>
@@ -6094,7 +6094,7 @@ function clShowExportSummary(info){
       <div class="cl-summary-row"><span class="cl-summary-label">Invalid Removed</span><span class="cl-summary-val">${info.invalid}</span></div>
       <div class="cl-summary-row"><span class="cl-summary-label">Exported At</span><span class="cl-summary-val">${fmt(info.date)}</span></div>
       <div style="display:flex;gap:8px;margin-top:20px;">
-        <button onclick="copyText(${JSON.stringify(summaryText).replace(/</g,'\\u003c')},'Summary copied!');this.textContent='? Copied!';setTimeout(()=>this.textContent='?? Copy Summary',1500)" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;">?? Copy Summary</button>
+        <button onclick="copyText(${JSON.stringify(summaryText).replace(/</g,'\\u003c')},'Summary copied!');this.textContent='✓ Copied!';setTimeout(()=>this.textContent='📋 Copy Summary',1500)" style="flex:1;padding:10px;font-size:13px;font-weight:700;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;">📋 Copy Summary</button>
         <button onclick="this.closest('.cl-sheet-overlay').remove()" style="padding:10px 20px;font-size:13px;font-weight:700;background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;">Close</button>
       </div>
     </div>`;
@@ -6116,7 +6116,7 @@ function clRenderHistory(){
 
     var icon=document.createElement('div');
     icon.className='cl-history-icon';
-    icon.textContent='??';
+    icon.textContent='📄';
 
     var info=document.createElement('div');
     info.className='cl-history-info';
@@ -6127,7 +6127,7 @@ function clRenderHistory(){
     meta.className='cl-history-meta';
     var dateStr=new Date(h.date).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
     var rowCount=h.rowCount||h.rows||0;
-    meta.textContent=dateStr+' � '+rowCount+' rows'+(h.batchLabel?' � '+h.batchLabel:'');
+    meta.textContent=dateStr+' · '+rowCount+' rows'+(h.batchLabel?' · '+h.batchLabel:'');
     info.appendChild(name);
     info.appendChild(meta);
 
@@ -6141,7 +6141,7 @@ function clRenderHistory(){
     openBtn.onclick=function(e){e.stopPropagation();clViewHistory(i);};
 
     var delBtn=document.createElement('button');
-    delBtn.textContent='�';
+    delBtn.textContent='×';
     delBtn.title='Remove';
     delBtn.style.cssText='background:none;border:none;cursor:pointer;color:#888;font-size:18px;padding:4px;line-height:1;flex-shrink:0;';
     delBtn.onclick=function(e){e.stopPropagation();clDeleteHistory(i);};
@@ -6178,14 +6178,14 @@ function clViewHistory(i){
     overlay.innerHTML=`
       <div class="cl-sheet-modal" style="max-width:400px;">
         <div class="cl-sheet-header">
-          <div class="cl-sheet-title">?? ${esc(h.filename)}</div>
-          <button class="cl-sheet-close" onclick="this.closest('.cl-sheet-overlay').remove()">�</button>
+          <div class="cl-sheet-title">📄 ${esc(h.filename)}</div>
+          <button class="cl-sheet-close" onclick="this.closest('.cl-sheet-overlay').remove()">×</button>
         </div>
         <div style="padding:32px 24px;text-align:center;">
-          <div style="font-size:40px;margin-bottom:16px;">??</div>
+          <div style="font-size:40px;margin-bottom:16px;">⚠️</div>
           <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;">Preview Not Available</div>
           <div style="font-size:13px;color:var(--muted);line-height:1.7;">
-            This is an older export � data was not saved at that time.<br>
+            This is an older export — data was not saved at that time.<br>
             <strong>Export once more</strong> to enable sheet preview for future exports.
           </div>
           <button onclick="this.closest('.cl-sheet-overlay').remove()" style="margin-top:20px;padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;">Got It</button>
@@ -6203,8 +6203,8 @@ function clViewHistory(i){
   overlay.innerHTML=`
     <div class="cl-sheet-modal">
       <div class="cl-sheet-header">
-        <div class="cl-sheet-title">?? ${esc(h.filename)}</div>
-        <button class="cl-sheet-close" onclick="this.closest('.cl-sheet-overlay').remove()">�</button>
+        <div class="cl-sheet-title">📄 ${esc(h.filename)}</div>
+        <button class="cl-sheet-close" onclick="this.closest('.cl-sheet-overlay').remove()">×</button>
       </div>
       <div class="cl-sheet-table-wrap">
         <table class="cl-sheet-table">
@@ -6212,13 +6212,13 @@ function clViewHistory(i){
           <tbody>${rowsHtml}</tbody>
         </table>
       </div>
-      <div class="cl-sheet-footer">${h.rowCount||h.data.length} rows &nbsp;�&nbsp; ${cols.length} columns &nbsp;�&nbsp; ${esc(h.format)}</div>
+      <div class="cl-sheet-footer">${h.rowCount||h.data.length} rows &nbsp;·&nbsp; ${cols.length} columns &nbsp;·&nbsp; ${esc(h.format)}</div>
     </div>`;
   overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
   document.body.appendChild(overlay);
 }
 
-// -- Phone cleaner � digits only, no + no spaces no dashes --
+// -- Phone cleaner — digits only, no + no spaces no dashes --
 function clCleanPhone(raw){
   if(!raw)return'';
   return String(raw).replace(/\D/g,'');
@@ -6347,12 +6347,12 @@ function clBQRenderFilters(){
   if(!wrap)return;
   const headers=clState.headers||[];
   const html=clState.bq.filters.map((f,i)=>{
-    const colOpts=['<option value="">� column �</option>',...headers.map(h=>`<option value="${esc(h)}" ${h===f.col?'selected':''}>${esc(h)}</option>`)].join('');
+    const colOpts=['<option value="">— column —</option>',...headers.map(h=>`<option value="${esc(h)}" ${h===f.col?'selected':''}>${esc(h)}</option>`)].join('');
     const opOpts=CL_BQ_OPS.map(o=>`<option value="${o}" ${o===f.op?'selected':''}>${o}</option>`).join('');
     const noVal=(f.op==='IS NOT NULL'||f.op==='IS NULL');
     let valField;
     if(noVal){
-      valField=`<span class="cl-bq-noval">� no value needed �</span>`;
+      valField=`<span class="cl-bq-noval">— no value needed —</span>`;
     }else{
       const listId='cl-bq-dl-'+i;
       const isList=(f.op==='IN'||f.op==='NOT IN');
@@ -6364,7 +6364,7 @@ function clBQRenderFilters(){
       <select class="cl-bq-sel" onchange="clBQSetCol(${i},this.value)">${colOpts}</select>
       <select class="cl-bq-sel cl-bq-op" onchange="clBQSetOp(${i},this.value)">${opOpts}</select>
       ${valField}
-      <button class="cl-bq-del" onclick="clBQDelFilter(${i})" title="Remove filter">??</button>
+      <button class="cl-bq-del" onclick="clBQDelFilter(${i})" title="Remove filter">🗑</button>
     </div>`;
   }).join('');
   wrap.innerHTML=html||'<div class="cl-bq-empty">Koi filter nahi. "+ Add Filter" dabao.</div>';
@@ -6407,7 +6407,7 @@ function clBQColType(col,rows){
   }
   return any?'INT64':'STRING';
 }
-// Typed literal for inline values; empty ? NULL so UNION ALL types stay consistent
+// Typed literal for inline values; empty → NULL so UNION ALL types stay consistent
 function clBQEmbedLit(val,type){
   const v=(val===undefined||val===null)?'':String(val).trim();
   if(v==='')return'NULL';
@@ -6432,7 +6432,7 @@ function clBQBuildEmbed(){
   const sanitize=n=>{let s=String(n).replace(/[^A-Za-z0-9_]/g,'_');if(/^[0-9]/.test(s))s='_'+s;return s||'col';};
   const aliasFor=col=>col===nc?'name':col===pc?'mobile_number':col===sc?'wati_server_id':sanitize(col);
 
-  // Constant columns (same for every row) � emitted once in SELECT, not per-row
+  // Constant columns (same for every row) — emitted once in SELECT, not per-row
   const consts={};
   if(slugConst)consts['slug']=`'${slugConst.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}'`;
   if(!sc&&defWati)consts['wati_server_id']=/^-?\d+$/.test(defWati)?defWati:`'${defWati.replace(/'/g,"\\'")}'`;
@@ -6461,7 +6461,7 @@ function clBQBuildEmbed(){
     else if(seen.has(ob)||consts[ob]!==undefined)obAlias=ob;
   }
 
-  // Compact inline data: UNNEST([STRUCT<...>(...), (...), ...]) � no per-row boilerplate
+  // Compact inline data: UNNEST([STRUCT<...>(...), (...), ...]) — no per-row boilerplate
   const typeHeader=structCols.map(c=>`${c.field} ${c.type}`).join(',');
   const tuple=r=>'('+structCols.map(c=>clBQEmbedLit(c.getter(r),c.type)).join(',')+')';
   const tuples=rows.map(tuple);
@@ -6478,7 +6478,7 @@ function clBQBuildEmbed(){
   });
   if(!selectParts.length)selectParts=structCols.map(c=>c.field).concat(Object.keys(consts).map(k=>`${consts[k]} AS ${k}`));
 
-  // WHERE � filters typed to match their column
+  // WHERE — filters typed to match their column
   const where=[];
   clState.bq.filters.forEach(f=>{
     if(!f.col)return;
@@ -6501,7 +6501,7 @@ function clBQBuildEmbed(){
   let q=`SELECT ${selectParts.join(', ')}\nFROM UNNEST(${arr})`;
   if(where.length)q+='\nWHERE '+where.join('\n  AND ');
   if(obAlias)q+=`\nORDER BY ${obAlias}`;
-  // No trailing ';' � the admin panel wraps the query (SELECT COUNT(*) FROM (...))
+  // No trailing ';' — the admin panel wraps the query (SELECT COUNT(*) FROM (...))
   // for Preview/count, and a semicolon inside the parens is a syntax error.
   return q;
 }
@@ -6515,15 +6515,15 @@ function clBQUpdateSize(){
   const rowsCount=clState.bq._rowCount||0;
   const sizeStr=kb<1024?kb.toFixed(1)+' KB':(kb/1024).toFixed(2)+' MB';
   let warn='';
-  if(bytes>1000000)warn=' ?? 1 MB se bada � BigQuery reject kar sakta hai. Smart Filter se rows kam karo ya kam columns rakho.';
-  else if(bytes>800000)warn=' ?? Bada query � reject ho to rows/columns kam karo.';
-  el.innerHTML=`Query size: ~${sizeStr} � ${rowsCount.toLocaleString()} rows embedded`
+  if(bytes>1000000)warn=' ⚠️ 1 MB se bada — BigQuery reject kar sakta hai. Smart Filter se rows kam karo ya kam columns rakho.';
+  else if(bytes>800000)warn=' ⚠️ Bada query — reject ho to rows/columns kam karo.';
+  el.innerHTML=`Query size: ~${sizeStr} · ${rowsCount.toLocaleString()} rows embedded`
     +(warn?`<span style="color:#d97706;font-weight:600;">${warn}</span>`:'');
 }
 
 function clBQCopy(){
   const q=(clState.bq&&clState.bq._lastQuery)||'';
-  if(!q||q.startsWith('-- ')){toast('Query empty hai � pehle data/mapping check karo','e');return;}
+  if(!q||q.startsWith('-- ')){toast('Query empty hai — pehle data/mapping check karo','e');return;}
   const done=()=>{toast('Query copied! Admin panel me paste karo','s');};
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(q).then(done).catch(()=>clBQCopyFallback(q,done));
@@ -6533,7 +6533,7 @@ function clBQCopyFallback(q,done){
   const ta=document.createElement('textarea');
   ta.value=q;ta.style.position='fixed';ta.style.left='-9999px';
   document.body.appendChild(ta);ta.select();
-  try{document.execCommand('copy');done();}catch(e){toast('Copy failed � manually select karo','e');}
+  try{document.execCommand('copy');done();}catch(e){toast('Copy failed — manually select karo','e');}
   ta.remove();
 }
 
@@ -6595,7 +6595,7 @@ function rpLoadImg(type, inp){
   rpLoadImgFile(type, file);
 }
 
-// Global paste handler � works anywhere on the page when report panel is open
+// Global paste handler — works anywhere on the page when report panel is open
 document.addEventListener('paste', function(e){
   const panel=document.getElementById('report-panel');
   if(!panel||panel.style.display==='none') return;
@@ -6640,13 +6640,13 @@ function rpReset(){
   rpLive();
 }
 
-// OCR splits comma-formatted numbers into two tokens: "20,718" ? ["20","718"]
+// OCR splits comma-formatted numbers into two tokens: "20,718" → ["20","718"]
 // This solver tries all merge combinations of a row's numbers and picks the one
 // where optionA + optionB + optionC === total_all_options (WATI's checksum column)
 function rpSolveRow(rest){
   // rest = all numbers after watiServerId.
-  // Try 4-column first (A,B,C,total � validated by checksum A+B+C===total),
-  // then fall back to 3-column (A,B,C � no total, just trust the OCR).
+  // Try 4-column first (A,B,C,total — validated by checksum A+B+C===total),
+  // then fall back to 3-column (A,B,C — no total, just trust the OCR).
   // Both variants try multi-token concatenation in case OCR split a number across spaces.
   const strs=rest.map(String);
   function makeSolver(targetLen, validate){
@@ -6672,8 +6672,8 @@ function rpSolveRow(rest){
   const r4=solve4(0,[]);
   if(r4) return r4;
   // 3-column fallback ONLY when there are exactly 3 numbers in the row (true headerless 3-col table).
-  // Never run it on 4-number rows � those are 4-col tables where the total was misread by OCR;
-  // letting solve3 concatenate would inflate C (e.g. "6"+"31"?631). Instead fall through to the
+  // Never run it on 4-number rows — those are 4-col tables where the total was misread by OCR;
+  // letting solve3 concatenate would inflate C (e.g. "6"+"31"→631). Instead fall through to the
   // checksum-failed branch in rpParseOptions which calls rpRepairRow or uses literal positional values.
   if(rest.length===3){
     const solve3=makeSolver(3,()=>true);
@@ -6684,8 +6684,8 @@ function rpSolveRow(rest){
 }
 
 // When the checksum solver fails, try to repair the one wrong value using the total column.
-// OCR typically drops a leading digit (10� error). We try fixing each of A/B/C via total,
-// and pick the fix where corrected/original ratio is closest to a power of 10 (5ז500�).
+// OCR typically drops a leading digit (10× error). We try fixing each of A/B/C via total,
+// and pick the fix where corrected/original ratio is closest to a power of 10 (5×–500×).
 function rpRepairRow(a,b,c,total){
   const opts=[
     {vals:[total-b-c, b, c], orig:a, fixed:total-b-c},
@@ -6733,7 +6733,7 @@ function rpParseOptions(text, filterIds=[]){
     let a=0,b=0,c=0;
     const dbg=[];
     for(let i=headerIdx+1;i<lines.length;i++){
-      // Remove thousands separators � both comma ("20,718") and dot ("20.718" from OCR)
+      // Remove thousands separators — both comma ("20,718") and dot ("20.718" from OCR)
       // Apply twice to handle numbers with two separators like "1,234,567"
       let ln=lines[i];
       ln=ln.replace(/(\d+)[,.](\d{3})(?!\d)/g,'$1$2');
@@ -6767,22 +6767,22 @@ function rpParseOptions(text, filterIds=[]){
             dbg.push(`ID ${rowId}: A=${repaired[0]} B=${repaired[1]} C=${repaired[2]} (REPAIRED via total=${fb[3]}, raw: [${nums.join(',')}])`);
           } else if(fb.length>=3){
             a+=fb[0]; b+=fb[1]; c+=fb[2];
-            dbg.push(`ID ${rowId}: A=${fb[0]} B=${fb[1]} C=${fb[2]} (FALLBACK � raw: [${nums.join(',')}])`);
+            dbg.push(`ID ${rowId}: A=${fb[0]} B=${fb[1]} C=${fb[2]} (FALLBACK — raw: [${nums.join(',')}])`);
           } else {
-            dbg.push(`ID ${rowId}: SOLVER FAILED � raw tokens: [${nums.join(',')}]`);
+            dbg.push(`ID ${rowId}: SOLVER FAILED — raw tokens: [${nums.join(',')}]`);
           }
         } else if(fb.length>=3){
           a+=fb[0]; b+=fb[1]; c+=fb[2];
-          dbg.push(`ID ${rowId}: A=${fb[0]} B=${fb[1]} C=${fb[2]} (FALLBACK � raw: [${nums.join(',')}])`);
+          dbg.push(`ID ${rowId}: A=${fb[0]} B=${fb[1]} C=${fb[2]} (FALLBACK — raw: [${nums.join(',')}])`);
         } else {
-          dbg.push(`ID ${rowId}: SOLVER FAILED � raw tokens: [${nums.join(',')}]`);
+          dbg.push(`ID ${rowId}: SOLVER FAILED — raw tokens: [${nums.join(',')}]`);
         }
       }
     }
     return {a,b,c,dbg};
   }
 
-  // -- Fallback: inline format � "Option A: 1234" on the same line --
+  // -- Fallback: inline format — "Option A: 1234" on the same line --
   const lastNum=s=>{const m=s.match(/\d[\d,]*/g);return m?parseInt(m[m.length-1].replace(/,/g,'')):0;};
   let a=0,b=0,c=0;
   for(const line of lines){
@@ -6794,7 +6794,7 @@ function rpParseOptions(text, filterIds=[]){
   return {a,b,c};
 }
 
-// Scale image 3� and threshold to pure B&W so Tesseract reads small digits reliably.
+// Scale image 3× and threshold to pure B&W so Tesseract reads small digits reliably.
 async function rpPreprocessImage(file){
   return new Promise(resolve=>{
     const img=new Image();
@@ -6834,8 +6834,8 @@ async function rpExtract(){
   const status=document.getElementById('rp-status');
   const debugBox=document.getElementById('rp-debug');
   const rawPre=document.getElementById('rp-raw-text');
-  btn.disabled=true; btn.textContent='Extracting�';
-  status.className='rp-status'; status.textContent='Loading OCR engine�';
+  btn.disabled=true; btn.textContent='Extracting…';
+  status.className='rp-status'; status.textContent='Loading OCR engine…';
   debugBox.style.display='none'; rawPre.textContent='';
 
   try{
@@ -6854,25 +6854,25 @@ async function rpExtract(){
       .split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
 
     if(rpNormalFile){
-      status.textContent='Preprocessing Normal Count image (3� scale + B&W threshold)�';
+      status.textContent='Preprocessing Normal Count image (3× scale + B&W threshold)…';
       const processedNormal=await rpPreprocessImage(rpNormalFile);
-      status.textContent='Reading Normal Count image�';
+      status.textContent='Reading Normal Count image…';
       const {data:{text}}=await worker.recognize(processedNormal);
       const {a,b,c,dbg}=rpParseOptions(text,filterIds);
-      debugLines.push('=== Normal Count Image � Raw OCR ===\n'+text);
-      if(dbg&&dbg.length) debugLines.push('--- Rows parsed ---\n'+dbg.join('\n')+`\nTOTAL ? A=${a} B=${b} C=${c}`);
+      debugLines.push('=== Normal Count Image — Raw OCR ===\n'+text);
+      if(dbg&&dbg.length) debugLines.push('--- Rows parsed ---\n'+dbg.join('\n')+`\nTOTAL → A=${a} B=${b} C=${c}`);
       document.getElementById('rp-na').value=a||'';
       document.getElementById('rp-nb').value=b||'';
       document.getElementById('rp-nc').value=c||'';
     }
     if(rpDistinctFile){
-      status.textContent='Preprocessing Distinct Count image (3� scale + B&W threshold)�';
+      status.textContent='Preprocessing Distinct Count image (3× scale + B&W threshold)…';
       const processedDistinct=await rpPreprocessImage(rpDistinctFile);
-      status.textContent='Reading Distinct Count image�';
+      status.textContent='Reading Distinct Count image…';
       const {data:{text}}=await worker.recognize(processedDistinct);
       const {a,b,c,dbg}=rpParseOptions(text,filterIds);
-      debugLines.push('=== Distinct Count Image � Raw OCR ===\n'+text);
-      if(dbg&&dbg.length) debugLines.push('--- Rows parsed ---\n'+dbg.join('\n')+`\nTOTAL ? A=${a} B=${b} C=${c}`);
+      debugLines.push('=== Distinct Count Image — Raw OCR ===\n'+text);
+      if(dbg&&dbg.length) debugLines.push('--- Rows parsed ---\n'+dbg.join('\n')+`\nTOTAL → A=${a} B=${b} C=${c}`);
       document.getElementById('rp-da').value=a||'';
       document.getElementById('rp-db').value=b||'';
       document.getElementById('rp-dc').value=c||'';
@@ -6891,12 +6891,12 @@ async function rpExtract(){
       status.className='rp-status ok'; status.textContent='Counts extracted! Check values below and correct if needed.';
     }else{
       status.className='rp-status err';
-      status.textContent='Could not auto-read numbers � see raw OCR text below and enter manually.';
+      status.textContent='Could not auto-read numbers — see raw OCR text below and enter manually.';
     }
   }catch(e){
     status.className='rp-status err'; status.textContent='OCR failed: '+e.message+'. Please enter counts manually.';
   }
-  btn.disabled=false; btn.textContent='Extract Counts from Images ?';
+  btn.disabled=false; btn.textContent='Extract Counts from Images ✦';
 }
 
 function rpN(id){return parseInt(document.getElementById(id).value)||0;}
@@ -6908,9 +6908,9 @@ function rpLive(){
   const da=rpN('rp-da'),db=rpN('rp-db'),dc=rpN('rp-dc');
   const att=b1+b2+b3, clk=da+db+dc;
   const pct=att>0?((clk/att)*100).toFixed(2):'0.00';
-  document.getElementById('rp-s-att').textContent=att?rpFmt(att):'�';
-  document.getElementById('rp-s-clk').textContent=clk?rpFmt(clk):'�';
-  document.getElementById('rp-s-pct').textContent=att?pct+'%':'�';
+  document.getElementById('rp-s-att').textContent=att?rpFmt(att):'—';
+  document.getElementById('rp-s-clk').textContent=clk?rpFmt(clk):'—';
+  document.getElementById('rp-s-pct').textContent=att?pct+'%':'—';
 }
 
 function rpGenerate(){
@@ -6967,7 +6967,7 @@ Total Morning clicked\t${rpFmt(clk)}`;
 }
 
 function rpCopyDone(btn){
-  btn.textContent='Copied ?';
+  btn.textContent='Copied ✓';
   btn.style.background='#22c55e';
   setTimeout(()=>{btn.textContent='Copy';btn.style.background='';},2000);
 }
@@ -7005,7 +7005,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   const riskyList=document.getElementById('tc-risky-btn-list');
   if(riskyList){
-    riskyList.innerHTML=Object.entries(TC_RISKY_BUTTONS).map(([txt,info])=>`<div class="tc-risky-pill">"${tcEsc(txt)}" <span class="tc-risky-arrow">?</span> <b>${tcEsc(info.rewrite)}</b></div>`).join('');
+    riskyList.innerHTML=Object.entries(TC_RISKY_BUTTONS).map(([txt,info])=>`<div class="tc-risky-pill">"${tcEsc(txt)}" <span class="tc-risky-arrow">→</span> <b>${tcEsc(info.rewrite)}</b></div>`).join('');
   }
 });
 
@@ -7027,13 +7027,13 @@ const TC_MARKETING_PATTERNS=[
   // Discounts / savings (all HIGH)
   {rx:/\b\d+\s*%\s*(?:off|discount)\b/gi, category:'Promotional discount', label:'discount %', severity:'high',
     why:'Discount percentages are inherently promotional; Meta classifies discount language as marketing.',
-    rewrite:'(remove � discounts cannot appear in Utility templates)'},
+    rewrite:'(remove — discounts cannot appear in Utility templates)'},
   {rx:/\b(?:flat|extra|upto|up\s?to)\s*\d+\s*%?\s*(?:off|discount)?\b/gi, category:'Promotional discount', label:'discount phrase', severity:'high',
     why:'"Flat / extra / upto X% off" reads as a sales pitch.',
-    rewrite:'(remove � replace with specific transactional info)'},
-  {rx:/\bsave\s+(?:up\s+to\s+)?(?:?|Rs\.?|INR|\$)?\s?\d+\s?%?\b/gi, category:'Savings pitch', label:'savings pitch', severity:'high',
+    rewrite:'(remove — replace with specific transactional info)'},
+  {rx:/\bsave\s+(?:up\s+to\s+)?(?:₹|Rs\.?|INR|\$)?\s?\d+\s?%?\b/gi, category:'Savings pitch', label:'savings pitch', severity:'high',
     why:'Savings framing signals promotional intent.',
-    rewrite:'(remove � savings language is marketing)'},
+    rewrite:'(remove — savings language is marketing)'},
   {rx:/\b(?:promo|coupon|discount|offer)\s+code\b/gi, category:'Promotional code', label:'promo code', severity:'high',
     why:'Promo / coupon code language signals a marketing campaign.',
     rewrite:'Use "reference code" only if it is genuinely non-promotional, else remove.'},
@@ -7046,18 +7046,18 @@ const TC_MARKETING_PATTERNS=[
     why:'"Click here / tap now" is a vague engagement CTA.',
     rewrite:'"View the link" or refer to a specific named action'},
   {rx:/\bcheckout\s+now\b/gi, category:'Sales CTA', label:'checkout CTA', severity:'high',
-    why:'Drives the user to complete a purchase � promotional intent.',
+    why:'Drives the user to complete a purchase — promotional intent.',
     rewrite:'"Complete your order"'},
 
   // Urgency / scarcity
   {rx:/\b(?:last\s+chance|ends\s+(?:today|soon|tonight)|hurry(?:\s+up)?|act\s+(?:now|fast)|jaldi\s+karo|abhi\s+book\s+karo)\b/gi, category:'Urgency / scarcity', label:'urgency', severity:'high',
-    why:'Urgency pushes a conversion � non-transactional.',
+    why:'Urgency pushes a conversion — non-transactional.',
     rewrite:'"Please note" or remove the urgency phrase'},
   {rx:/\blimited(?:\s+time|\s+offer|\s+period|\s+slots?|\s+seats?)?\b/gi, category:'Urgency / scarcity', label:'scarcity', severity:'high',
     why:'Scarcity framing ("limited time / limited seats") is promotional.',
-    rewrite:'(remove � scarcity language is non-utility)'},
+    rewrite:'(remove — scarcity language is non-utility)'},
   {rx:/\bdon'?t\s+miss\b/gi, category:'Urgency / scarcity', label:'urgency', severity:'medium',
-    why:'"Don\'t miss" pushes engagement � non-transactional.',
+    why:'"Don\'t miss" pushes engagement — non-transactional.',
     rewrite:'"Please note"'},
 
   // Exclusivity / sale superlatives
@@ -7069,9 +7069,9 @@ const TC_MARKETING_PATTERNS=[
     rewrite:'"Service update" or "order details"'},
   {rx:/\b(?:mega|huge|biggest|best|grand|massive)\s+(?:sale|offer|deal|discount|launch)\b/gi, category:'Sale superlative', label:'sale superlative', severity:'high',
     why:'"Mega/huge/biggest sale" is overtly promotional language.',
-    rewrite:'(remove � sale language is marketing)'},
-  {rx:/\b(?:only|just)\s+(?:?|Rs\.?|\$)\s?\d+\b/gi, category:'Price pitch', label:'price pitch', severity:'medium',
-    why:'"Only ?X" frames the price as a deal � promotional.',
+    rewrite:'(remove — sale language is marketing)'},
+  {rx:/\b(?:only|just)\s+(?:₹|Rs\.?|\$)\s?\d+\b/gi, category:'Price pitch', label:'price pitch', severity:'medium',
+    why:'"Only ₹X" frames the price as a deal — promotional.',
     rewrite:'State the amount neutrally without "only/just"'},
 
   // Freebies
@@ -7093,13 +7093,13 @@ const TC_MARKETING_PATTERNS=[
   // Engagement / emotional / relationship building
   {rx:/\bdid\s+you\s+know\b/gi, category:'Awareness hook', label:'awareness hook', severity:'medium',
     why:'Awareness-style openers signal marketing intent.',
-    rewrite:'(remove � awareness framing is marketing)'},
+    rewrite:'(remove — awareness framing is marketing)'},
   {rx:/\bthank\s+you\s+for\s+being\s+(?:a\s+)?(?:valued|loyal)\s+customer\b/gi, category:'Loyalty / relationship', label:'loyalty wording', severity:'medium',
     why:'Loyalty messaging is relationship-building marketing.',
-    rewrite:'(remove � loyalty framing is marketing)'},
+    rewrite:'(remove — loyalty framing is marketing)'},
   {rx:/\bhappy\s+(?:birthday|anniversary|diwali|new\s+year|holiday|christmas|eid)\b/gi, category:'Holiday / birthday wish', label:'holiday wish', severity:'medium',
     why:'Holiday and birthday wishes are relationship-building (marketing).',
-    rewrite:'(remove � wishes are marketing)'},
+    rewrite:'(remove — wishes are marketing)'},
   {rx:/\b(?:continue|resume|start|begin)\s+your\s+(?:yoga|fitness|learning|wellness|journey|membership|adventure|story)\b/gi, category:'Engagement copy', label:'emotional engagement', severity:'medium',
     why:'Phrases like "continue your X journey" are engagement-driven, not transactional.',
     rewrite:'"Your session/account update is available"'},
@@ -7107,57 +7107,57 @@ const TC_MARKETING_PATTERNS=[
   // App promotion
   {rx:/\bdownload\s+(?:our|the)\s+app\b/gi, category:'App promotion', label:'app promotion', severity:'high',
     why:'App download / install CTAs are marketing.',
-    rewrite:'(remove � app promotion is marketing)'},
+    rewrite:'(remove — app promotion is marketing)'},
   {rx:/\bin[\s-]?app\s+only\b/gi, category:'App promotion', label:'app exclusive', severity:'medium',
     why:'"In-app only" framing is promotional.',
-    rewrite:'(remove � in-app exclusivity is promotional)'},
+    rewrite:'(remove — in-app exclusivity is promotional)'},
 
   // Cart abandonment
   {rx:/\b(?:left|saved)\s+(?:your\s+)?items?\s+in\s+your\s+cart\b/gi, category:'Cart abandonment', label:'cart abandonment', severity:'high',
     why:'Cart abandonment reminders are explicitly marketing per Meta.',
-    rewrite:'(remove � cart abandonment is marketing)'},
+    rewrite:'(remove — cart abandonment is marketing)'},
 
-  // ----- Gift / bonus / incentive language (very high � pure marketing) -----
+  // ----- Gift / bonus / incentive language (very high — pure marketing) -----
   {rx:/\b(?:a\s+)?(?:small\s+|special\s+|nice\s+|little\s+|free\s+|complimentary\s+|surprise\s+)?gift\b/gi, category:'Gift framing', label:'gift mention', severity:'high',
-    why:'"Gift" framing signals promotional intent � gifts and giveaways are marketing per Meta.',
-    rewrite:'(remove � gift language is marketing)'},
+    why:'"Gift" framing signals promotional intent — gifts and giveaways are marketing per Meta.',
+    rewrite:'(remove — gift language is marketing)'},
   {rx:/\b(?:add(?:ing|s)?\s+)?\d*\s*(?:gift|bonus|extra|complimentary|free)\s+(?:days?|months?|weeks?|sessions?|classes?|credits?|features?|access)\b/gi, category:'Promotional bonus', label:'bonus / gift days', severity:'high',
-    why:'Promotional incentives ("X gift/bonus/extra days/sessions/credits") are engagement-driving � marketing per Meta.',
-    rewrite:'(remove � incentives are marketing)'},
+    why:'Promotional incentives ("X gift/bonus/extra days/sessions/credits") are engagement-driving — marketing per Meta.',
+    rewrite:'(remove — incentives are marketing)'},
   {rx:/\bto\s+(?:get|claim|receive|earn|unlock|win|grab|avail)\s+(?:your\s+|a\s+|the\s+)?(?:gift|bonus|reward|discount|prize|offer|credit|days?|free|complimentary)\b/gi, category:'Incentive CTA', label:'reward-based CTA', severity:'high',
-    why:'"To get/claim/receive/earn your gift/bonus/reward/days" is an incentive-driven CTA � marketing.',
-    rewrite:'(remove � incentive-driven CTAs are marketing)'},
+    why:'"To get/claim/receive/earn your gift/bonus/reward/days" is an incentive-driven CTA — marketing.',
+    rewrite:'(remove — incentive-driven CTAs are marketing)'},
 
-  // ----- Generic engagement / check-in / feedback (high � per Meta\'s PDF: generic surveys = marketing) -----
+  // ----- Generic engagement / check-in / feedback (high — per Meta\'s PDF: generic surveys = marketing) -----
   {rx:/\bwe\s+(?:just\s+)?(?:want|wanted|would\s+love|hope|wish)\s+to\s+(?:know|hear|see|ask|check|connect|wish|reach\s+out|catch\s+up)\b/gi, category:'Relationship building', label:'check-in opener', severity:'high',
-    why:'"We just want to know / wanted to check in" is a generic relationship-building opener � Meta classifies as marketing.',
+    why:'"We just want to know / wanted to check in" is a generic relationship-building opener — Meta classifies as marketing.',
     rewrite:'Reference a specific order/account interaction, or remove the entire sentence'},
   {rx:/\bhow\s+(?:are\s+you|(?:have\s+you|you\s+have)\s+been|you\s+doing|you\s+are|you'?ve\s+been)\b/gi, category:'Generic check-in', label:'"how are you" phrase', severity:'medium',
     why:'"How are you / how have you been" is relationship-building, not transactional.',
     rewrite:'(remove or anchor to a specific account/order)'},
   {rx:/\b(?:fill|complete|submit|take|share|leave)\s+(?:this\s+|the\s+|a\s+|some\s+|out\s+|us\s+)?(?:form|survey|feedback|questionnaire|review)\b/gi, category:'Generic engagement CTA', label:'generic form / survey CTA', severity:'high',
-    why:'Per Meta\'s PDF: a generic survey or feedback request will NOT be approved as Utility � feedback must be tied to a specific prior order/visit.',
+    why:'Per Meta\'s PDF: a generic survey or feedback request will NOT be approved as Utility — feedback must be tied to a specific prior order/visit.',
     rewrite:'Reference the specific order/visit, e.g. "Share feedback on order {{order_id}}"'},
   {rx:/\b(?:take|spend)\s+\d+\s+(?:minute|minutes|min|mins|second|seconds|sec)/gi, category:'Engagement bait', label:'time-investment CTA', severity:'medium',
-    why:'"Take 2 minutes to..." is engagement bait � non-transactional.',
-    rewrite:'(remove � engagement CTAs are marketing)'},
+    why:'"Take 2 minutes to..." is engagement bait — non-transactional.',
+    rewrite:'(remove — engagement CTAs are marketing)'},
   {rx:/\bfill\s+(?:it\s+|this\s+|the\s+(?:form|survey)\s+)?before\s+\d/gi, category:'Urgency CTA', label:'fill-by-date urgency', severity:'high',
     why:'Time-bound "Fill before [date]" CTA tied to an incentive is promotional urgency.',
-    rewrite:'(remove � deadline-based CTAs are non-utility)'},
+    rewrite:'(remove — deadline-based CTAs are non-utility)'},
   {rx:/\bbefore\s+\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/gi, category:'Deadline pitch', label:'deadline phrase', severity:'medium',
     why:'"Before [date]" deadline framing combined with promo content is non-utility urgency.',
     rewrite:'Only use deadline language when it relates to a real transactional deadline (e.g. payment due date)'},
 
   // ----- Promotional / emotional / urgency emojis -----
-  {rx:/??|??|??|??|?|??|??|??|??|??|??/g, category:'Promotional emoji', label:'gift / celebration emoji', severity:'medium',
-    why:'Gift / celebration emojis (?? ?? ?? ? etc.) are predominantly used in marketing campaigns.',
-    rewrite:'(remove � these emojis signal promotional intent)'},
-  {rx:/?|?|?|??|??|??|??|??|??/g, category:'Urgency emoji', label:'urgency / alert emoji', severity:'medium',
-    why:'Urgency / alert emojis (? ? ? ??) push time pressure � non-transactional.',
-    rewrite:'(remove � urgency emojis are non-utility)'},
-  {rx:/??|?|??|??|??|??|??|??|??|??|??/g, category:'Emotional emoji', label:'emotional / heart emoji', severity:'medium',
-    why:'Heart / emotional emojis (?? ?? ?? ??) are relationship-building tone � marketing.',
-    rewrite:'(remove � emotional emojis signal marketing tone)'},
+  {rx:/🎁|🎉|🎊|🎀|✨|🏆|🥇|🎂|🎈|🥳|🎯/g, category:'Promotional emoji', label:'gift / celebration emoji', severity:'medium',
+    why:'Gift / celebration emojis (🎁 🎉 🎊 ✨ etc.) are predominantly used in marketing campaigns.',
+    rewrite:'(remove — these emojis signal promotional intent)'},
+  {rx:/⏳|⏰|⚡|🚨|‼️|📣|📢|🆕|🔔/g, category:'Urgency emoji', label:'urgency / alert emoji', severity:'medium',
+    why:'Urgency / alert emojis (⏳ ⏰ ⚡ 🚨) push time pressure — non-transactional.',
+    rewrite:'(remove — urgency emojis are non-utility)'},
+  {rx:/❤️|❤|💖|💕|💝|💗|💞|😍|🥰|🫶|🤗/g, category:'Emotional emoji', label:'emotional / heart emoji', severity:'medium',
+    why:'Heart / emotional emojis (❤️ 💖 😍 🥰) are relationship-building tone — marketing.',
+    rewrite:'(remove — emotional emojis signal marketing tone)'},
 ];
 
 // ----- Utility-safe button library (curated) -----
@@ -7178,7 +7178,7 @@ const TC_SAFE_BUTTONS=[
 
 // ----- Risky button labels (? utility-safe replacement) -----
 const TC_RISKY_BUTTONS={
-  'join now':      {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Pure promotional CTA � drives sign-ups.'},
+  'join now':      {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Pure promotional CTA — drives sign-ups.'},
   'buy now':       {rewrite:'View Details', category:'Sales CTA',          severity:'high',   why:'Direct purchase CTA.'},
   'shop now':      {rewrite:'Open App',     category:'Sales CTA',          severity:'high',   why:'Direct sales CTA.'},
   'order now':     {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Direct sales CTA.'},
@@ -7194,11 +7194,11 @@ const TC_RISKY_BUTTONS={
   'subscribe now': {rewrite:'View Plan',    category:'Sales CTA',          severity:'high',   why:'Subscription CTA.'},
   'enroll now':    {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Conversion CTA.'},
   'register now':  {rewrite:'Continue',     category:'Sales CTA',          severity:'high',   why:'Conversion CTA.'},
-  'get started':   {rewrite:'Continue',     category:'Engagement CTA',     severity:'medium', why:'Engagement CTA � borderline.'},
+  'get started':   {rewrite:'Continue',     category:'Engagement CTA',     severity:'medium', why:'Engagement CTA — borderline.'},
   'try free':      {rewrite:'View Details', category:'Sales CTA',          severity:'high',   why:'Free-trial CTA.'},
   'try now':       {rewrite:'View Details', category:'Engagement CTA',     severity:'medium', why:'Engagement CTA.'},
-  'install app':   {rewrite:'Open App',     category:'App promotion',      severity:'high',   why:'App install CTA � promotional.'},
-  'download now':  {rewrite:'Open App',     category:'App promotion',      severity:'high',   why:'App download CTA � promotional.'},
+  'install app':   {rewrite:'Open App',     category:'App promotion',      severity:'high',   why:'App install CTA — promotional.'},
+  'download now':  {rewrite:'Open App',     category:'App promotion',      severity:'high',   why:'App download CTA — promotional.'},
   'book now':      {rewrite:'View Details', category:'Sales CTA',          severity:'medium', why:'"Book now" reads promotional; prefer "View Details".'},
   'learn more':    {rewrite:'View Details', category:'Engagement CTA',     severity:'low',    why:'"Learn more" reads promotional in many contexts.'},
   'discover':      {rewrite:'View Details', category:'Engagement CTA',     severity:'medium', why:'"Discover" reads promotional.'},
@@ -7303,7 +7303,7 @@ function tcAnalyze(){
     suggestion:`Move "${d.phrase}" into a variable like {{info}} or {{update}} so the static template reads neutrally. Fill the variable at send-time with neutral wording.`
   }));
 
-  // Scoring � tightened so even a SINGLE high-severity issue pushes the template into Marketing.
+  // Scoring — tightened so even a SINGLE high-severity issue pushes the template into Marketing.
   // Per Meta's PDF: mixed content (any marketing inside a utility template) is classified as Marketing.
   const wt={high:50,medium:18,low:7};
   let risk=0;
@@ -7313,25 +7313,25 @@ function tcAnalyze(){
   const safe=100-risk;
 
   // Verdict thresholds
-  //   safe >= 80  ? Utility (no marketing risk)
-  //   safe >= 60  ? Borderline (mediums only, cleanable)
-  //   safe <  60  ? Marketing (any high, or 3+ mediums)
+  //   safe >= 80  → Utility (no marketing risk)
+  //   safe >= 60  → Borderline (mediums only, cleanable)
+  //   safe <  60  → Marketing (any high, or 3+ mediums)
   let verdict,verdictTitle,verdictSub,verdictIcon;
   if(safe>=80){
-    verdict='utility'; verdictIcon='?';
+    verdict='utility'; verdictIcon='✓';
     verdictTitle='Likely Utility Approved';
     verdictSub='This template reads as transactional. Submit to WATI with category set to Utility.';
   } else if(safe>=60){
     verdict='borderline'; verdictIcon='!';
-    verdictTitle='Borderline � moderate marketing risk';
+    verdictTitle='Borderline — moderate marketing risk';
     verdictSub='Apply the rewrites below to push above 80% Utility Safe before submitting.';
   } else {
-    verdict='marketing'; verdictIcon='?';
+    verdict='marketing'; verdictIcon='✕';
     verdictTitle='High chance of Marketing classification';
-    verdictSub=(detections.length+buttonIssues.length)+' issues detected. Meta will classify this as Marketing � apply the rewrites below.';
+    verdictSub=(detections.length+buttonIssues.length)+' issues detected. Meta will classify this as Marketing — apply the rewrites below.';
   }
 
-  // Cleaned body (strip marketing sentences entirely � high-confidence sanitization)
+  // Cleaned body (strip marketing sentences entirely — high-confidence sanitization)
   let cleanedBody='';
   let droppedSentences=[];
   if(body){
@@ -7371,7 +7371,7 @@ function tcRenderAnalysis(r){
   // Detection report
   const dList=document.getElementById('tc-detections');
   if(r.detections.length===0){
-    dList.innerHTML='<div class="tc-empty">No marketing language detected in the header / body / footer. ?</div>';
+    dList.innerHTML='<div class="tc-empty">No marketing language detected in the header / body / footer. ✓</div>';
   } else {
     dList.innerHTML=r.detections.map(d=>`
       <div class="tc-det-row tc-sev-${d.severity}">
@@ -7395,7 +7395,7 @@ function tcRenderAnalysis(r){
   } else {
     bSection.style.display='';
     if(r.buttonIssues.length===0){
-      bList.innerHTML='<div class="tc-empty">All buttons look utility-safe. ?</div>';
+      bList.innerHTML='<div class="tc-empty">All buttons look utility-safe. ✓</div>';
     } else {
       bList.innerHTML=r.buttonIssues.map(b=>`
         <div class="tc-det-row tc-sev-${b.severity}">
@@ -7431,7 +7431,7 @@ function tcRenderAnalysis(r){
   const cleanWrap=document.getElementById('tc-cleaned-wrap');
   if(r.droppedSentences && r.droppedSentences.length>0){
     cleanWrap.style.display='';
-    document.getElementById('tc-cleaned-body').textContent=r.cleanedBody||'(empty � all sentences were marketing)';
+    document.getElementById('tc-cleaned-body').textContent=r.cleanedBody||'(empty — all sentences were marketing)';
   } else {
     cleanWrap.style.display='none';
   }
