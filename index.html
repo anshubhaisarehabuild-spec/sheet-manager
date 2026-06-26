@@ -550,7 +550,7 @@ body::after{width:600px;height:600px;background:radial-gradient(circle,#22d3ee,t
 
 /* Spring card entrance */
 @keyframes cardSpring{0%{opacity:0;transform:translateY(28px) scale(.94);}65%{opacity:1;transform:translateY(-5px) scale(1.015);}100%{opacity:1;transform:translateY(0) scale(1);}}
-.sheet-card,.board-card{animation:cardSpring .55s cubic-bezier(.34,1.56,.64,1) both;transform-style:preserve-3d;will-change:transform;}
+.sheet-card,.board-card{animation:cardSpring .55s cubic-bezier(.34,1.56,.64,1) backwards;transform-style:preserve-3d;will-change:transform;}
 
 /* Animated gradient glow border on hover */
 .sheet-card{position:relative;}
